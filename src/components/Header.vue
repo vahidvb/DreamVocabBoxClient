@@ -2,9 +2,7 @@
     <header class="main-header">
       <h1>{{ nickName }}</h1>
       <nav>
-        <a href="/">خانه</a>
-        <a href="/about">درباره ما</a>
-        <a href="/contact">تماس با ما</a>
+        <a href="/Boxes">Boxes</a>
       </nav>
     </header>
   </template>
