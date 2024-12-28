@@ -1,6 +1,6 @@
 <template>
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="card p-4 pt-1" style="width: 480px;">
+
+        <div class="container">
             <div class="row text-center">
                 <div class="col-12">
                     <img class="w-50" src="images/box.png">
@@ -52,16 +52,12 @@
                 <button type="button" @click="login" class="btn btn-link px-0 text-start">I have an account.</button>
             </form>
             <hr>
-            <button type="button" class="btn btn-secondary w-100">Login as guest 😒 </button>
-
-
+            <button type="button" class="btn btn-secondary w-100" @click="handleRegisterAsGuest">Login as guest 😒
+            </button>
         </div>
-    </div>
 
 </template>
-
 <script>
-
 export default {
     name: 'LoginPage',
     components: {
@@ -85,21 +81,40 @@ export default {
     methods: {
         async handleLogin() {
             try {
-                const response = await this.postRequest('users', 'login', this.loginForm);
-                if (response.IsSuccess)
-                    localStorage.setItem("token", response.Data);
+                const response = await this.postRequest('Users', 'Login', this.loginForm);
                 this.notyf.apiResult(response);
+                if (response.IsSuccess) {
+                    localStorage.setItem("token", response.Data.Token);
+                    localStorage.setItem("nickname", response.Data.NickName);
+                    document.location.href = "/Boxes";
+                }
             } catch (error) {
                 console.error(error);
             }
         },
         async handleRegister() {
             try {
-                const response = await this.postRequest('users', 'register', this.registerForm);
-                if (response.IsSuccess)
-                    localStorage.setItem("token", response.Data);
+                const response = await this.postRequest('Users', 'Register', this.registerForm);
                 this.notyf.apiResult(response);
+                if (response.IsSuccess) {
+                    localStorage.setItem("token", response.Data.Token);
+                    localStorage.setItem("nickname", response.Data.NickName);
+                    document.location.href = "/Boxes";
+                }
 
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async handleRegisterAsGuest() {
+            try {
+                const response = await this.postRequest('Users', 'RegisterAsGuest');
+                this.notyf.apiResult(response);
+                if (response.IsSuccess) {
+                    localStorage.setItem("token", response.Data.Token);
+                    localStorage.setItem("nickname", response.Data.NickName);
+                    document.location.href = "/Boxes";
+                }
             } catch (error) {
                 console.error(error);
             }

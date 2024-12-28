@@ -15,14 +15,14 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
-const postRequest = async (controller, action, data) => {
+const postRequest = async (controller, action, data = null) => {
   try {
     const url = `/${controller}/${action}`;
     const response = await instance.post(url, data);
     return response.data;
   } catch (error) {
     console.error(error);
-    throw error; 
+    throw error;
   }
 };
 
