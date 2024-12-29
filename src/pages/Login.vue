@@ -86,6 +86,7 @@ export default {
                 if (response.IsSuccess) {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
+                    localStorage.setItem("avatar", response.Data.Avatar);
                     document.location.href = "/Boxes";
                 }
             } catch (error) {
@@ -99,6 +100,7 @@ export default {
                 if (response.IsSuccess) {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
+                    localStorage.setItem("avatar", response.Data.Avatar);
                     document.location.href = "/Boxes";
                 }
 
@@ -113,6 +115,7 @@ export default {
                 if (response.IsSuccess) {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
+                    localStorage.setItem("avatar", response.Data.Avatar);
                     document.location.href = "/Boxes";
                 }
             } catch (error) {

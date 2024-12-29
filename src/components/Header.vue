@@ -1,5 +1,6 @@
 <template>
     <header class="main-header">
+      <img v-bind:src="'images/avatars/avatar-' + avatar + '.png'">
       <h1>{{ nickName }}</h1>
       <nav>
         <a href="/Boxes">Boxes</a>
@@ -14,6 +15,7 @@
      data() {
         return {
             nickName: localStorage.getItem("nickname"),
+            avatar: localStorage.getItem("avatar"),
         };
     }
   };
