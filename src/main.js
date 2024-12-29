@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import LoginPage from './pages/Login.vue';
 import BoxesPage from './pages/Boxes.vue';
+import AddWordPage from './pages/AddWord.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import NotyfPlugin from './plugins/notyf';
 import axiosPlugin from './plugins/axios';
@@ -9,7 +10,8 @@ import axiosPlugin from './plugins/axios';
 const routes = [
   { path: '/', component: App, meta: { requiresAuth: true,showHeader: false } },
   { path: '/Login', component: LoginPage, meta: { requiresAuth: false,showHeader: false } },
-  { path: '/Boxes', component: BoxesPage, meta: { requiresAuth: true,showHeader: true } }
+  { path: '/Boxes', component: BoxesPage, meta: { requiresAuth: true,showHeader: true } },
+  { path: '/AddWord', component: AddWordPage, meta: { requiresAuth: true,showHeader: true } }
 ];
 
 const router = createRouter({

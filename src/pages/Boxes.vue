@@ -1,13 +1,12 @@
 <template>
-
     <div class="row box" v-for="(box, index) in boxes" :key="index">
         <div class="col-4">
             <img v-bind:src="'/images/boxes/' + box.BoxNumber + '.png'" alt="">
         </div>
         <div class="col-8">
             <p class="fw-bolder">Total: {{ box.AllCount }}</p>
-            <p class="fw-bolder">Today checked: {{ box.CheckedCount }}</p>
-            <p class="fw-bolder">Waiting for check: {{ box.UnCheckedCount }}</p>
+            <p class="fw-bolder">Locked: {{ box.CheckedCount }}</p>
+            <p class="fw-bolder">Waiting: {{ box.UnCheckedCount }}</p>
         </div>
     </div>
 </template>

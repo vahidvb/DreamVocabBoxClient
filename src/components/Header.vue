@@ -3,6 +3,7 @@
       <h1>{{ nickName }}</h1>
       <nav>
         <a href="/Boxes">Boxes</a>
+        <a href="/AddWord">Add New Word</a>
       </nav>
     </header>
   </template>
