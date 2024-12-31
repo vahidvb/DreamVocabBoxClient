@@ -6,6 +6,7 @@ import AddWordPage from './pages/AddWord.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import NotyfPlugin from './plugins/notyf';
 import axiosPlugin from './plugins/axios';
+import { createPinia } from 'pinia';
 
 const routes = [
   { path: '/', component: App, meta: { requiresAuth: true,showHeader: false } },
@@ -34,4 +35,6 @@ const app = createApp(App);
 app.use(router);
 app.use(NotyfPlugin);
 app.use(axiosPlugin);
+const pinia = createPinia();
+app.use(pinia);
 app.mount('#app');
