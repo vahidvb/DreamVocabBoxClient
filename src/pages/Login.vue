@@ -86,7 +86,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
-                    document.location.href = "/Boxes";
+                    this.$router.push('/Boxes');
                 }
             } catch (error) {
                 console.error(error);
@@ -100,7 +100,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
-                    document.location.href = "/Boxes";
+                    this.$router.push('/Boxes');
                 }
 
             } catch (error) {
@@ -115,7 +115,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
-                    document.location.href = "/Boxes";
+                    this.$router.push('/Boxes');
                 }
             } catch (error) {
                 console.error(error);

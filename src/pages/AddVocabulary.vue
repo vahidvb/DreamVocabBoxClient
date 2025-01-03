@@ -52,9 +52,8 @@ export default {
             try {
                 const response = await this.postRequest('Vocabularies', 'AddVocabulary', this.wordForm);
                 this.notyf.apiResult(response);
-                if (response.IsSuccess) {
-                    document.location.href = "/Boxes";
-                }
+                if (response.IsSuccess)
+                    this.$router.push('/Boxes');
             } catch (error) {
                 console.error(error);
             }
