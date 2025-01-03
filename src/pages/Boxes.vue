@@ -19,10 +19,10 @@
                             <router-link class="btn shake-item" v-if="box.UnCheckedCount"
                                 :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking</router-link>
 
-                        <span class="btn btn-soft disabled" v-if="box.AllCount==0 && index>0">It's Empty</span>
+                            <span class="btn btn-soft disabled" v-if="box.AllCount == 0 && index > 0">It's Empty</span>
 
-                        <router-link class="btn" v-if="box.UnCheckedCount == 0 && index == 0"
-                            :to="{ path: `/AddVocabulary` }">Add New</router-link>
+                            <router-link class="btn" v-if="box.AllCount == 0 && index == 0"
+                                :to="{ path: `/AddVocabulary` }">Add New</router-link>
 
                             <router-link class="btn btn-soft" v-if="box.UnCheckedCount == 0 && box.CheckedCount > 0"
                                 :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Show Words</router-link>
