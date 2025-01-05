@@ -9,34 +9,43 @@
             </div>
         </div>
         <hr>
-        <form @submit.prevent="handleAddNewWord">
+        <form @submit.prevent="handleAddNewWord" class="pb-3">
             <div class="mb-1">
-                <label for="Word" class="form-label">Word</label>
-                <input type="text" class="form-control" id="Word" v-model="wordForm.Word" placeholder="">
+                <v-text-field @keyup="handleWordChange" autofocus list="WordsInDictionary" label="Word" v-model="wordForm.Word"></v-text-field>
+                <datalist id="WordsInDictionary">
+                    <option v-for="(word, index) in wordsInDictionary" v-bind:value="word.Word" v-bind:key="index">
+                    </option>
+                </datalist>
             </div>
             <div class="mb-1">
-                <label for="Meaning" class="form-label">Meaning</label>
-                <input type="text" class="form-control" id="Meaning" v-model="wordForm.Meaning" placeholder="">
+                <Dictionary :text="wordForm.Word" />
+                <v-textarea rows="3" label="Meaning" v-model="wordForm.Meaning"></v-textarea>
             </div>
             <div class="mb-1">
-                <label for="Example" class="form-label">Example</label>
-                <input type="text" class="form-control" id="Example" v-model="wordForm.Example" placeholder="">
+                <v-textarea rows="2" label="Example" v-model="wordForm.Example"></v-textarea>
             </div>
             <div class="mb-1">
-                <label for="Description" class="form-label">Description</label>
-                <input type="text" class="form-control" id="Description" v-model="wordForm.Description" placeholder="">
+                <v-textarea rows="2" label="Description" v-model="wordForm.Description"></v-textarea>
             </div>
-            <button type="submit" class="btn btn-success w-100">Add</button>
+            <!-- <button type="submit" class="btn btn-success w-100">Add</button> -->
+            <v-btn
+            type="submit"
+          class="btn btn-success w-100"
+          color="#5865f2"
+          variant="flat"
+        >
+          Add
+        </v-btn>
         </form>
     </div>
 
 </template>
 <script>
+import Dictionary from "@/components/Dictionary.vue";
+
 export default {
     name: 'LoginPage',
-    components: {
-
-    },
+    components: { Dictionary },
     data() {
         return {
             wordForm: {
@@ -44,7 +53,9 @@ export default {
                 Meaning: '',
                 Example: '',
                 Description: ''
-            }
+            },
+            wordsInDictionary: [],
+            suggestWord: null,
         };
     },
     methods: {
@@ -54,6 +65,21 @@ export default {
                 this.notyf.apiResult(response);
                 if (response.IsSuccess)
                     this.$router.push('/Boxes');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async handleWordChange() {
+            try {
+                const response = await this.postRequest('Dictionaries', 'SearchEnglishToEnglish', this.wordForm.Word, false);
+                this.wordsInDictionary = response.Data;
+                this.suggestWord = this.wordsInDictionary.findLast(x => x.Word.toLowerCase() == this.wordForm.Word.toLowerCase());
+                if (this.suggestWord != null) {
+                    this.suggestWord.Definition = JSON.parse(this.suggestWord.Definition);
+
+                    console.log(this.suggestWord);
+
+                }
             } catch (error) {
                 console.error(error);
             }

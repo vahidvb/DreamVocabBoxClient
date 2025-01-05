@@ -5,7 +5,7 @@ module.exports = defineConfig({
     loaderOptions: {
       css: {
         modules: {
-          auto: () => true
+          auto: (resourcePath) => resourcePath.endsWith('.scss') || resourcePath.endsWith('.module.css')
         }
       }
     }

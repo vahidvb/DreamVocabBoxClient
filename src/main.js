@@ -2,16 +2,32 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import notyfPlugin from './plugins/notyf';
 import axiosPlugin from './plugins/axios';
-import messagePlugin from './plugins/message';
 import { createPinia } from 'pinia';
 import router from './router'; 
+
+// Vuetify
+import vuetify from './plugins/vuetify';
+
+// notyf
+import 'notyf/notyf.min.css'
+
+// bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+// material design
+
 
 const app = createApp(App);
 const pinia = createPinia();
 
+
+
+
+
+app.use(vuetify);
 app.use(router);
 app.use(notyfPlugin);
 app.use(axiosPlugin);
-app.use(messagePlugin);
 app.use(pinia);
 app.mount('#app');

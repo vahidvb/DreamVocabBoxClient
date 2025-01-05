@@ -10,37 +10,39 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  const loadingStore = useLoadingStore();
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  loadingStore.startLoading();
   return config;
 }, (error) => {
-  const loadingStore = useLoadingStore();
-  loadingStore.stopLoading();
   return Promise.reject(error);
 });
 
 instance.interceptors.response.use((response) => {
-  const loadingStore = useLoadingStore();
-  loadingStore.stopLoading();
   return response;
 }, (error) => {
-  const loadingStore = useLoadingStore();
-  loadingStore.stopLoading();
+
   return Promise.reject(error);
 });
 
-const postRequest = async (controller, action, data = null) => {
+const postRequest = async (controller, action, data = null, showLoading = true) => {
   try {
     const url = `/${controller}/${action}`;
+    if (showLoading) {
+      const loadingStore = useLoadingStore();
+      loadingStore.startLoading();
+    }
     const response = await instance.post(url, data);
     return response.data;
   } catch (error) {
     console.error(error);
     throw error;
+  } finally {
+    if (showLoading) {
+      const loadingStore = useLoadingStore();
+      loadingStore.stopLoading();
+    }
   }
 };
 

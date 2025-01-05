@@ -4,6 +4,7 @@
       <router-link class="navbar-brand" to="/">
         <img :src="'images/avatars/avatar-' + avatar + '.png'" alt="User Avatar" style="width:40px;"
           class="rounded-pill">
+          {{ nickName }}
       </router-link>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
