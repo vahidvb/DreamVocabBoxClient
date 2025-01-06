@@ -44,7 +44,7 @@
                                                 v-model="item.Description"></v-textarea>
                                         </div>
                                         <!-- <button type="submit" class="btn btn-success w-100">Add</button> -->
-                                        <v-btn type="submit" class="btn btn-success w-100" color="#5865f2"
+                                        <v-btn type="submit" class="btn btn-success w-100" color="#5865f2" @click="isActive.value = false"
                                             variant="flat">
                                             Edit
                                         </v-btn>
