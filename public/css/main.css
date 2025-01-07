@@ -1,7 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
-    font-family: 'Raleway', sans-serif;
+    /* font-family: 'Raleway', sans-serif; */
+    font-family: "Montserrat";
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 img {
@@ -66,15 +70,6 @@ input[type=number] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none
-}
-
-.mobile-wrapper {
-    height: 100vh;
-    width: 584px;
-    max-width: 584px;
-    margin: auto;
-    background: white;
-    overflow: inherit;
 }
 
 .mobile-wrapper::-webkit-scrollbar-track {
@@ -233,4 +228,7 @@ input[type=number] {
 
 .dictionary-help .dic-help:before {
     content: '🔴';
+}
+.just-disabled{
+    pointer-events: none;
 }

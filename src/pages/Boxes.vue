@@ -7,10 +7,9 @@
                 v-for="(box, index) in boxes" :key="index">
                 <div class="box">
                     <div class="row">
-                        <div :class="{ 'col-12': index < 6, 'col-5': index == 6 }" @click="showDetails(box)">
+                        <div :class="{ 'col-12': index < 6, 'col-5': index == 6, 'just-disabled': box.AllCount == 0 }">
                             <v-dialog max-width="500">
                                 <template v-slot:activator="{ props: activatorProps }">
-
                                     <img v-bind="activatorProps" :class="{ 'shake-item faster': box.UnCheckedCount }"
                                         v-bind:src="'/images/boxes/' + box.BoxNumber + '.png'" alt="">
                                 </template>
@@ -18,9 +17,10 @@
                                 <template v-slot:default="{ isActive }">
                                     <v-card title="Box information">
                                         <v-card-text>
-                                            <div class="fw-bolder">Total Vocabularies: {{box.AllCount}}</div>
-                                            <div class="fw-bolder">Locked Items: {{box.CheckedCount}}</div>
-                                            <div class="fw-bolder">Waiting For Check: {{box.UnCheckedCount}}</div>
+                                            <div class="fw-bolder">Total Vocabularies: {{ box.AllCount }}</div>
+                                            <div class="fw-bolder">Locked Items: {{ box.CheckedCount }}</div>
+                                            <div class="fw-bolder">Waiting For Check: {{ box.UnCheckedCount }}</div>
+                                            <div class="fw-bolder">The closest time to the due date for checking: {{ box.SoonTime }}</div>
                                         </v-card-text>
 
                                         <v-card-actions>
@@ -56,6 +56,13 @@
                 </div>
             </div>
         </div>
+
+        <router-link to="/AddVocabulary" class="nav-link">
+            <v-fab :active="!hidden" class="me-4" icon="mdi-plus" size="x-large" location="top end" color="#ffdb00"
+                absolute offset>
+            </v-fab>
+        </router-link>
+
     </div>
 
 </template>
@@ -73,18 +80,9 @@ export default {
         };
     },
     methods: {
-        test() {
-
-        },
         async getVocabulariesBoxes() {
             const response = await this.postRequest('Vocabularies', 'GetVocabulariesBoxes', this.loginForm);
             this.boxes = response.Data;
-        },
-        showDetails(box) {
-            let result = `<div class="fw-bolder">Total Vocabularies: ${box.AllCount}</div>
-                    <div class="fw-bolder">Locked Items: ${box.CheckedCount}</div>
-                    <div class="fw-bolder">Waiting For Check: ${box.UnCheckedCount}</div>`
-            this.MessageBox.success(result, `Box No${box.BoxNumber}`);
         }
     },
     created() {

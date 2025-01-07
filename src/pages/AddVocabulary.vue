@@ -76,9 +76,6 @@ export default {
                 this.suggestWord = this.wordsInDictionary.findLast(x => x.Word.toLowerCase() == this.wordForm.Word.toLowerCase());
                 if (this.suggestWord != null) {
                     this.suggestWord.Definition = JSON.parse(this.suggestWord.Definition);
-
-                    console.log(this.suggestWord);
-
                 }
             } catch (error) {
                 console.error(error);
