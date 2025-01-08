@@ -2,10 +2,10 @@
     <v-table>
         <thead>
             <tr>
-                <th class="text-left" style="width: 50%;">
+                <th class="text-left" style="width: 65%;">
                     Word
                 </th>
-                <th class="text-right" style="width: 50%;">
+                <th class="text-right" style="width: 35%;">
                     Action
                 </th>
             </tr>
@@ -104,7 +104,7 @@ export default {
             vocabularies: [],
             page: {
                 "BoxNumber": this.$route.params.boxNumber,
-                "ListLength": 20,
+                "ListLength": 1000,
                 "ListPosition": 0
             }
         };
