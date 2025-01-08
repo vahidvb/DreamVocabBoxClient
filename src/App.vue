@@ -13,12 +13,12 @@
 
         <v-app-bar-nav-icon>
           <router-link class="navbar-brand" to="/">
-            <img :src="'images/avatars/avatar-' + avatar + '.png'">
+            <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
           </router-link>
         </v-app-bar-nav-icon>
 
 
-        <v-app-bar-title style="font-size: 15px;">{{ nickName }}</v-app-bar-title>
+        <v-app-bar-title style="font-size: 15px;">{{ userInfoStore.nickname }}</v-app-bar-title>
 
         <v-spacer></v-spacer>
 
@@ -53,6 +53,7 @@
 
 <script>
 import Loading from './components/Loading.vue';
+import { useUserInfoStore } from './stores/userInfoStore';
 
 export default {
   name: 'App',
@@ -61,6 +62,7 @@ export default {
   },
   data() {
     return {
+      userInfoStore: useUserInfoStore(),
       nickName: localStorage.getItem("nickname"),
       avatar: localStorage.getItem("avatar"),
       hideBackBtn: false,

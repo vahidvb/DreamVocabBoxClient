@@ -70,6 +70,8 @@
 </template>
 
 <script>
+import { useUserInfoStore } from '../stores/userInfoStore';
+
 export default {
     name: 'LoginPage',
     components: {
@@ -77,6 +79,7 @@ export default {
     },
     data() {
         return {
+            userInfoStore: useUserInfoStore(),
             itsLogin: true,
             loginForm: {
                 username: '',
@@ -99,6 +102,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
+                    this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
             } catch (error) {
@@ -113,6 +117,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
+                    this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
 
@@ -128,6 +133,7 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
+                    this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
             } catch (error) {
