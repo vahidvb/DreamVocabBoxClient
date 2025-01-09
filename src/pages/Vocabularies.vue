@@ -16,41 +16,38 @@
                     <div style="font-weight: bold;">
                         {{ vocabulary.Word }}
                     </div>
-                    <div role="button" @click="vocabulary.showMeaning = !vocabulary.showMeaning">
-                        <span v-show="vocabulary.showMeaning">
-                            {{ vocabulary.Meaning }}
-                            <v-spacer></v-spacer>
-                            <v-dialog max-width="500">
-                                <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn v-bind="activatorProps" size="x-small" class="mb-1" color="primary"
-                                        prepend-icon="mdi-eye">Full Show</v-btn>
-                                </template>
+                    <v-dialog max-width="500">
+                        <template v-slot:activator="{ props: activatorProps }">
+                            <v-btn v-bind="activatorProps" size="x-small" class="mb-1" color="primary" variant="tonal"
+                                prepend-icon="mdi-eye">Show Details</v-btn>
+                        </template>
 
-                                <template v-slot:default="{ isActive }">
-                                    <v-card title="Complete information" class="p-4">
-                                        <v-card elevation="16" class="pa-4 mb-2">
-                                            <h1 class="text-center">{{ vocabulary.Word }}</h1>
-                                        </v-card>
-                                        <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" />
-                                        <DetailCard :title="'Example'" :value="vocabulary.Example" v-show="vocabulary.Example"
-                                            class="mt-2" />
-                                        <DetailCard :title="'Description'" :value="vocabulary.Description"
-                                            v-show="vocabulary.Description" class="mt-2" />
-                                        <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
-                                            style="margin-bottom: 60px;">
-                                            <Dictionary :text="vocabulary.Word" />
-                                        </v-card>
-
-                                        <v-card-actions>
-                                            <v-spacer></v-spacer>
-                                            <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                                        </v-card-actions>
+                        <template v-slot:default="{ isActive }">
+                            <v-card title="Complete information" class="p-4">
+                                <v-card-text>
+                                    <v-card elevation="16" class="pa-4 mb-2">
+                                        <h1 class="text-center">{{ vocabulary.Word }}</h1>
                                     </v-card>
-                                </template>
-                            </v-dialog>
-                        </span>
-                        <span v-show="!vocabulary.showMeaning">Click for show</span>
-                    </div>
+                                    <DetailCard :title="'Meaning'" :value="vocabulary.Meaning"
+                                        v-show="vocabulary.Meaning" />
+                                    <DetailCard :title="'Example'" :value="vocabulary.Example"
+                                        v-show="vocabulary.Example" class="mt-2" />
+                                    <DetailCard :title="'Description'" :value="vocabulary.Description"
+                                        v-show="vocabulary.Description" class="mt-2" />
+                                    <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
+                                        style="margin-bottom: 60px;">
+                                        <Dictionary :text="vocabulary.Word" />
+                                    </v-card>
+                                </v-card-text>
+
+
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </template>
+                    </v-dialog>
                 </td>
 
 
@@ -69,10 +66,12 @@
                                         </div>
                                         <div class="mb-1">
                                             <Dictionary :text="vocabulary.Word" />
-                                            <v-textarea rows="3" label="Meaning" v-model="vocabulary.Meaning"></v-textarea>
+                                            <v-textarea rows="3" label="Meaning"
+                                                v-model="vocabulary.Meaning"></v-textarea>
                                         </div>
                                         <div class="mb-1">
-                                            <v-textarea rows="2" label="Example" v-model="vocabulary.Example"></v-textarea>
+                                            <v-textarea rows="2" label="Example"
+                                                v-model="vocabulary.Example"></v-textarea>
                                         </div>
                                         <div class="mb-1">
                                             <v-textarea rows="2" label="Description"
@@ -102,7 +101,8 @@
                         </template>
 
                         <v-card prepend-icon="mdi-delete" text="Are you sure you want to delete this vocabulary? 
-                            Please note that once deleted, it cannot be restored." :title="'Remove ' + vocabulary.Word">
+                            Please note that once deleted, it cannot be restored."
+                            :title="'Remove ' + vocabulary.Word">
                             <template v-slot:actions>
                                 <v-spacer></v-spacer>
 
