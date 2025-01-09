@@ -19,7 +19,6 @@
             <v-btn type="submit" block color="success" variant="flat" class="mb-3" prepend-icon="mdi-login">Sign
                 In</v-btn>
 
-            <!-- don't convert bottom line and remove this comment -->
             <button type="button" @click="register" class="btn btn-link px-0 text-start me-3">Haven't you registered
                 yet?</button>
 
@@ -46,7 +45,6 @@
 
             <v-btn type="submit" color="success" block class="mb-2" prepend-icon="mdi-account-plus">Register</v-btn>
 
-            <!-- don't convert bottom line and remove this comment -->
             <button type="button" @click="login" class="btn btn-link px-0 text-start me-3">I have an account.</button>
             <v-btn class="me-2 text-none" color="#4f545c" prepend-icon="mdi-login" variant="flat"
                 @click="login">Login</v-btn>

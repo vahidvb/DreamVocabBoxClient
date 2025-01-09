@@ -20,6 +20,9 @@
             </div>
         </div>
     </div>
+    <div v-if="dictionary==null">
+        <label v-if="text">📚 {{ text }} Dosen't Exist In Dictionary</label>
+    </div>
 </template>
 
 <script>

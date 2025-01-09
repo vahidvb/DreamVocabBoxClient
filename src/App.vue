@@ -2,12 +2,12 @@
   <v-card class="mx-auto" color="grey-lighten-3" max-width="448">
     <v-layout>
       <v-app-bar v-if="$route.meta.showHeader" style="width: 448px;left: 50%;transform: translateX(-50%);"
-        color="teal-darken-4" image="https://picsum.photos/1920/1080?random">
+        color="teal-darken-4" image="images/bg.webp">
         <template v-slot:prepend>
           <v-btn v-bind:disabled="hideBackBtn" @click="goBack" icon="mdi-arrow-left"></v-btn>
         </template>
         <template v-slot:image>
-          <v-img gradient="to top right, rgba(19,84,122,.8), rgba(128,208,199,.8)"></v-img>
+          <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
         </template>
 
         <v-dialog max-width="500">
