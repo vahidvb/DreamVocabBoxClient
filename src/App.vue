@@ -143,6 +143,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
@@ -178,27 +179,25 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('mouseup', this.handleSelectionChange);
-    document.addEventListener('keyup', this.handleSelectionChange);
+    document.addEventListener("selectionchange", this.handleSelectionChange);
   },
   beforeUnmount() {
-    document.removeEventListener('mouseup', this.handleSelectionChange);
-    document.removeEventListener('keyup', this.handleSelectionChange);
+    document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
-    handleSelectionChange() {
+    handleSelectionChange: debounce(function () {
       const userSelection = window.getSelection().toString();
-      if (userSelection.split(/\s+/).length > 2 || userSelection.length > 30) {
-        this.selection.showBarLevel = 0;
-        return;
-      }
       if (!userSelection) {
-        if (this.selection.showBarLevel === 1) this.selection.showBarLevel = 0;
+        if (this.selection.showBarLevel === 1) {
+          this.selection.showBarLevel = 0;
+          this.selection.text = '';
+        }
       } else if (this.selection.text !== userSelection) {
         this.selection.showBarLevel = 1;
         this.selection.text = userSelection;
       }
-    },
+    }, 500),
+
 
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
