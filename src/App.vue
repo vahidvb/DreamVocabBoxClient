@@ -110,11 +110,11 @@
 
       <v-main style="min-height: 100vh;">
         <router-view />
-        <Loading />
       </v-main>
     </v-layout>
   </v-card>
-
+  
+  <Loading />
   <v-icon @click="textToSpeach(selection.selectedText)" v-if="selection.selectedText != '' && t2sSupported"
     class="voice-icon"
     :style="`left:${selection.selectedPosition.left}px;top:${selection.selectedPosition.top}px`">mdi-volume-high</v-icon>
@@ -178,7 +178,7 @@ export default {
 
       window.speechSynthesis.speak(utterance);
     },
-    handleSelectionChange() {
+    handleSelectionChange(event) {
       const selection = window.getSelection();
       if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
@@ -187,6 +187,7 @@ export default {
           top: rect.top + window.scrollY,
           left: rect.left + window.scrollX,
         };
+        event.preventDefault();
       }
       this.selection.selectedText = selection.toString();
     },
