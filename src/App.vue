@@ -10,15 +10,86 @@
           <v-img gradient="to top right, rgba(19,84,122,.8), rgba(128,208,199,.8)"></v-img>
         </template>
 
+        <v-dialog max-width="500">
+          <template v-slot:activator="{ props: activatorProps }">
 
-        <v-app-bar-nav-icon>
-          <router-link class="navbar-brand" to="/">
-            <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
-          </router-link>
-        </v-app-bar-nav-icon>
+            <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
+              <router-link class="navbar-brand" to="/">
+                <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
+              </router-link>
+            </v-app-bar-nav-icon>
+            <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
+              userInfoStore.nickname }}</v-app-bar-title>
 
 
-        <v-app-bar-title style="font-size: 15px;">{{ userInfoStore.nickname }}</v-app-bar-title>
+          </template>
+
+          <template v-slot:default="{ isActive }">
+            <v-card title="Edit Profile">
+              <v-card-text>
+
+                <v-row>
+                  <v-col cols="3">
+                    <v-row>
+                      <v-col cols="12">
+                        <img :src="'images/avatars/avatar-' + profile.avatar + '.png'">
+                      </v-col>
+                      <v-col cols="6">
+                        <v-icon color="primary" :disabled="profile.avatar == 1"
+                          @click="profile.avatar > 1 ? profile.avatar -= 1 : 1">mdi-chevron-left</v-icon>
+                      </v-col>
+                      <v-col cols="6" class="text-right">
+                        <v-icon color="primary" :disabled="profile.avatar == 26"
+                          @click="profile.avatar += 1">mdi-chevron-right</v-icon>
+                      </v-col>
+
+                    </v-row>
+
+
+                  </v-col>
+                  <v-col cols="9">
+                    <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login" autocomplete="off"
+                      persistent-hint outlined class="mb-3"></v-text-field>
+                    <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?" autocomplete="off"
+                      persistent-hint outlined class="mb-3"></v-text-field>
+                    <v-text-field v-model="profile.email" label="Email Address" autocomplete="off"
+                      hint="Email for password recovery (optional)" persistent-hint outlined type="email"
+                      class="mb-3"></v-text-field>
+                    <v-text-field v-model="profile.password" label="Change Password" autocomplete="new-password"
+                      hint="If you do not want to change the password, leave this field blank (optional)"
+                      persistent-hint outlined type="password" class="mb-3"></v-text-field>
+                  </v-col>
+
+                </v-row>
+
+
+              </v-card-text>
+
+              <v-card-actions>
+                <v-dialog max-width="300">
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-btn class="mr-auto" v-bind="activatorProps" color="danger">Logout</v-btn>
+                  </template>
+
+                  <template v-slot:default="{ isActive }">
+                    <v-card title="Confirm Logout">
+                      <v-card-text>
+                        Are you sure you want to logout?
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue-grey" text @click="isActive.value = false">Cancel</v-btn>
+                        <v-btn color="red" text @click="logout">Logout</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+                <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                <v-btn color="success" @click="updateProfile">Update Profile</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
 
         <v-spacer></v-spacer>
 
@@ -35,10 +106,6 @@
           </v-btn>
         </router-link>
 
-
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
       </v-app-bar>
 
       <v-main style="min-height: 100vh;">
@@ -63,9 +130,14 @@ export default {
   data() {
     return {
       userInfoStore: useUserInfoStore(),
-      nickName: localStorage.getItem("nickname"),
-      avatar: localStorage.getItem("avatar"),
       hideBackBtn: false,
+      profile: {
+        nickname: localStorage.getItem("nickname"),
+        avatar: parseInt(localStorage.getItem("avatar")),
+        email: localStorage.getItem("email"),
+        username: localStorage.getItem("username"),
+        password: '',
+      }
     };
   },
   watch: {
@@ -75,9 +147,40 @@ export default {
     }
   },
   methods: {
+    async updateProfile() {
+      const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
+      this.notyf.apiResult(response);
+      if (response.IsSuccess) {
+        localStorage.setItem("token", response.Data.Token);
+        localStorage.setItem("nickname", response.Data.NickName);
+        localStorage.setItem("avatar", response.Data.Avatar);
+        localStorage.setItem("email", response.Data.Email);
+        localStorage.setItem("username", response.Data.UserName);
+        this.userInfoStore.reloadValues();
+  
+      }
 
+    },
     goBack() {
       this.$router.back(-1);
+    },
+    logout() {
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("avatar");
+      localStorage.removeItem("email");
+      localStorage.removeItem("username");
+      localStorage.removeItem("token");
+      this.userInfoStore.reloadValues();
+      this.$router.push('/Login');
+    },
+    fillProfile() {
+
+      this.profile.nickname = localStorage.getItem("nickname");
+      this.profile.avatar = parseInt(localStorage.getItem("avatar"));
+      this.profile.email = localStorage.getItem("email");
+      this.profile.username = localStorage.getItem("username");
+      this.profile.password = '';
+
     }
 
 

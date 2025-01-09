@@ -44,7 +44,7 @@
                 hint="Password without rules, enter anything you want" persistent-hint type="password" outlined
                 class="mb-3"></v-text-field>
 
-            <v-btn type="submit" color="success" block class="mb-2">Register</v-btn>
+            <v-btn type="submit" color="success" block class="mb-2" prepend-icon="mdi-account-plus">Register</v-btn>
 
             <!-- don't convert bottom line and remove this comment -->
             <button type="button" @click="login" class="btn btn-link px-0 text-start me-3">I have an account.</button>
@@ -65,7 +65,8 @@
             </v-col>
         </v-row>
 
-        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary">Quick Register 😒</v-btn>
+        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary" prepend-icon="mdi-account-plus">Quick
+            Register 😒</v-btn>
     </v-container>
 </template>
 
@@ -95,19 +96,18 @@ export default {
     },
     methods: {
         async handleLogin() {
-            try {
-                const response = await this.postRequest('Users', 'Login', this.loginForm);
-                this.notyf.apiResult(response);
-                if (response.IsSuccess) {
-                    localStorage.setItem("token", response.Data.Token);
-                    localStorage.setItem("nickname", response.Data.NickName);
-                    localStorage.setItem("avatar", response.Data.Avatar);
-                    this.userInfoStore.reloadValues();
-                    this.$router.push('/Boxes');
-                }
-            } catch (error) {
-                console.error(error);
+            const response = await this.postRequest('Users', 'Login', this.loginForm);
+            this.notyf.apiResult(response);
+            if (response.IsSuccess) {
+                localStorage.setItem("token", response.Data.Token);
+                localStorage.setItem("nickname", response.Data.NickName);
+                localStorage.setItem("avatar", response.Data.Avatar);
+                localStorage.setItem("email", response.Data.Email);
+                localStorage.setItem("username", response.Data.UserName);
+                this.userInfoStore.reloadValues();
+                this.$router.push('/Boxes');
             }
+
         },
         async handleRegister() {
             try {
@@ -117,6 +117,8 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
+                    localStorage.setItem("email", response.Data.Email);
+                    localStorage.setItem("username", response.Data.UserName);
                     this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
@@ -133,6 +135,8 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
+                    localStorage.setItem("email", response.Data.Email);
+                    localStorage.setItem("username", response.Data.UserName);
                     this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
