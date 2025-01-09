@@ -172,6 +172,8 @@ export default {
   watch: {
     // eslint-disable-next-line
     $route(to, from) {
+      this.selection.showBarLevel = 0;
+      this.selection.text = '';
       this.hideBackBtn = to.path.toLocaleLowerCase() == "/boxes";
     }
   },
@@ -185,24 +187,19 @@ export default {
   },
   methods: {
     handleSelectionChange() {
-      const selection = window.getSelection();
-
-      if (selection.toString() === '' || selection.toString().split(/\s+/).length > 2 || selection.toString().length > 30) {
+      const userSelection = window.getSelection().toString();
+      if (userSelection.split(/\s+/).length > 2 || userSelection.length > 30) {
         this.selection.showBarLevel = 0;
         return;
       }
-
-      if (selection.toString() == '') {
-        if (this.selection.showBarLevel == 1)
-          this.selection.showBarLevel = 0;
-      }
-      else if (this.selection.text != selection.toString()) {
+      if (!userSelection) {
+        if (this.selection.showBarLevel === 1) this.selection.showBarLevel = 0;
+      } else if (this.selection.text !== userSelection) {
         this.selection.showBarLevel = 1;
-
-        this.selection.text = selection.toString();
+        this.selection.text = userSelection;
       }
-
     },
+
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
       this.notyf.apiResult(response);
