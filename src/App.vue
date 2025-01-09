@@ -48,10 +48,10 @@
 
                   </v-col>
                   <v-col cols="9">
-                    <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login" autocomplete="off"
-                      persistent-hint outlined class="mb-3"></v-text-field>
-                    <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?" autocomplete="off"
-                      persistent-hint outlined class="mb-3"></v-text-field>
+                    <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login"
+                      autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
+                    <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?"
+                      autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
                     <v-text-field v-model="profile.email" label="Email Address" autocomplete="off"
                       hint="Email for password recovery (optional)" persistent-hint outlined type="email"
                       class="mb-3"></v-text-field>
@@ -115,13 +115,14 @@
     </v-layout>
   </v-card>
 
-
+  <v-icon @click="textToSpeach(selection.selectedText)" v-if="selection.selectedText != '' && t2sSupported"
+    class="voice-icon"
+    :style="`left:${selection.selectedPosition.left}px;top:${selection.selectedPosition.top}px`">mdi-volume-high</v-icon>
 </template>
 
 <script>
 import Loading from './components/Loading.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
-
 export default {
   name: 'App',
   components: {
@@ -129,6 +130,14 @@ export default {
   },
   data() {
     return {
+      t2sSupported: 'speechSynthesis' in window,
+      selection: {
+        selectedText: '',
+        selectedPosition: {
+          top: 0,
+          left: 0,
+        }
+      },
       userInfoStore: useUserInfoStore(),
       hideBackBtn: false,
       profile: {
@@ -146,7 +155,41 @@ export default {
       this.hideBackBtn = to.path.toLocaleLowerCase() == "/boxes";
     }
   },
+  mounted() {
+    document.addEventListener("selectionchange", this.handleSelectionChange);
+  },
+  beforeUnmount() {
+    document.removeEventListener("selectionchange", this.handleSelectionChange);
+  },
   methods: {
+    textToSpeach(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.5;
+      utterance.pitch = 0.5;
+      utterance.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const localVoice = voices.find(voice => voice.lang === 'en-US');
+
+      if (localVoice) {
+        utterance.voice = localVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    },
+    handleSelectionChange() {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        this.selection.selectedPosition = {
+          top: rect.top + window.scrollY,
+          left: rect.left + window.scrollX,
+        };
+      }
+      this.selection.selectedText = selection.toString();
+    },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
       this.notyf.apiResult(response);
@@ -157,7 +200,7 @@ export default {
         localStorage.setItem("email", response.Data.Email);
         localStorage.setItem("username", response.Data.UserName);
         this.userInfoStore.reloadValues();
-  
+
       }
 
     },

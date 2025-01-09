@@ -210,6 +210,10 @@ input[type=number] {
     z-index: 1;
 }
 
+.box-7-text>span {
+    background: #0052988a
+}
+
 @media screen and (max-width: 584px) {
     .mobile-wrapper {
         max-width: 100%;
@@ -229,6 +233,21 @@ input[type=number] {
 .dictionary-help .dic-help:before {
     content: '🔴';
 }
-.just-disabled{
+
+.just-disabled {
     pointer-events: none;
+}
+
+.voice-icon {
+    position: absolute !important;
+    backdrop-filter: blur(2px);
+    background: #2a5c82a1;
+    color: white;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    padding: 5px !important;
+    font-size: 36px !important;
+    transform: translate(-40px, -40px);
+    cursor: pointer
 }

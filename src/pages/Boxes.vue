@@ -34,10 +34,10 @@
 
                         </div>
                         <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount > 0">
-                            You have deeply memorized <span style="font-size: 2em;">{{ box.CheckedCount }}</span> words.
+                            <span>You have deeply memorized <b style="font-size: 2em;">{{ box.CheckedCount }}</b> words.</span>
                         </div>
                         <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount == 0">
-                            Oops! You haven't reached this box yet.
+                            <span>Oops! You haven't reached this box yet.</span>
                         </div>
                         <div class="col-12 align-self-center">
                             <router-link class="btn shake-item" v-if="box.UnCheckedCount"
