@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12" class="text-center">
-                <v-card outlined class="pa-4">
+                <v-card elevation="16" class="pa-4">
                     <h1 class="text-center">{{ vocabulary.Word }}</h1>
                     <v-btn color="success" @click="showMeaning = true" v-show="!showMeaning">
                         Show Meaning

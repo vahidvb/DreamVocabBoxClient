@@ -1,5 +1,5 @@
 <template>
-    <v-card outlined class="pa-4">
+    <v-card class="pa-4">
         <v-row no-gutters>
             <v-col cols="4">
                 <v-divider></v-divider>
