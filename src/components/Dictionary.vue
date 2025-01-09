@@ -1,6 +1,7 @@
 <template>
     <div v-if="dictionary != null">
         <label>📚 {{ dictionary.Word }} In Dictionary</label>
+        <v-btn @click="textToSpeach(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal" size="xs-small" class="ms-2" v-if="t2sSupported"></v-btn>
         <div class="dictionary-help">
             <label v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}</label>
             <div v-if="dictionary.DefinitionEn != null">
@@ -11,16 +12,17 @@
             <div v-if="dictionary.DefinitionFa != null">
                 <div v-for="(meaningss, indexpp) in dictionary.DefinitionFa" :key="indexpp">
                     <div v-for="(meanings, index) in meaningss" :key="index">
-                        <div v-show="meaning.s!=null" v-for="(meaning, index) in meanings" :key="index" class="dic-help">
-                        {{ meaning.s }}
-                    </div>
+                        <div v-show="meaning.s != null" v-for="(meaning, index) in meanings" :key="index"
+                            class="dic-help">
+                            {{ meaning.s }}
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
-    <div v-if="dictionary==null">
+    <div v-if="dictionary == null">
         <label v-if="text">📚 {{ text }} Dosen't Exist In Dictionary</label>
     </div>
 </template>
@@ -36,6 +38,7 @@ export default {
     },
     data() {
         return {
+            t2sSupported: 'speechSynthesis' in window,
             dictionary: null,
         };
     },
@@ -48,6 +51,21 @@ export default {
         },
     },
     methods: {
+        textToSpeach(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "en-US";
+            utterance.rate = 0.5;
+            utterance.pitch = 0.5;
+            utterance.volume = 1;
+
+            const voices = window.speechSynthesis.getVoices();
+            const localVoice = voices.find(voice => voice.lang === 'en-US');
+
+            if (localVoice)
+                utterance.voice = localVoice;
+
+            window.speechSynthesis.speak(utterance);
+        },
         async findEnglishToEnglish(input) {
 
             const response = await this.postRequest("Dictionaries", "FindEnglish", input, false);

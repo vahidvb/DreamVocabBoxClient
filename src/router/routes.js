@@ -10,6 +10,7 @@ const routes = [
     { path: '/Login', component: LoginPage, meta: { requiresAuth: false, showHeader: false } },
     { path: '/Boxes', component: BoxesPage, meta: { requiresAuth: true, showHeader: true } },
     { path: '/AddVocabulary', component: AddVocabularyPage, meta: { requiresAuth: true, showHeader: true } },
+    { path: '/AddVocabulary/:text', component: AddVocabularyPage, meta: { requiresAuth: true, showHeader: true } },
     { path: '/CheckVocabulary/:boxNumber', component: CheckVocabularyPage, meta: { requiresAuth: true, showHeader: true } },
     { path: '/Vocabularies/:boxNumber', component: VocabulariesPage, meta: { requiresAuth: true, showHeader: true } }
 ];

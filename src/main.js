@@ -3,7 +3,8 @@ import App from './App.vue'
 import notyfPlugin from './plugins/notyf';
 import axiosPlugin from './plugins/axios';
 import { createPinia } from 'pinia';
-import router from './router'; 
+import router from './router';
+import directives from './directives';
 
 // Vuetify
 import vuetify from './plugins/vuetify';
@@ -22,9 +23,7 @@ const app = createApp(App);
 const pinia = createPinia();
 
 
-
-
-
+app.use(directives);
 app.use(vuetify);
 app.use(router);
 app.use(notyfPlugin);

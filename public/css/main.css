@@ -238,17 +238,43 @@ input[type=number] {
     pointer-events: none;
 }
 
-.voice-icon {
-    position: absolute !important;
+.selection-bar-toggler {
+    position: fixed !important;
     backdrop-filter: blur(2px);
     background: #2a5c82a1;
-    color: white;
-    width: 40px !important;
-    height: 40px !important;
+    color: white !important;
     border-radius: 50%;
     padding: 5px !important;
     font-size: 36px !important;
-    transform: translateY(-40px);
     cursor: pointer;
-    z-index: 9999;
+    z-index: 999999999;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.selection-bar {
+    width: 448px !important;
+    left: 50%;
+    transform: translate(-50%, -110%);
+    z-index: 999999999;
+    position: fixed;
+    top: 0;
+    background: #ffffff;
+    min-height: 150px;
+    box-shadow: 0 5px 12px #00000075;
+    transition: .3s ease-in-out;
+    padding-bottom: 50px !important;
+    padding-top: 40px !important;
+    max-height: 80%;
+    overflow: auto;
+    user-select: none;
+}
+
+.selection-bar.show {
+    transform: translate(-50%, 0);
+}
+
+.selection-bar.semi-show {
+    transform: translate(-50%, calc(-100% + 50px));
 }

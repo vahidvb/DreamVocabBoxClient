@@ -113,30 +113,50 @@
       </v-main>
     </v-layout>
   </v-card>
-  
+
   <Loading />
-  <v-icon @click="textToSpeach(selection.selectedText)" v-if="selection.selectedText != '' && t2sSupported"
-    class="voice-icon"
-    :style="`left:${selection.selectedPosition.left}px;top:${selection.selectedPosition.top}px`">mdi-volume-high</v-icon>
+
+  <v-container
+    v-bind:class="{ 'show': $route.meta.showHeader && selection.showBarLevel == 2, 'semi-show': $route.meta.showHeader && selection.showBarLevel == 1 }"
+    class="selection-bar" color="teal-darken-4" image="images/bg.webp">
+    <v-row>
+      <v-col>
+        <v-text class="text-center h1 w-100" block>{{ selection.text }}</v-text>
+        <v-spacer></v-spacer>
+        <router-link @click="selection.showBarLevel = 0" class="navbar-brand"
+          :to="{ path: `/AddVocabulary/${selection.text}` }">
+          <v-btn color="success" size="xs-small" class="p-1 mb-2" prepend-icon="mdi-book-alphabet">Add {{ selection.text
+            }}
+            To
+            My Words</v-btn>
+        </router-link>
+
+        <Dictionary :text="selection.text" v-if="selection.showBarLevel > 0"></Dictionary>
+
+      </v-col>
+    </v-row>
+  </v-container>
+  <v-icon @click="selection.showBarLevel = 2" v-if="selection.showBarLevel == 1"
+    class="selection-bar-toggler text-white">mdi-arrow-down-drop-circle</v-icon>
+  <v-icon @click="selection.showBarLevel = 0; selection.text = ''" v-if="selection.showBarLevel == 2"
+    class="selection-bar-toggler text-white">mdi-close-circle</v-icon>
 </template>
 
 <script>
 import Loading from './components/Loading.vue';
+import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
 export default {
   name: 'App',
   components: {
-    Loading,
+    Loading, Dictionary,
+
   },
   data() {
     return {
-      t2sSupported: 'speechSynthesis' in window,
       selection: {
-        selectedText: '',
-        selectedPosition: {
-          top: 0,
-          left: 0,
-        }
+        showBarLevel: 0,
+        text: ''
       },
       userInfoStore: useUserInfoStore(),
       hideBackBtn: false,
@@ -156,40 +176,32 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener("selectionchange", this.handleSelectionChange);
+    document.addEventListener('mouseup', this.handleSelectionChange);
+    document.addEventListener('keyup', this.handleSelectionChange);
   },
   beforeUnmount() {
-    document.removeEventListener("selectionchange", this.handleSelectionChange);
+    document.removeEventListener('mouseup', this.handleSelectionChange);
+    document.removeEventListener('keyup', this.handleSelectionChange);
   },
   methods: {
-    textToSpeach(text) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 0.5;
-      utterance.pitch = 0.5;
-      utterance.volume = 1;
-
-      const voices = window.speechSynthesis.getVoices();
-      const localVoice = voices.find(voice => voice.lang === 'en-US');
-
-      if (localVoice) {
-        utterance.voice = localVoice;
-      }
-
-      window.speechSynthesis.speak(utterance);
-    },
-    handleSelectionChange(event) {
+    handleSelectionChange() {
       const selection = window.getSelection();
-      if (selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        this.selection.selectedPosition = {
-          top: rect.top + window.scrollY,
-          left: rect.left + window.scrollX,
-        };
-        event.preventDefault();
+
+      if (selection.toString() === '' || selection.toString().split(/\s+/).length > 2 || selection.toString().length > 30) {
+        this.selection.showBarLevel = 0;
+        return;
       }
-      this.selection.selectedText = selection.toString();
+
+      if (selection.toString() == '') {
+        if (this.selection.showBarLevel == 1)
+          this.selection.showBarLevel = 0;
+      }
+      else if (this.selection.text != selection.toString()) {
+        this.selection.showBarLevel = 1;
+
+        this.selection.text = selection.toString();
+      }
+
     },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);

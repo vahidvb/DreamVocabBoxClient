@@ -10,8 +10,12 @@
         </div>
         <hr>
         <form @submit.prevent="handleAddNewWord" class="pb-3">
+            <v-btn type="submit" class="btn btn-success w-100 mb-2" color="#5865f2" variant="flat">
+                Add
+            </v-btn>
             <div class="mb-1">
-                <v-text-field @keyup="handleWordChange" autofocus list="WordsInDictionary" label="Word" v-model="wordForm.Word"></v-text-field>
+                <v-text-field v-capitalize @keyup="handleWordChange" autofocus list="WordsInDictionary" label="Word"
+                    v-model="wordForm.Word"></v-text-field>
                 <datalist id="WordsInDictionary">
                     <option v-for="(word, index) in wordsInDictionary" v-bind:value="word.Word" v-bind:key="index">
                     </option>
@@ -19,23 +23,15 @@
             </div>
             <div class="mb-1">
                 <Dictionary :text="wordForm.Word" />
-                <v-textarea rows="3" label="Meaning" v-model="wordForm.Meaning"></v-textarea>
+                <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning"></v-textarea>
             </div>
             <div class="mb-1">
-                <v-textarea rows="2" label="Example" v-model="wordForm.Example"></v-textarea>
+                <v-textarea v-capitalize rows="2" label="Example" v-model="wordForm.Example"></v-textarea>
             </div>
             <div class="mb-1">
-                <v-textarea rows="2" label="Description" v-model="wordForm.Description"></v-textarea>
+                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description"></v-textarea>
             </div>
-            <!-- <button type="submit" class="btn btn-success w-100">Add</button> -->
-            <v-btn
-            type="submit"
-          class="btn btn-success w-100"
-          color="#5865f2"
-          variant="flat"
-        >
-          Add
-        </v-btn>
+
         </form>
     </div>
 
@@ -49,7 +45,7 @@ export default {
     data() {
         return {
             wordForm: {
-                Word: '',
+                Word: this.$route.params.text ?? '',
                 Meaning: '',
                 Example: '',
                 Description: ''
@@ -57,6 +53,12 @@ export default {
             wordsInDictionary: [],
             suggestWord: null,
         };
+    },
+    watch: {
+        // eslint-disable-next-line
+        $route(to, from) {
+            this.wordForm.Word = to.params.text;
+        }
     },
     methods: {
         async handleAddNewWord() {
