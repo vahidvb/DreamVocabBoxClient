@@ -186,7 +186,12 @@ export default {
   },
   methods: {
     handleSelectionChange: debounce(function () {
-      const userSelection = window.getSelection().toString();
+      const userSelection = window.getSelection().toString().trim();
+      if (userSelection.split(/\s+/).length > 2 || userSelection.length > 30) {
+        this.selection.showBarLevel = 0;
+        this.selection.text = '';
+        return;
+      }
       if (!userSelection) {
         if (this.selection.showBarLevel === 1) {
           this.selection.showBarLevel = 0;
@@ -197,8 +202,6 @@ export default {
         this.selection.text = userSelection;
       }
     }, 500),
-
-
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
       this.notyf.apiResult(response);
