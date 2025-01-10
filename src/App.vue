@@ -95,7 +95,7 @@
 
 
 
-        <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
+        <v-btn icon @click="suggestion.Show=false;getSuggestionWord()">
           <v-icon>mdi-auto-fix</v-icon>
         </v-btn>
 
@@ -156,8 +156,7 @@
       <button class="btn btn-sm btn-light mt-2"><span class="mdi mdi-receipt-text-plus"></span> Go To Add New
         Word</button>
     </router-link>
-    <v-icon class="suggest-close"
-      @click="suggestion.Show = false; suggestion.Word = ''; suggestion.Definition = {}">mdi-close</v-icon>
+    <v-icon class="suggest-close" @click="suggestion.Show = false">mdi-close</v-icon>
   </div>
 </template>
 
@@ -238,7 +237,7 @@ export default {
       }
       setTimeout(() => {
         this.suggestion.Show = true;
-      }, this.suggestion.Word == '' ? 0 : 300);
+      }, 300);
     },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
