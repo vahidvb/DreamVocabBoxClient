@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto" color="grey-lighten-3" max-width="448">
     <v-layout>
-      <v-app-bar v-if="$route.meta.showHeader" style="width: 448px;left: 50%;transform: translateX(-50%);"
+      <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
         color="teal-darken-4" image="images/bg.webp">
         <template v-slot:prepend>
           <v-btn v-bind:disabled="hideBackBtn" @click="goBack" icon="mdi-arrow-left"></v-btn>
@@ -95,7 +95,7 @@
 
 
 
-        <v-btn icon @click="suggestion.Show=false;getSuggestionWord()">
+        <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
           <v-icon>mdi-auto-fix</v-icon>
         </v-btn>
 
@@ -122,8 +122,8 @@
 
   <Loading />
 
-  <v-container
-    v-bind:class="{ 'show': $route.meta.showHeader && selection.showBarLevel == 2, 'semi-show': $route.meta.showHeader && selection.showBarLevel == 1 }"
+  <v-container v-if="$route.meta.Authorize"
+    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2, 'semi-show': $route.meta.Authorize && selection.showBarLevel == 1 }"
     class="selection-bar">
     <v-row>
       <v-col>
@@ -142,13 +142,14 @@
       </v-col>
     </v-row>
   </v-container>
-  <v-icon @click="selection.showBarLevel = 2" v-if="selection.showBarLevel == 1"
+  <v-icon @click="selection.showBarLevel = 2" v-if="selection.showBarLevel == 1 && $route.meta.Authorize"
     class="selection-bar-toggler text-white">mdi-arrow-down-drop-circle</v-icon>
-  <v-icon @click="selection.showBarLevel = 0; selection.text = ''" v-if="selection.showBarLevel == 2"
+  <v-icon @click="selection.showBarLevel = 0; selection.text = ''"
+    v-if="selection.showBarLevel == 2 && $route.meta.Authorize"
     class="selection-bar-toggler text-white">mdi-close-circle</v-icon>
 
 
-  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }">
+  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize">
     <h7>Word Suggestion</h7>
     <h5 class="m-0">{{ suggestion.Word }}</h5>
     <div>{{ suggestion.Definition }}</div>
