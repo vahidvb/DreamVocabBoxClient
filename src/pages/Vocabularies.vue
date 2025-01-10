@@ -92,7 +92,7 @@
                             </v-card>
                         </template>
                     </v-dialog>
-                    <v-dialog v-model="dialog" max-width="400" persistent>
+                    <v-dialog v-model="vocabulary.dialog" max-width="400" persistent>
                         <template v-slot:activator="{ props: activatorProps }">
 
                             <v-btn v-bind="activatorProps" class="ml-3 text-white" icon="mdi-delete" size="x-small"
@@ -106,7 +106,7 @@
                             <template v-slot:actions>
                                 <v-spacer></v-spacer>
 
-                                <v-btn @click="dialog = false" class="bg-success">
+                                <v-btn @click="vocabulary.dialog = false" class="bg-success">
                                     No
                                 </v-btn>
 
@@ -130,7 +130,6 @@ export default {
     components: { Dictionary, DetailCard },
     data() {
         return {
-            dialog: false,
             wordsInDictionary: [],
             dictionary: null,
             vocabularies: [],
