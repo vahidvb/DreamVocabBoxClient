@@ -1,19 +1,28 @@
 <template>
     <div v-if="dictionary != null">
         <label>📚 {{ dictionary.Word }} In Dictionary</label>
-        <v-btn @click="textToSpeach(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal" size="xs-small" class="ms-2" v-if="t2sSupported"></v-btn>
+        <v-btn @click="textToSpeach(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal"
+            size="xs-small" class="ms-2" v-if="t2sSupported"></v-btn>
         <div class="dictionary-help">
             <label v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}</label>
             <div v-if="dictionary.DefinitionEn != null">
                 <div v-for="(meaning, index) in dictionary.DefinitionEn.ss" :key="index" class="dic-help">
-                    "{{ meaning.g ?? 'noun' }}" {{ meaning.d }}
+                    "{{ meaning.g ?? 'noun' }}" {{ (meaning.p == undefined ? '' : ' 🔊 ' + meaning.p) ?? '' }}
+                    <div v-for="(part, idx) in (meaning.d ? meaning.d.split(';') : [])" :key="idx">
+                        - {{ part }}
+                    </div>
                 </div>
             </div>
             <div v-if="dictionary.DefinitionFa != null">
-                <div v-for="(meaningss, indexpp) in dictionary.DefinitionFa" :key="indexpp">
-                    <div v-for="(meanings, index) in meaningss" :key="index">
-                        <div v-show="meaning.s != null" v-for="(meaning, index) in meanings" :key="index"
-                            class="dic-help">
+                <div v-for="(rootDefinition, rootIndex) in dictionary.DefinitionFa" :key="rootIndex">
+                    <div v-for="(meanings, index) in rootDefinition" :key="index">
+                        <div v-for="(examples, examplesIndex) in meanings" :key="examplesIndex">
+                            <div v-for="(example, exampleIndex) in examples.es" :key="exampleIndex">
+                                📜 {{ example.e }}
+                            </div>
+                        </div>
+                        <div style="font-family: tahoma;" v-show="meaning.s != null"
+                            v-for="(meaning, index) in meanings" :key="index" class="dic-help">
                             {{ meaning.s }}
                         </div>
                     </div>
@@ -54,8 +63,8 @@ export default {
         textToSpeach(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = "en-US";
-            utterance.rate = 0.5;
-            utterance.pitch = 0.5;
+            utterance.rate = 1;
+            utterance.pitch = 1;
             utterance.volume = 1;
 
             const voices = window.speechSynthesis.getVoices();

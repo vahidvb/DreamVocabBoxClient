@@ -94,6 +94,12 @@
         <v-spacer></v-spacer>
 
 
+
+        <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
+          <v-icon>mdi-auto-fix</v-icon>
+        </v-btn>
+
+
         <router-link to="/Boxes" class="nav-link">
           <v-btn icon>
             <v-icon>mdi-inbox-multiple</v-icon>
@@ -118,7 +124,7 @@
 
   <v-container
     v-bind:class="{ 'show': $route.meta.showHeader && selection.showBarLevel == 2, 'semi-show': $route.meta.showHeader && selection.showBarLevel == 1 }"
-    class="selection-bar" color="teal-darken-4" image="images/bg.webp">
+    class="selection-bar">
     <v-row>
       <v-col>
         <v-text class="text-center h1 w-100" block>{{ selection.text }}</v-text>
@@ -140,6 +146,19 @@
     class="selection-bar-toggler text-white">mdi-arrow-down-drop-circle</v-icon>
   <v-icon @click="selection.showBarLevel = 0; selection.text = ''" v-if="selection.showBarLevel == 2"
     class="selection-bar-toggler text-white">mdi-close-circle</v-icon>
+
+
+  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }">
+    <h7>Word Suggestion</h7>
+    <h5 class="m-0">{{ suggestion.Word }}</h5>
+    <div>{{ suggestion.Definition }}</div>
+    <router-link :to="'/AddVocabulary/' + suggestion.Word" @click="suggestion.Show = false">
+      <button class="btn btn-sm btn-light mt-2"><span class="mdi mdi-receipt-text-plus"></span> Go To Add New
+        Word</button>
+    </router-link>
+    <v-icon class="suggest-close"
+      @click="suggestion.Show = false; suggestion.Word = ''; suggestion.Definition = {}">mdi-close</v-icon>
+  </div>
 </template>
 
 <script>
@@ -155,6 +174,11 @@ export default {
   },
   data() {
     return {
+      suggestion: {
+        Show: false,
+        Word: '',
+        Definition: {}
+      },
       selection: {
         showBarLevel: 0,
         text: ''
@@ -178,8 +202,9 @@ export default {
       this.hideBackBtn = to.path.toLocaleLowerCase() == "/boxes";
     }
   },
-  mounted() {
+  async mounted() {
     document.addEventListener("selectionchange", this.handleSelectionChange);
+    await this.getSuggestionWord();
   },
   beforeUnmount() {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
@@ -202,6 +227,19 @@ export default {
         this.selection.text = userSelection;
       }
     }, 500),
+    async getSuggestionWord() {
+      const response = await this.postRequest('Dictionaries', 'SuggestWord', null, false);
+      if (response.IsSuccess) {
+        this.suggestion = response.Data;
+        this.suggestion.Definition = JSON.parse(this.suggestion.Definition);
+        const randomIndex = Math.floor(Math.random() * this.suggestion.Definition.ss.length);
+        const randomDefinition = this.suggestion.Definition.ss[randomIndex].d;
+        this.suggestion.Definition = randomDefinition;
+      }
+      setTimeout(() => {
+        this.suggestion.Show = true;
+      }, this.suggestion.Word == '' ? 0 : 300);
+    },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
       this.notyf.apiResult(response);
