@@ -4,7 +4,7 @@
       <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
         color="teal-darken-4" image="images/bg.webp">
         <template v-slot:prepend>
-          <v-btn v-bind:disabled="hideBackBtn" @click="goBack" icon="mdi-arrow-left"></v-btn>
+          <v-btn v-bind:disabled="isBoxesPage" @click="goBack" icon="mdi-arrow-left"></v-btn>
         </template>
         <template v-slot:image>
           <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
@@ -184,7 +184,7 @@ export default {
         text: ''
       },
       userInfoStore: useUserInfoStore(),
-      hideBackBtn: false,
+      isBoxesPage: false,
       profile: {
         nickname: localStorage.getItem("nickname"),
         avatar: parseInt(localStorage.getItem("avatar")),
@@ -199,12 +199,13 @@ export default {
     $route(to, from) {
       this.selection.showBarLevel = 0;
       this.selection.text = '';
-      this.hideBackBtn = to.path.toLocaleLowerCase() == "/boxes";
+      this.isBoxesPage = to.path.toLocaleLowerCase() == "/boxes";
     }
   },
   async mounted() {
     document.addEventListener("selectionchange", this.handleSelectionChange);
-    await this.getSuggestionWord();
+    if(this.$route.meta.Authorize && this.isBoxesPage)
+      await this.getSuggestionWord();
   },
   beforeUnmount() {
     document.removeEventListener("selectionchange", this.handleSelectionChange);

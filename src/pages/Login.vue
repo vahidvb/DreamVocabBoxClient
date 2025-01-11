@@ -63,8 +63,8 @@
             </v-col>
         </v-row>
 
-        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary" prepend-icon="mdi-account-plus">Quick
-            Register 😒</v-btn>
+        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary" prepend-icon="mdi-account-arrow-right">Quick
+            Register As Guest 😒</v-btn>
     </v-container>
 </template>
 
