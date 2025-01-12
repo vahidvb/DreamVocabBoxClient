@@ -35,7 +35,6 @@ const postRequest = async (controller, action, data = null, showLoading = true) 
       loadingStore.startLoading();
     }
     const response = await instance.post(url, data);
-
     return response.data;
   } catch (error) {
     if(error.status == 401){

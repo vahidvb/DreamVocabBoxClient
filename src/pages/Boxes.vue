@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-12 align-self-center">
                             <router-link class="btn shake-item" v-if="box.UnCheckedCount"
-                                :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking</router-link>
+                                :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking {{ box.UnCheckedCount }} Word</router-link>
 
                             <span class="btn btn-soft disabled" v-if="box.AllCount == 0 && index > 0">It's Empty</span>
 
@@ -58,7 +58,7 @@
         </div>
 
         <router-link to="/AddVocabulary" class="nav-link">
-            <v-fab :active="!hidden" class="me-4" icon="mdi-plus" size="x-large" location="top end" color="#ffdb00"
+            <v-fab :active="!hidden" style="transform: translateY(calc(-100% - 10px));" class="me-4" icon="mdi-plus" size="x-large" location="top end" color="#ffdb00"
                 absolute offset>
             </v-fab>
         </router-link>
