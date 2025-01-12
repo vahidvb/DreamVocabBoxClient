@@ -12,7 +12,6 @@
 
         <v-dialog max-width="500">
           <template v-slot:activator="{ props: activatorProps }">
-
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
               <router-link class="navbar-brand" to="/">
                 <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
@@ -20,8 +19,6 @@
             </v-app-bar-nav-icon>
             <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
               userInfoStore.nickname }}</v-app-bar-title>
-
-
           </template>
 
           <template v-slot:default="{ isActive }">
@@ -48,6 +45,17 @@
 
                   </v-col>
                   <v-col cols="9">
+
+                    <v-select v-if="boxScenarios.length > 0" v-model="profile.boxscenario" :items="boxScenarios"
+                      item-title="Title" label="Box Scenarios" item-value="Id" persistent-hint
+                      :hint="boxScenarios[profile.boxscenario].Description" class="mb-3">
+                      <template v-slot:item="{ props, item }">
+                        <v-list-item v-bind="props" :key="item.Id">
+
+                        </v-list-item>
+                      </template>
+                    </v-select>
+
                     <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login"
                       autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
                     <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?"
@@ -179,6 +187,7 @@ export default {
         Word: '',
         Definition: {}
       },
+      boxScenarios: [],
       selection: {
         showBarLevel: 0,
         text: ''
@@ -189,6 +198,7 @@ export default {
         nickname: localStorage.getItem("nickname"),
         avatar: parseInt(localStorage.getItem("avatar")),
         email: localStorage.getItem("email"),
+        boxscenario: localStorage.getItem("boxscenario"),
         username: localStorage.getItem("username"),
         password: '',
       }
@@ -204,7 +214,7 @@ export default {
   },
   async mounted() {
     document.addEventListener("selectionchange", this.handleSelectionChange);
-    if(this.$route.meta.Authorize && this.isBoxesPage)
+    if (this.$route.meta.Authorize && this.isBoxesPage)
       await this.getSuggestionWord();
   },
   beforeUnmount() {
@@ -250,8 +260,9 @@ export default {
         localStorage.setItem("avatar", response.Data.Avatar);
         localStorage.setItem("email", response.Data.Email);
         localStorage.setItem("username", response.Data.UserName);
+        localStorage.setItem("boxscenario", response.Data.BoxScenario);
         this.userInfoStore.reloadValues();
-
+        this.$router.go(0);
       }
 
     },
@@ -267,14 +278,23 @@ export default {
       this.userInfoStore.reloadValues();
       this.$router.push('/Login');
     },
-    fillProfile() {
+    async fillProfile() {
+      let response = await this.postRequest('Users', 'GetProfile', null);
+      if (response.IsSuccess) {
+        this.profile.nickname = response.Data.NickName;
+        this.profile.avatar = response.Data.Avatar;
+        this.profile.email = response.Data.Email;
+        this.profile.username = response.Data.UserName;
+        this.profile.boxscenario = response.Data.BoxScenario;
+        this.profile.password = '';
+      }
+      else
+        this.notyf.apiResult(response);
 
-      this.profile.nickname = localStorage.getItem("nickname");
-      this.profile.avatar = parseInt(localStorage.getItem("avatar"));
-      this.profile.email = localStorage.getItem("email");
-      this.profile.username = localStorage.getItem("username");
-      this.profile.password = '';
-
+      response = await this.postRequest('Users', 'GetScenarios', null);
+      if (response.IsSuccess) {
+        this.boxScenarios = response.Data;
+      }
     }
 
 

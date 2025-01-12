@@ -63,7 +63,8 @@
             </v-col>
         </v-row>
 
-        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary" prepend-icon="mdi-account-arrow-right">Quick
+        <v-btn @click="handleRegisterAsGuest" block class="mb-3" color="secondary"
+            prepend-icon="mdi-account-arrow-right">Quick
             Register As Guest 😒</v-btn>
     </v-container>
 </template>
@@ -100,8 +101,8 @@ export default {
                 localStorage.setItem("token", response.Data.Token);
                 localStorage.setItem("nickname", response.Data.NickName);
                 localStorage.setItem("avatar", response.Data.Avatar);
-                localStorage.setItem("email", response.Data.Email);
                 localStorage.setItem("username", response.Data.UserName);
+                localStorage.setItem("boxscenario", response.Data.BoxScenario);
                 this.userInfoStore.reloadValues();
                 this.$router.push('/Boxes');
             }
@@ -115,8 +116,9 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
-                    localStorage.setItem("email", response.Data.Email);
                     localStorage.setItem("username", response.Data.UserName);
+                    localStorage.setItem("boxscenario", response.Data.BoxScenario);
+
                     this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
@@ -133,8 +135,8 @@ export default {
                     localStorage.setItem("token", response.Data.Token);
                     localStorage.setItem("nickname", response.Data.NickName);
                     localStorage.setItem("avatar", response.Data.Avatar);
-                    localStorage.setItem("email", response.Data.Email);
                     localStorage.setItem("username", response.Data.UserName);
+                    localStorage.setItem("boxscenario", response.Data.BoxScenario);
                     this.userInfoStore.reloadValues();
                     this.$router.push('/Boxes');
                 }
