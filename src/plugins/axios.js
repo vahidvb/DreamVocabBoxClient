@@ -35,10 +35,13 @@ const postRequest = async (controller, action, data = null, showLoading = true) 
       loadingStore.startLoading();
     }
     const response = await instance.post(url, data);
+
     return response.data;
   } catch (error) {
-    console.error(error);
-    throw error;
+    if(error.status == 401){
+      localStorage.removeItem('token');
+      window.location.href = '/Login';
+    }
   } finally {
     if (showLoading) {
       const loadingStore = useLoadingStore();
