@@ -10,6 +10,9 @@
                     <v-btn color="success" @click="showMeaning = false" v-show="showMeaning">
                         Hide Meaning
                     </v-btn>
+                    <span class="remain-badge"><span v-if="vocabulary.RemainCount > 1">{{ vocabulary.RemainCount }} Words
+                            Remain</span><span v-if="vocabulary.RemainCount <= 1">Last One</span></span>
+
                 </v-card>
 
 
@@ -56,11 +59,13 @@ export default {
     data() {
         return {
             vocabulary: {},
-            showMeaning: false
+            showMeaning: false,
         };
     },
+
     methods: {
         async getVocabulary() {
+            console.log(this.UnCheckedCount);
             const form = { BoxNumber: this.$route.params.boxNumber };
             const response = await this.postRequest('Vocabularies', 'GetUnCheckedVocabulary', form);
             if (response.IsSuccess)
@@ -77,8 +82,9 @@ export default {
                 this.notyf.apiResult(response, 6000);
                 this.$router.push('/Boxes');
             }
-            else
+            else {
                 this.vocabulary = response.Data;
+            }
             this.showMeaning = false;
         }
     },

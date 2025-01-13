@@ -255,7 +255,7 @@ input[type=number] {
 
 .selection-bar {
     width: 448px !important;
-    max-width: 100%!important;
+    max-width: 100% !important;
     left: 50%;
     transform: translate(-50%, -110%);
     z-index: 999999999;
@@ -279,34 +279,50 @@ input[type=number] {
 .selection-bar.semi-show {
     transform: translate(-50%, calc(-100% + 50px));
 }
-.suggest-notify{
-    background:#3f708ae0;
-    border-radius:15px!important;
+
+.suggest-notify {
+    background: #3f708ae0;
+    border-radius: 15px !important;
     width: 380px;
     max-width: 90%;
     padding: 15px;
     color: white;
     position: fixed;
-    bottom:-100%;
+    bottom: -100%;
     left: 50%;
     transform: translateX(-50%);
     overflow: hidden;
     padding-right: 30px;
-    transition:.5s cubic-bezier(0.72, -1, 0.28, 1)
+    transition: .5s cubic-bezier(0.72, -1, 0.28, 1)
 }
-.suggest-notify.show-notify{
-    bottom:25px;
-    
+
+.suggest-notify.show-notify {
+    bottom: 25px;
+
 }
-.suggest-close{
-    background:#3f708ae0;
-    width: 20px!important;
+
+.suggest-close {
+    background: #3f708ae0;
+    width: 20px !important;
     padding: 15px;
     color: white;
-    position: absolute!important;
-    top:0;
+    position: absolute !important;
+    top: 0;
     right: 0;
-    height: 100%!important;
-    font-size: 20px!important;
+    height: 100% !important;
+    font-size: 20px !important;
     cursor: pointer;
+}
+
+.remain-badge {
+    position: fixed;
+    bottom: 60px;
+    right: 50%;
+    transform: translateX(50%);
+    background: #c5c5c5;
+    padding: 5px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 700;
+    color: #6b6b6b;
+    width: 350px;
 }
