@@ -76,5 +76,8 @@
   "orientation": "portrait-primary",
   "scope": "/",
   "dir": "ltr",
-  "theme_color": "#58ced6"
+  "theme_color": "#58ced6",
+  "permissions": [
+    "clipboardRead"
+    ]
 }

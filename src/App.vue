@@ -1,10 +1,12 @@
 <template>
   <v-card class="mx-auto" color="grey-lighten-3" max-width="448">
     <v-layout>
+      <!-- Login page install webapp button -->
       <v-btn icon v-show="!$route.meta.Authorize && showWebAppButton" @click="handleInstallPWA"
         style="position: absolute;top:10px;left: 10px;cursor: pointer;z-index: 9;">
         <v-icon>mdi-open-in-app</v-icon>
       </v-btn>
+      <!-- App Bar - Need Authorize -->
       <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
         color="teal-darken-4" image="images/bg.webp">
         <template v-slot:prepend>
@@ -14,7 +16,9 @@
           <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
         </template>
 
+        <!-- Avatar/Name & Edit Profile Modal -->
         <v-dialog max-width="500">
+          <!-- Avatar/Name -->
           <template v-slot:activator="{ props: activatorProps }">
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
               <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
@@ -22,11 +26,32 @@
             <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
               userInfoStore.nickname }}</v-app-bar-title>
           </template>
-
+          <!-- Edit Profile Modal -->
           <template v-slot:default="{ isActive }">
+            <!-- Application Settings Card -->
+            <v-card title="Application Settings" class="mb-3">
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
+                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest word on page load`" hide-details
+                      inset></v-switch>
+
+                    <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
+                      v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
+                      :label="`Auto Detect Clipboard Text`" hide-details inset></v-switch>
+                    <div v-if="!clipboardGranted">
+
+                      <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
+                        in browser settings.</v-text>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+            <!-- Edit Profile Card -->
             <v-card title="Edit Profile">
               <v-card-text>
-
                 <v-row>
                   <v-col cols="3">
                     <v-row>
@@ -126,14 +151,18 @@
         </v-btn>
       </v-app-bar>
 
+      <!-- Router View -->
       <v-main style="min-height: 100vh;">
         <router-view />
       </v-main>
+
     </v-layout>
   </v-card>
 
+  <!-- Loading overally Component -->
   <Loading />
 
+  <!-- Text Selection or Clipboard Bar -->
   <v-container v-if="$route.meta.Authorize"
     v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2, 'semi-show': $route.meta.Authorize && selection.showBarLevel == 1 }"
     class="selection-bar">
@@ -160,7 +189,7 @@
     v-if="selection.showBarLevel == 2 && $route.meta.Authorize"
     class="selection-bar-toggler text-white">mdi-close-circle</v-icon>
 
-
+  <!-- Word Suggestion -->
   <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize">
     <h7>Word Suggestion</h7>
     <h5 class="m-0">{{ suggestion.Word }}</h5>
@@ -179,14 +208,19 @@ import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
 import { useSharedMethods } from './stores/sharedMethods';
+
 export default {
   name: 'App',
   components: {
     Loading, Dictionary,
-
   },
   data() {
     return {
+      autoSuggestOnPageLoad: localStorage.getItem('autoSuggestOnPageLoad') == 'true',
+      autoDetectClipboardChange: localStorage.getItem('autoDetectClipboardChange') == 'true',
+      clipboardGranted: false,
+      lastClipboardText: '',
+      autoSuggested: false,
       showWebAppButton: false,
       deferredPrompt: null,
       suggestion: {
@@ -220,6 +254,15 @@ export default {
     }
   },
   async mounted() {
+    if (localStorage.getItem('autoSuggestOnPageLoad') == null)
+      localStorage.setItem('autoSuggestOnPageLoad', 'true');
+
+
+
+
+    window.addEventListener('focus', () => this.checkClipboard());
+    this.checkClipboard();
+
 
     // Start Install PWA
     window.addEventListener("load", () => {
@@ -245,14 +288,59 @@ export default {
     // End Install PWA
 
     document.addEventListener("selectionchange", this.handleSelectionChange);
-    if (this.$route.meta.Authorize && this.isBoxesPage)
+    if (localStorage.getItem('token') && !this.autoSuggested && this.autoSuggestOnPageLoad) {
+      this.autoSuggested = true;
       await this.getSuggestionWord();
+    }
+
+    if (localStorage.getItem('token') != null) {
+      await this.fillProfile();
+    }
   },
   beforeUnmount() {
-
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
+    checkClipboard() {
+      if (localStorage.getItem('token'))
+        navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
+          if (result.state === "granted") {
+            if(localStorage.getItem('autoDetectClipboardChange') == null)
+              localStorage.setItem('autoDetectClipboardChange', 'true');
+            this.clipboardGranted = true;
+            if (this.autoDetectClipboardChange) {
+              this.readClipboard();
+            }
+          } else if (result.state === "prompt") {
+            this.readClipboard();
+          } else {
+            this.clipboardGranted = false;
+            localStorage.setItem('autoDetectClipboardChange', 'false');
+          }
+        });
+    },
+    readClipboard() {
+      navigator.clipboard.readText().then((text) => {
+        this.clipboardGranted = true;
+        localStorage.setItem('autoDetectClipboardChange', 'true');
+        if (text.trim().split(/\s+/).length > 2 || text.trim().length > 30 || !text.trim() || this.lastClipboardText === text.trim()) {
+          return;
+        }
+        this.selection.showBarLevel = 1;
+        this.selection.text = text.trim();
+        this.lastClipboardText = text.trim();
+      }).catch((error) => {
+        this.clipboardGranted = false;
+        localStorage.setItem('autoDetectClipboardChange', 'false');
+        console.error('Failed to read clipboard:', error);
+      });
+    },
+    handleAutoDetectClipboardChange() {
+      localStorage.setItem('autoDetectClipboardChange', this.autoDetectClipboardChange);
+    },
+    handleAutoSuggestOnPageLoad() {
+      localStorage.setItem('autoSuggestOnPageLoad', this.autoSuggestOnPageLoad);
+    },
     handleInstallPWA() {
       if (this.deferredPrompt) {
         this.deferredPrompt.prompt();
@@ -337,6 +425,12 @@ export default {
         this.profile.username = response.Data.UserName;
         this.profile.boxscenario = response.Data.BoxScenario;
         this.profile.password = '';
+        localStorage.setItem("nickname", response.Data.NickName);
+        localStorage.setItem("avatar", response.Data.Avatar);
+        localStorage.setItem("email", response.Data.Email);
+        localStorage.setItem("username", response.Data.UserName);
+        localStorage.setItem("boxscenario", response.Data.BoxScenario);
+        this.userInfoStore.reloadValues();
       }
       else
         this.notyf.apiResult(response);
