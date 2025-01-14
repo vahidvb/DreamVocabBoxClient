@@ -187,7 +187,7 @@ export default {
   },
   data() {
     return {
-      showWebAppButton: (!localStorage.getItem('appInstalled') ?? true) && this.deferredPrompt != null,
+      showWebAppButton: false,
       deferredPrompt: null,
       suggestion: {
         Show: false,
@@ -226,12 +226,8 @@ export default {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js');
       }
-      if (localStorage.getItem('appInstalled')) {
-        this.showWebAppButton = false;
-      }
     });
     window.addEventListener('beforeinstallprompt', (e) => {
-      localStorage.removeItem('appInstalled');
       e.preventDefault();
       this.showWebAppButton = true;
       this.deferredPrompt = e;
@@ -240,26 +236,15 @@ export default {
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
       this.showWebAppButton = false;
       window.resizeTo(500, 870);
-
-      window.addEventListener('resize', () => {
-        window.resizeTo(500, 870);
-      })
+      window.addEventListener('resize', () => window.resizeTo(500, 870));
     }
     else if (this.deferredPrompt) {
       this.showWebAppButton = true;
-      localStorage.removeItem('appInstalled');
-
     }
-    window.addEventListener('appinstalled', () => {
-      localStorage.setItem('appInstalled', 'true');
-      this.showWebAppButton = false;
-    });
+    window.addEventListener('appinstalled', () => this.showWebAppButton = false);
     // End Install PWA
 
-
-
     document.addEventListener("selectionchange", this.handleSelectionChange);
-
     if (this.$route.meta.Authorize && this.isBoxesPage)
       await this.getSuggestionWord();
   },
@@ -273,16 +258,14 @@ export default {
         this.deferredPrompt.prompt();
         this.showWebAppButton = false;
         this.deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
+          if (choiceResult.outcome === 'accepted')
             this.showWebAppButton = false;
-          } else {
+          else
             this.showWebAppButton = true;
-          }
         });
       }
-      else {
-        this.showWebAppButton = true;
-      }
+      else
+        this.showWebAppButton = false;
 
     },
     handleSelectionChange: debounce(function () {
