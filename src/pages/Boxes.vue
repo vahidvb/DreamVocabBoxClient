@@ -20,7 +20,8 @@
                                             <div class="fw-bolder">Total Vocabularies: {{ box.AllCount }}</div>
                                             <div class="fw-bolder">Locked Items: {{ box.CheckedCount }}</div>
                                             <div class="fw-bolder">Waiting For Check: {{ box.UnCheckedCount }}</div>
-                                            <div class="fw-bolder">The closest time to the due date for checking: {{ box.SoonTime }}</div>
+                                            <div class="fw-bolder">The closest time to the due date for checking: {{
+                                                box.SoonTime }}</div>
                                         </v-card-text>
 
                                         <v-card-actions>
@@ -34,14 +35,17 @@
 
                         </div>
                         <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount > 0">
-                            <span>You have deeply memorized <b style="font-size: 2em;">{{ box.CheckedCount }}</b> words.</span>
+                            <span>You have deeply memorized <b style="font-size: 2em;">{{ box.CheckedCount }}</b>
+                                words.</span>
                         </div>
                         <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount == 0">
                             <span>Oops! You haven't reached this box yet.</span>
                         </div>
                         <div class="col-12 align-self-center">
                             <router-link class="btn shake-item" v-if="box.UnCheckedCount"
-                                :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking {{ box.UnCheckedCount }} {{ box.UnCheckedCount==1 ? "Word" : "Words" }}</router-link>
+                                :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking {{ box.UnCheckedCount
+                                }} {{
+                                    box.UnCheckedCount==1 ? "Word" : "Words" }}</router-link>
 
                             <span class="btn btn-soft disabled" v-if="box.AllCount == 0 && index > 0">It's Empty</span>
 
@@ -58,8 +62,8 @@
         </div>
 
         <router-link to="/AddVocabulary" class="nav-link">
-            <v-fab :active="!hidden" style="transform: translateY(calc(-100% - 10px));" class="me-4" icon="mdi-plus" size="x-large" location="top end" color="#ffdb00"
-                absolute offset>
+            <v-fab :active="!hidden" style="transform: translateY(calc(-100% - 10px));" class="me-4" icon="mdi-plus"
+                size="x-large" location="top end" color="#ffdb00" absolute offset>
             </v-fab>
         </router-link>
 
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+import { useSharedMethods } from '../stores/sharedMethods';
 
 export default {
     name: 'BoxesPage',
@@ -76,7 +81,8 @@ export default {
     },
     data() {
         return {
-            boxes: []
+            boxes: [],
+            sharedMethods: useSharedMethods(),
         };
     },
     methods: {
@@ -87,6 +93,19 @@ export default {
     },
     created() {
         this.getVocabulariesBoxes();
+        const sharedStore = useSharedMethods();
+        this.triggerAction_getVocabulariesBoxes = sharedStore.triggerAction_getVocabulariesBoxes;
+    },
+    watch: {
+        'sharedMethods.triggerAction_getVocabulariesBoxes': {
+            immediate: true,
+            handler(newVal) {
+                if (newVal){
+                    this.getVocabulariesBoxes();
+                    this.sharedMethods.toggle_getVocabulariesBoxes();
+                }
+            },
+        },
     },
 };
 

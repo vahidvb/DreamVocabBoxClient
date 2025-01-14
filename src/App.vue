@@ -13,9 +13,7 @@
         <v-dialog max-width="500">
           <template v-slot:activator="{ props: activatorProps }">
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
-              <router-link class="navbar-brand" to="/">
                 <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
-              </router-link>
             </v-app-bar-nav-icon>
             <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
               userInfoStore.nickname }}</v-app-bar-title>
@@ -174,6 +172,8 @@ import debounce from 'lodash/debounce';
 import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
+import { useSharedMethods } from './stores/sharedMethods';
+
 export default {
   name: 'App',
   components: {
@@ -262,7 +262,10 @@ export default {
         localStorage.setItem("username", response.Data.UserName);
         localStorage.setItem("boxscenario", response.Data.BoxScenario);
         this.userInfoStore.reloadValues();
-        this.$router.go(0);
+        if (this.isBoxesPage) {
+          const sharedStore = useSharedMethods();
+          sharedStore.toggle_getVocabulariesBoxes();
+        }
       }
 
     },
