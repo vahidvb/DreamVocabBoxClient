@@ -1,6 +1,10 @@
 <template>
   <v-card class="mx-auto" color="grey-lighten-3" max-width="448">
     <v-layout>
+      <v-btn icon v-show="!$route.meta.Authorize && showWebAppButton" @click="handleInstallPWA"
+        style="position: absolute;top:10px;left: 10px;cursor: pointer;z-index: 9;">
+        <v-icon>mdi-open-in-app</v-icon>
+      </v-btn>
       <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
         color="teal-darken-4" image="images/bg.webp">
         <template v-slot:prepend>
@@ -13,7 +17,7 @@
         <v-dialog max-width="500">
           <template v-slot:activator="{ props: activatorProps }">
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
-                <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
+              <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
             </v-app-bar-nav-icon>
             <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
               userInfoStore.nickname }}</v-app-bar-title>
@@ -117,7 +121,9 @@
             <v-icon>mdi-receipt-text-plus</v-icon>
           </v-btn>
         </router-link>
-
+        <v-btn icon v-if="showWebAppButton" @click="handleInstallPWA">
+          <v-icon>mdi-open-in-app</v-icon>
+        </v-btn>
       </v-app-bar>
 
       <v-main style="min-height: 100vh;">
@@ -173,7 +179,6 @@ import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
 import { useSharedMethods } from './stores/sharedMethods';
-
 export default {
   name: 'App',
   components: {
@@ -182,6 +187,8 @@ export default {
   },
   data() {
     return {
+      showWebAppButton: (!localStorage.getItem('appInstalled') ?? true) && this.deferredPrompt != null,
+      deferredPrompt: null,
       suggestion: {
         Show: false,
         Word: '',
@@ -213,14 +220,71 @@ export default {
     }
   },
   async mounted() {
+
+    // Start Install PWA
+    window.addEventListener("load", () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      }
+      if (localStorage.getItem('appInstalled')) {
+        this.showWebAppButton = false;
+      }
+    });
+    window.addEventListener('beforeinstallprompt', (e) => {
+      localStorage.removeItem('appInstalled');
+      e.preventDefault();
+      this.showWebAppButton = true;
+      this.deferredPrompt = e;
+      return false;
+    });
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      this.showWebAppButton = false;
+      window.resizeTo(500, 870);
+
+      window.addEventListener('resize', () => {
+        window.resizeTo(500, 870);
+      })
+    }
+    else if (this.deferredPrompt) {
+      this.showWebAppButton = true;
+      localStorage.removeItem('appInstalled');
+
+    }
+    window.addEventListener('appinstalled', () => {
+      localStorage.setItem('appInstalled', 'true');
+      this.showWebAppButton = false;
+    });
+    // End Install PWA
+
+
+
     document.addEventListener("selectionchange", this.handleSelectionChange);
+
     if (this.$route.meta.Authorize && this.isBoxesPage)
       await this.getSuggestionWord();
   },
   beforeUnmount() {
+
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
+    handleInstallPWA() {
+      if (this.deferredPrompt) {
+        this.deferredPrompt.prompt();
+        this.showWebAppButton = false;
+        this.deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            this.showWebAppButton = false;
+          } else {
+            this.showWebAppButton = true;
+          }
+        });
+      }
+      else {
+        this.showWebAppButton = true;
+      }
+
+    },
     handleSelectionChange: debounce(function () {
       const userSelection = window.getSelection().toString().trim();
       if (userSelection.split(/\s+/).length > 2 || userSelection.length > 30) {

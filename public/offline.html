@@ -1,0 +1,49 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dream Vocab Box</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            place-content: center;
+            place-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #5b323f, #273b6e);
+        }
+        h3,h5 {
+            color: white;
+            font-family: Tahoma, sans-serif;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="/images/offline.png" />
+    <br>
+    <h3>Access to the internet is not available.</h3>
+    <br>
+    <h5>Please check your network connection and try again.</h5>
+    <script>
+
+        async function checkNetworkAndReload() {
+            try {
+                const response = await fetch('.');
+                if (response.status >= 200 && response.status < 500) {
+                    window.location.reload();
+                    return;
+                }
+            } catch {
+            }
+            window.setTimeout(checkNetworkAndReload, 2500);
+        }
+        checkNetworkAndReload();
+    </script>
+</body>
+
+</html>

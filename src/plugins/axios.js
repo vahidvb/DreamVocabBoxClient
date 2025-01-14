@@ -3,8 +3,8 @@ import { useLoadingStore } from '../stores/loadingStore';
 
 const instance = axios.create({
   //baseURL: 'https://localhost:7011',
-  //baseURL: 'https://api.dvbox.ir',
-  baseURL: 'http://192.168.1.100:5124',
+  baseURL: 'https://www.api.dvbox.ir',
+  //baseURL: 'http://192.168.1.100:5124',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -40,7 +40,7 @@ const postRequest = async (controller, action, data = null, showLoading = true) 
     }
     return response.data;
   } catch (error) {
-    if(error.status == 401){
+    if (error.status == 401) {
       localStorage.removeItem('token');
       window.location.href = '/Login';
     }
