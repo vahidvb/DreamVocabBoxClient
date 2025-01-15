@@ -21,35 +21,17 @@
           <!-- Avatar/Name -->
           <template v-slot:activator="{ props: activatorProps }">
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
-              <img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'">
+
+              <v-img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
+              <v-avatar size="50px">
+                <v-img v-if="userInfoStore.avatar" alt="Avatar"
+                  :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
+                <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+              </v-avatar>
             </v-app-bar-nav-icon>
-            <v-app-bar-title v-bind="activatorProps" @click="fillProfile" style="font-size: 15px;">{{
-              userInfoStore.nickname }}</v-app-bar-title>
           </template>
           <!-- Edit Profile Modal -->
           <template v-slot:default="{ isActive }">
-            <!-- Application Settings Card -->
-            <v-card title="Application Settings" class="mb-3">
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12">
-                    <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
-                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest word on page load`" hide-details
-                      inset></v-switch>
-
-                    <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
-                      v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
-                      :label="`Auto Detect Clipboard Text`" hide-details inset></v-switch>
-                    <div v-if="!clipboardGranted">
-
-                      <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
-                        in browser settings.</v-text>
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-            <!-- Edit Profile Card -->
             <v-card title="Edit Profile">
               <v-card-text>
                 <v-row>
@@ -101,6 +83,7 @@
               </v-card-text>
 
               <v-card-actions>
+                <!-- Logout Button -->
                 <v-dialog max-width="300">
                   <template v-slot:activator="{ props: activatorProps }">
                     <v-btn class="mr-auto" v-bind="activatorProps" color="danger">Logout</v-btn>
@@ -129,23 +112,71 @@
         <v-spacer></v-spacer>
 
 
-
+        <!-- Right Side Icons -->
         <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
           <v-icon>mdi-auto-fix</v-icon>
         </v-btn>
-
-
         <router-link to="/Boxes" class="nav-link">
           <v-btn icon>
             <v-icon>mdi-inbox-multiple</v-icon>
           </v-btn>
         </router-link>
-
         <router-link to="/AddVocabulary" class="nav-link">
           <v-btn icon>
             <v-icon>mdi-receipt-text-plus</v-icon>
           </v-btn>
         </router-link>
+        <!-- Application Settings -->
+        <v-dialog max-width="500">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-btn icon v-bind="activatorProps">
+              <v-icon>mdi-cog</v-icon>
+            </v-btn>
+          </template>
+          <!-- Application Settings Modal -->
+          <template v-slot:default="{ isActive }">
+            <v-card title="Application Settings" class="mb-3" v-bind="isActive">
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
+                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest word on page load`" hide-details
+                      inset></v-switch>
+
+                    <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
+                      v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
+                      :label="`Auto Detect Clipboard Text`" hide-details inset></v-switch>
+                    <div v-if="!clipboardGranted">
+
+                      <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
+                        in browser settings.</v-text>
+                    </div>
+                    <h5 class="mt-5">Text To Speech Settings</h5>
+                    <v-row>
+                      <v-col cols="10">
+                        <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
+                      </v-col>
+                      <v-col cols="2">
+                        <v-btn color="primary" icon="mdi-play" size="55" @click="playSampleText"></v-btn>
+                      </v-col>
+                    </v-row>
+                    <div class="text-caption">Rate</div>
+                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
+                      @click="soundSettingsChange" hint="Controls the speed of speech." persistent-hint></v-slider>
+                    <div class="text-caption mt-3">Pitch</div>
+
+                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
+                      @click="soundSettingsChange" hint="Adjusts the pitch of the voice." persistent-hint></v-slider>
+                    <div class="text-caption mt-3">Volume</div>
+
+                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
+                      @click="soundSettingsChange" hint="Sets the volume of the speech." persistent-hint></v-slider>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </template>
+        </v-dialog>
         <v-btn icon v-if="showWebAppButton" @click="handleInstallPWA">
           <v-icon>mdi-open-in-app</v-icon>
         </v-btn>
@@ -209,6 +240,7 @@ import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
 import { useSharedMethods } from './stores/sharedMethods';
 
+
 export default {
   name: 'App',
   components: {
@@ -216,6 +248,10 @@ export default {
   },
   data() {
     return {
+      speechPitch: localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) * 100 : 100,
+      speechRate: localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) * 100 : 100,
+      speechVolume: localStorage.getItem('speechVolume') ? parseFloat(localStorage.getItem('speechVolume')) * 100 : 100,
+      sampleText: 'Dream Vocab Box',
       autoSuggestOnPageLoad: localStorage.getItem('autoSuggestOnPageLoad') == 'true',
       autoDetectClipboardChange: localStorage.getItem('autoDetectClipboardChange') == 'true',
       clipboardGranted: false,
@@ -236,11 +272,11 @@ export default {
       userInfoStore: useUserInfoStore(),
       isBoxesPage: false,
       profile: {
-        nickname: localStorage.getItem("nickname"),
-        avatar: parseInt(localStorage.getItem("avatar")),
-        email: localStorage.getItem("email"),
-        boxscenario: localStorage.getItem("boxscenario"),
-        username: localStorage.getItem("username"),
+        nickname: '',
+        avatar: 0,
+        email: '',
+        boxscenario: '',
+        username: '',
         password: '',
       }
     };
@@ -256,8 +292,6 @@ export default {
   async mounted() {
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
-
-
 
 
     window.addEventListener('focus', () => this.checkClipboard());
@@ -301,11 +335,29 @@ export default {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
+    soundSettingsChange() {
+      localStorage.setItem('speechPitch', this.speechPitch / 100);
+      localStorage.setItem('speechRate', this.speechRate / 100);
+      localStorage.setItem('speechVolume', this.speechVolume / 100);
+    },
+    playSampleText() {
+      const utterance = new SpeechSynthesisUtterance(this.sampleText);
+      utterance.lang = "en-US";
+      utterance.rate = this.speechRate / 100;
+      utterance.pitch = this.speechPitch / 100;
+      utterance.volume = this.speechVolume / 100;
+      const voices = window.speechSynthesis.getVoices();
+      const localVoice = voices.find(voice => voice.lang === 'en-US');
+
+      if (localVoice)
+        utterance.voice = localVoice;
+      window.speechSynthesis.speak(utterance);
+    },
     checkClipboard() {
       if (localStorage.getItem('token'))
         navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
           if (result.state === "granted") {
-            if(localStorage.getItem('autoDetectClipboardChange') == null)
+            if (localStorage.getItem('autoDetectClipboardChange') == null)
               localStorage.setItem('autoDetectClipboardChange', 'true');
             this.clipboardGranted = true;
             if (this.autoDetectClipboardChange) {
@@ -391,11 +443,6 @@ export default {
       this.notyf.apiResult(response);
       if (response.IsSuccess) {
         localStorage.setItem("token", response.Data.Token);
-        localStorage.setItem("nickname", response.Data.NickName);
-        localStorage.setItem("avatar", response.Data.Avatar);
-        localStorage.setItem("email", response.Data.Email);
-        localStorage.setItem("username", response.Data.UserName);
-        localStorage.setItem("boxscenario", response.Data.BoxScenario);
         this.userInfoStore.reloadValues();
         if (this.isBoxesPage) {
           const sharedStore = useSharedMethods();
@@ -408,38 +455,27 @@ export default {
       this.$router.back(-1);
     },
     logout() {
-      localStorage.removeItem("nickname");
-      localStorage.removeItem("avatar");
-      localStorage.removeItem("email");
-      localStorage.removeItem("username");
       localStorage.removeItem("token");
-      this.userInfoStore.reloadValues();
       this.$router.push('/Login');
     },
     async fillProfile() {
-      let response = await this.postRequest('Users', 'GetProfile', null);
-      if (response.IsSuccess) {
-        this.profile.nickname = response.Data.NickName;
-        this.profile.avatar = response.Data.Avatar;
-        this.profile.email = response.Data.Email;
-        this.profile.username = response.Data.UserName;
-        this.profile.boxscenario = response.Data.BoxScenario;
-        this.profile.password = '';
-        localStorage.setItem("nickname", response.Data.NickName);
-        localStorage.setItem("avatar", response.Data.Avatar);
-        localStorage.setItem("email", response.Data.Email);
-        localStorage.setItem("username", response.Data.UserName);
-        localStorage.setItem("boxscenario", response.Data.BoxScenario);
-        this.userInfoStore.reloadValues();
-      }
-      else
-        this.notyf.apiResult(response);
+      this.userInfoStore.reloadValues();
 
-      response = await this.postRequest('Users', 'GetScenarios', null);
-      if (response.IsSuccess) {
-        this.boxScenarios = response.Data;
-      }
+      this.profile.nickname = this.userInfoStore.nickname;
+      this.profile.avatar = this.userInfoStore.avatar;
+      this.profile.email = this.userInfoStore.email;
+      this.profile.username = this.userInfoStore.username;
+      this.profile.boxscenario = this.userInfoStore.boxscenario;
+      this.profile.password = '';
+      this.boxScenarios = this.userInfoStore.boxScenarios;
+
+
+
+
     }
+
+
+
 
 
   }

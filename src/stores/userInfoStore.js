@@ -1,20 +1,33 @@
 import { defineStore } from 'pinia';
+import api from '../plugins/axios';
+
+const postRequest = api.postRequest;
 
 export const useUserInfoStore = defineStore('userInfo', {
   state: () => ({
-    token: localStorage.getItem("token"),
-    nickname: localStorage.getItem("nickname"),
-    avatar: localStorage.getItem("avatar"),
-    email: localStorage.getItem("email"),
-    username: localStorage.getItem("username"),
+    nickname: '',
+    avatar: '',
+    email: '',
+    username: '',
+    boxscenario: '',
+    boxScenarios: [],
   }),
   actions: {
-    reloadValues() {
-      this.token = localStorage.getItem("token");
-      this.nickname = localStorage.getItem("nickname");
-      this.avatar = localStorage.getItem("avatar");
-      this.email = localStorage.getItem("email");
-      this.username = localStorage.getItem("username");
+    async reloadValues() {
+      let response = await postRequest('Users', 'GetProfile', null, false);
+      if (response.IsSuccess) {
+        this.nickname = response.Data.NickName;
+        this.avatar = response.Data.Avatar;
+        this.email = response.Data.Email;
+        this.username = response.Data.UserName;
+        this.boxscenario = response.Data.BoxScenario;
+      }
+      else
+        this.notyf.apiResult(response);
+      response = await postRequest('Users', 'GetScenarios', null, false);
+      if (response.IsSuccess) {
+        this.boxScenarios = response.Data;
+      }
     }
   },
 });

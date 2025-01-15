@@ -63,10 +63,9 @@ export default {
         textToSpeach(text) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = "en-US";
-            utterance.rate = 1;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-
+            utterance.pitch = localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) : 1;
+            utterance.rate = localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) : 1;
+            utterance.volume = localStorage.getItem('speechVolume') ? parseFloat(localStorage.getItem('speechVolume')) : 1;
             const voices = window.speechSynthesis.getVoices();
             const localVoice = voices.find(voice => voice.lang === 'en-US');
 

@@ -53,6 +53,7 @@ const postRequest = async (controller, action, data = null, showLoading = true) 
 };
 
 export default {
+  postRequest,
   install(app) {
     app.config.globalProperties.postRequest = postRequest;
   },
