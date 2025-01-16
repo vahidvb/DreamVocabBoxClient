@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { useSharedMethods } from '../stores/sharedMethods';
+import { useSharedMethods } from '../stores/sharedMethodsStore';
 
 export default {
     name: 'BoxesPage',

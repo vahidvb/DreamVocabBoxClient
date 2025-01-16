@@ -22,7 +22,6 @@
           <template v-slot:activator="{ props: activatorProps }">
             <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
 
-              <v-img :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
               <v-avatar size="50px">
                 <v-img v-if="userInfoStore.avatar" alt="Avatar"
                   :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
@@ -140,22 +139,25 @@
                 <v-row>
                   <v-col cols="12">
                     <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
-                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest word on page load`" hide-details
+                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest words on page load`" hide-details
                       inset></v-switch>
-
+                    <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
+                      @change="handleAutoSpeechOnChecking" :label="`Auto play the word when it begins to show`"
+                      hide-details inset></v-switch>
                     <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
                       v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
-                      :label="`Auto Detect Clipboard Text`" hide-details inset></v-switch>
+                      :label="`Auto detect clipboard text`" hide-details inset></v-switch>
                     <div v-if="!clipboardGranted">
 
                       <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
                         in browser settings.</v-text>
                     </div>
 
-                    <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser does not support SpeechSynthesis</v-text>
-                    <div v-bind:class="{'disabled':!t2sSupported}" >
-                      
-                      
+                    <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser does
+                      not support SpeechSynthesis</v-text>
+                    <div v-bind:class="{ 'disabled': !t2sSupported }">
+
+
                       <h5 class="mt-0">Text To Speech Settings</h5>
                       <v-row>
                         <v-col cols="8">
@@ -167,15 +169,18 @@
                       </v-row>
                       <div class="text-caption">Rate</div>
                       <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
-                        @click="soundSettingsChange" hint="Controls the speed of speech." persistent-hint></v-slider>
+                        @mouseleave="soundSettingsChange" hint="Controls the speed of speech."
+                        persistent-hint></v-slider>
                       <div class="text-caption mt-3">Pitch</div>
-  
+
                       <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
-                        @click="soundSettingsChange" hint="Adjusts the pitch of the voice." persistent-hint></v-slider>
+                        @mouseleave="soundSettingsChange" hint="Adjusts the pitch of the voice."
+                        persistent-hint></v-slider>
                       <div class="text-caption mt-3">Volume</div>
-  
+
                       <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
-                        @click="soundSettingsChange" hint="Sets the volume of the speech." persistent-hint></v-slider>
+                        @mouseleave="soundSettingsChange" hint="Sets the volume of the speech."
+                        persistent-hint></v-slider>
 
                     </div>
                   </v-col>
@@ -202,11 +207,11 @@
 
   <!-- Text Selection or Clipboard Bar -->
   <v-container v-if="$route.meta.Authorize"
-    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2, 'semi-show': $route.meta.Authorize && selection.showBarLevel == 1 }"
+    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2}"
     class="selection-bar">
     <v-row>
       <v-col>
-        <v-text class="text-center h1 w-100" block>{{ selection.text }}</v-text>
+        
         <v-spacer></v-spacer>
         <router-link @click="selection.showBarLevel = 0" class="navbar-brand"
           :to="{ path: `/AddVocabulary/${selection.text}` }">
@@ -220,12 +225,16 @@
 
       </v-col>
     </v-row>
+
   </v-container>
-  <v-icon @click="selection.showBarLevel = 2" v-if="selection.showBarLevel == 1 && $route.meta.Authorize"
-    class="selection-bar-toggler text-white">mdi-arrow-down-drop-circle</v-icon>
-  <v-icon @click="selection.showBarLevel = 0; selection.text = ''"
-    v-if="selection.showBarLevel == 2 && $route.meta.Authorize"
-    class="selection-bar-toggler text-white">mdi-close-circle</v-icon>
+  <v-container class="selection-bar-toggler" v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel > 0 }" v-if="$route.meta.Authorize">
+    <v-text class="h3" block>{{ selection.text }}</v-text>
+    <v-icon @click="selection.showBarLevel = 2"
+      v-if="selection.showBarLevel == 1 && $route.meta.Authorize">mdi-arrow-down-drop-circle</v-icon>
+    <v-icon @click="selection.showBarLevel = 0; selection.text = ''"
+      v-if="selection.showBarLevel == 2 && $route.meta.Authorize">mdi-close-circle</v-icon>
+
+  </v-container>
 
   <!-- Word Suggestion -->
   <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize">
@@ -245,7 +254,7 @@ import debounce from 'lodash/debounce';
 import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
-import { useSharedMethods } from './stores/sharedMethods';
+import { useSharedMethods } from './stores/sharedMethodsStore';
 
 
 export default {
@@ -261,6 +270,7 @@ export default {
       sampleText: 'Dream Vocab Box',
       autoSuggestOnPageLoad: localStorage.getItem('autoSuggestOnPageLoad') == 'true',
       autoDetectClipboardChange: localStorage.getItem('autoDetectClipboardChange') == 'true',
+      autoSpeechOnChecking: localStorage.getItem('autoSpeechOnChecking') == 'false',
       clipboardGranted: false,
       lastClipboardText: '',
       autoSuggested: false,
@@ -297,9 +307,12 @@ export default {
     }
   },
   async mounted() {
+
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
 
+    if (localStorage.getItem('autoSpeechOnChecking') == null)
+      localStorage.setItem('autoSpeechOnChecking', 'false');
 
     window.addEventListener('focus', () => this.checkClipboard());
     this.checkClipboard();
@@ -380,6 +393,9 @@ export default {
         localStorage.setItem('autoDetectClipboardChange', 'false');
         console.error('Failed to read clipboard:', error);
       });
+    },
+    async handleAutoSpeechOnChecking() {
+      localStorage.setItem('autoSpeechOnChecking', this.autoSpeechOnChecking);
     },
     handleAutoDetectClipboardChange() {
       localStorage.setItem('autoDetectClipboardChange', this.autoDetectClipboardChange);

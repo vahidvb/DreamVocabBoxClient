@@ -10,14 +10,12 @@
                     <v-btn color="success" @click="showMeaning = false" v-show="showMeaning">
                         Hide Meaning
                     </v-btn>
-                    <span class="remain-badge"><span v-if="vocabulary.RemainCount > 1">{{ vocabulary.RemainCount }} Words
+                    <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
+                    <span class="remain-badge"><span v-if="vocabulary.RemainCount > 1">{{ vocabulary.RemainCount }}
+                            Words
                             Remain</span><span v-if="vocabulary.RemainCount <= 1">Last One</span></span>
-
                 </v-card>
-
-
             </v-col>
-
             <v-col cols="12" v-show="showMeaning">
                 <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" v-if="vocabulary.Example" />
                 <DetailCard :title="'Example'" :value="vocabulary.Example" v-if="vocabulary.Example" class="mt-2" />
@@ -50,12 +48,13 @@
     </v-container>
 </template>
 <script>
-import DetailCard from "@/components/DetailCard.vue";
-import Dictionary from "@/components/Dictionary.vue";
+import DetailCard from "@/components/DetailCard";
+import Dictionary from "@/components/Dictionary";
+import SpeechPlay from "@/components/SpeechPlay";
 
 export default {
     name: 'CheckVocabularyPage',
-    components: { DetailCard, Dictionary },
+    components: { DetailCard, Dictionary, SpeechPlay },
     data() {
         return {
             vocabulary: {},
@@ -65,11 +64,13 @@ export default {
 
     methods: {
         async getVocabulary() {
-            console.log(this.UnCheckedCount);
             const form = { BoxNumber: this.$route.params.boxNumber };
             const response = await this.postRequest('Vocabularies', 'GetUnCheckedVocabulary', form);
-            if (response.IsSuccess)
+            if (response.IsSuccess) {
                 this.vocabulary = response.Data;
+                if (localStorage.getItem('autoSpeechOnChecking') == 'true')
+                    this.textToSpeech(this.vocabulary.Word);
+            }
             else {
                 this.notyf.apiResult(response);
                 this.$router.push('/Boxes');
@@ -84,11 +85,13 @@ export default {
             }
             else {
                 this.vocabulary = response.Data;
+                if (localStorage.getItem('autoSpeechOnChecking') == 'true')
+                    this.textToSpeech(this.vocabulary.Word);
             }
             this.showMeaning = false;
         }
     },
-    async created() {
+    async mounted() {
         await this.getVocabulary();
     },
 }

@@ -1,15 +1,18 @@
 <template>
     <div v-if="dictionary != null">
         <label>📚 {{ dictionary.Word }} In Dictionary</label>
-        <v-btn @click="textToSpeech(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal"
-            size="xs-small" class="ms-2" v-if="t2sSupported"></v-btn>
+        <SpeechPlay :text="dictionary.Word" />
+
         <div class="dictionary-help">
-            <label v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}</label>
+            <v-text v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}
+                <SpeechPlay :text="dictionary.Forms" />
+            </v-text>
             <div v-if="dictionary.DefinitionEn != null">
                 <div v-for="(meaning, index) in dictionary.DefinitionEn.ss" :key="index" class="dic-help">
                     "{{ meaning.g ?? 'noun' }}" {{ (meaning.p == undefined ? '' : ' 🔊 ' + meaning.p) ?? '' }}
                     <div v-for="(part, idx) in (meaning.d ? meaning.d.split(';') : [])" :key="idx">
                         - {{ part }}
+                        <SpeechPlay :text="part" />
                     </div>
                 </div>
             </div>
@@ -19,6 +22,7 @@
                         <div v-for="(examples, examplesIndex) in meanings" :key="examplesIndex">
                             <div v-for="(example, exampleIndex) in examples.es" :key="exampleIndex">
                                 📜 {{ example.e }}
+                                <SpeechPlay :text="example.e" />
                             </div>
                         </div>
                         <div style="font-family: tahoma;" v-show="meaning.s != null"
@@ -27,18 +31,24 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
     <div v-if="dictionary == null">
-        <label v-if="text">📚 {{ text }} Dosen't Exist In Dictionary</label>
+        <label v-if="text">📚 {{ text }}
+            <SpeechPlay :text="text" /> Dosen't Exist In Dictionary
+        </label>
     </div>
 </template>
 
 <script>
+import SpeechPlay from "./SpeechPlay.vue";
+
 export default {
     name: "DictionaryComponent",
+    components: {
+        SpeechPlay
+    },
     props: {
         text: {
             type: String,
