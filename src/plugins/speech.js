@@ -6,8 +6,11 @@ const textToSpeech = (text) => {
   const speechStore = useSpeechStore();
   if (window.speechSynthesis.speaking) {
     window.speechSynthesis.cancel();
-    speechStore.stopPlaying();
-    return;
+    if (speechStore.text === text) {
+      speechStore.stopPlaying();
+      return;
+    }else
+      speechStore.stopPlaying();
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
