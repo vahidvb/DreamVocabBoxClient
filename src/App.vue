@@ -141,12 +141,15 @@
                     <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
                       @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest words on page load`" hide-details
                       inset></v-switch>
+
                     <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
                       @change="handleAutoSpeechOnChecking" :label="`Auto play the word when it begins to show`"
                       hide-details inset></v-switch>
+
                     <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
                       v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
                       :label="`Auto detect clipboard text`" hide-details inset></v-switch>
+
                     <div v-if="!clipboardGranted">
 
                       <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
@@ -270,7 +273,7 @@ export default {
       sampleText: 'Dream Vocab Box',
       autoSuggestOnPageLoad: localStorage.getItem('autoSuggestOnPageLoad') == 'true',
       autoDetectClipboardChange: localStorage.getItem('autoDetectClipboardChange') == 'true',
-      autoSpeechOnChecking: localStorage.getItem('autoSpeechOnChecking') == 'false',
+      autoSpeechOnChecking: localStorage.getItem('autoSpeechOnChecking') == 'true',
       clipboardGranted: false,
       lastClipboardText: '',
       autoSuggested: false,
@@ -394,7 +397,7 @@ export default {
         console.error('Failed to read clipboard:', error);
       });
     },
-    async handleAutoSpeechOnChecking() {
+    handleAutoSpeechOnChecking() {
       localStorage.setItem('autoSpeechOnChecking', this.autoSpeechOnChecking);
     },
     handleAutoDetectClipboardChange() {
