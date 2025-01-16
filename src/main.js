@@ -5,6 +5,8 @@ import axiosPlugin from './plugins/axios';
 import { createPinia } from 'pinia';
 import router from './router';
 import directives from './directives';
+import speechPlugin from './plugins/speech';
+
 
 // Vuetify
 import vuetify from './plugins/vuetify';
@@ -28,5 +30,6 @@ app.use(vuetify);
 app.use(router);
 app.use(notyfPlugin);
 app.use(axiosPlugin);
+app.use(speechPlugin);
 app.use(pinia);
 app.mount('#app');

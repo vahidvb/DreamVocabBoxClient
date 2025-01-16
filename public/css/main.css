@@ -237,7 +237,11 @@ input[type=number] {
 .just-disabled {
     pointer-events: none;
 }
-
+.disabled {
+    pointer-events: none;
+    filter:blur(1px);
+    opacity:.7
+}
 .selection-bar-toggler {
     position: fixed !important;
     backdrop-filter: blur(2px);

@@ -151,26 +151,33 @@
                       <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
                         in browser settings.</v-text>
                     </div>
-                    <h5 class="mt-5">Text To Speech Settings</h5>
-                    <v-row>
-                      <v-col cols="10">
-                        <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
-                      </v-col>
-                      <v-col cols="2">
-                        <v-btn color="primary" icon="mdi-play" size="55" @click="playSampleText"></v-btn>
-                      </v-col>
-                    </v-row>
-                    <div class="text-caption">Rate</div>
-                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
-                      @click="soundSettingsChange" hint="Controls the speed of speech." persistent-hint></v-slider>
-                    <div class="text-caption mt-3">Pitch</div>
 
-                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
-                      @click="soundSettingsChange" hint="Adjusts the pitch of the voice." persistent-hint></v-slider>
-                    <div class="text-caption mt-3">Volume</div>
+                    <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser does not support SpeechSynthesis</v-text>
+                    <div v-bind:class="{'disabled':!t2sSupported}" >
+                      
+                      
+                      <h5 class="mt-0">Text To Speech Settings</h5>
+                      <v-row>
+                        <v-col cols="8">
+                          <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
+                        </v-col>
+                        <v-col cols="4">
+                          <v-btn color="primary" icon="mdi-play" size="55" @click="textToSpeech(sampleText)"></v-btn>
+                        </v-col>
+                      </v-row>
+                      <div class="text-caption">Rate</div>
+                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
+                        @click="soundSettingsChange" hint="Controls the speed of speech." persistent-hint></v-slider>
+                      <div class="text-caption mt-3">Pitch</div>
+  
+                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
+                        @click="soundSettingsChange" hint="Adjusts the pitch of the voice." persistent-hint></v-slider>
+                      <div class="text-caption mt-3">Volume</div>
+  
+                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
+                        @click="soundSettingsChange" hint="Sets the volume of the speech." persistent-hint></v-slider>
 
-                    <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
-                      @click="soundSettingsChange" hint="Sets the volume of the speech." persistent-hint></v-slider>
+                    </div>
                   </v-col>
                 </v-row>
               </v-card-text>
@@ -339,19 +346,6 @@ export default {
       localStorage.setItem('speechPitch', this.speechPitch / 100);
       localStorage.setItem('speechRate', this.speechRate / 100);
       localStorage.setItem('speechVolume', this.speechVolume / 100);
-    },
-    playSampleText() {
-      const utterance = new SpeechSynthesisUtterance(this.sampleText);
-      utterance.lang = "en-US";
-      utterance.rate = this.speechRate / 100;
-      utterance.pitch = this.speechPitch / 100;
-      utterance.volume = this.speechVolume / 100;
-      const voices = window.speechSynthesis.getVoices();
-      const localVoice = voices.find(voice => voice.lang === 'en-US');
-
-      if (localVoice)
-        utterance.voice = localVoice;
-      window.speechSynthesis.speak(utterance);
     },
     checkClipboard() {
       if (localStorage.getItem('token'))

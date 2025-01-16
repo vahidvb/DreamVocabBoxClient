@@ -1,7 +1,7 @@
 <template>
     <div v-if="dictionary != null">
         <label>📚 {{ dictionary.Word }} In Dictionary</label>
-        <v-btn @click="textToSpeach(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal"
+        <v-btn @click="textToSpeech(dictionary.Word)" icon="mdi-volume-high" color="primary" variant="tonal"
             size="xs-small" class="ms-2" v-if="t2sSupported"></v-btn>
         <div class="dictionary-help">
             <label v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}</label>
@@ -47,7 +47,6 @@ export default {
     },
     data() {
         return {
-            t2sSupported: 'speechSynthesis' in window,
             dictionary: null,
         };
     },
@@ -60,20 +59,6 @@ export default {
         },
     },
     methods: {
-        textToSpeach(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.pitch = localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) : 1;
-            utterance.rate = localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) : 1;
-            utterance.volume = localStorage.getItem('speechVolume') ? parseFloat(localStorage.getItem('speechVolume')) : 1;
-            const voices = window.speechSynthesis.getVoices();
-            const localVoice = voices.find(voice => voice.lang === 'en-US');
-
-            if (localVoice)
-                utterance.voice = localVoice;
-
-            window.speechSynthesis.speak(utterance);
-        },
         async findEnglishToEnglish(input) {
 
             const response = await this.postRequest("Dictionaries", "FindEnglish", input, false);
