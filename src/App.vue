@@ -189,6 +189,9 @@
                   </v-col>
                 </v-row>
               </v-card-text>
+              <v-card-actions>
+                <v-btn text="Close" @click="isActive.value = false"></v-btn>
+              </v-card-actions>
             </v-card>
           </template>
         </v-dialog>
