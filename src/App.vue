@@ -6,7 +6,7 @@
         style="position: absolute;top:10px;left: 10px;cursor: pointer;z-index: 9;">
         <v-icon>mdi-open-in-app</v-icon>
       </v-btn>
-      <v-navigation-drawer v-model="drawer" temporary>
+      <v-navigation-drawer v-model="drawer" temporary v-if="$route.meta.Authorize">
 
         <v-list-item lines="two">
           <template v-slot:prepend>
@@ -279,7 +279,7 @@
           <v-icon>mdi-open-in-app</v-icon>
         </v-btn>
 
-        <v-btn icon @click="handleInstallPWA" @click.stop="drawer = !drawer">
+        <v-btn icon @click.stop="drawer = !drawer">
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </v-app-bar>
@@ -557,10 +557,12 @@ export default {
     },
     logout() {
       localStorage.removeItem("token");
+      this.userInfoStore.emptyValues();
+
       this.$router.push('/Login');
     },
     async fillProfile() {
-      this.userInfoStore.reloadValues();
+      await this.userInfoStore.reloadValues();
 
       this.profile.nickname = this.userInfoStore.nickname;
       this.profile.avatar = this.userInfoStore.avatar;
@@ -569,10 +571,6 @@ export default {
       this.profile.boxscenario = this.userInfoStore.boxscenario;
       this.profile.password = '';
       this.boxScenarios = this.userInfoStore.boxScenarios;
-
-
-
-
     }
 
 

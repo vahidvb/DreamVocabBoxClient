@@ -28,6 +28,14 @@ export const useUserInfoStore = defineStore('userInfo', {
       if (response.IsSuccess) {
         this.boxScenarios = response.Data;
       }
+    },
+    emptyValues() {
+        this.nickname = '';
+        this.avatar = '';
+        this.email = '';
+        this.username = '';
+        this.boxscenario = '';
+        this.boxScenarios = [];
     }
   },
 });
