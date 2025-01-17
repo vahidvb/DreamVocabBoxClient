@@ -6,28 +6,28 @@
         style="position: absolute;top:10px;left: 10px;cursor: pointer;z-index: 9;">
         <v-icon>mdi-open-in-app</v-icon>
       </v-btn>
-      <!-- App Bar - Need Authorize -->
-      <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
-        color="teal-darken-4" image="images/bg.webp">
-        <template v-slot:prepend>
-          <v-btn v-bind:disabled="isBoxesPage" @click="goBack" icon="mdi-arrow-left"></v-btn>
-        </template>
-        <template v-slot:image>
-          <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
-        </template>
+      <v-navigation-drawer v-model="drawer" temporary>
 
-        <!-- Avatar/Name & Edit Profile Modal -->
-        <v-dialog max-width="500">
+        <v-list-item lines="two">
+          <template v-slot:prepend>
+            <v-avatar size="64px">
+              <v-img v-if="userInfoStore.avatar" alt="Avatar"
+                :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
+              <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
+            </v-avatar>
+          </template>
+          <v-list-item-content>
+            <v-list-item-title>{{ userInfoStore.nickname }}</v-list-item-title>
+            <v-list-item-subtitle>{{ userInfoStore.username }}</v-list-item-subtitle>
+
+
+<!-- Avatar/Name & Edit Profile Modal -->
+<v-dialog max-width="500">
           <!-- Avatar/Name -->
           <template v-slot:activator="{ props: activatorProps }">
-            <v-app-bar-nav-icon v-bind="activatorProps" @click="fillProfile">
-
-              <v-avatar size="50px">
-                <v-img v-if="userInfoStore.avatar" alt="Avatar"
-                  :src="'images/avatars/avatar-' + userInfoStore.avatar + '.png'"></v-img>
-                <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
-              </v-avatar>
-            </v-app-bar-nav-icon>
+            <v-btn v-bind="activatorProps" @click="fillProfile();drawer=null" class="mt-1" prepend-icon="mdi-account-edit" variant="tonal" size="x-small">
+              Edit Profile
+            </v-btn> 
           </template>
           <!-- Edit Profile Modal -->
           <template v-slot:default="{ isActive }">
@@ -108,143 +108,184 @@
           </template>
         </v-dialog>
 
-        <v-spacer></v-spacer>
+
+
+
+
+
+
+
+
+
+          </v-list-item-content>
+        </v-list-item>
+
+
+
+        <v-divider></v-divider>
+
+        <v-list density="compact" nav>
+          <router-link to="/AddVocabulary" class="nav-link">
+
+            <v-list-item prepend-icon="mdi-receipt-text-plus" title="Add New Word/Idiom" value="Add New Word/Idiom">
+            </v-list-item>
+          </router-link>
+          <router-link to="/Boxes" class="nav-link">
+            <v-list-item prepend-icon="mdi-inbox-multiple" title="Boxes" value="Boxes">
+            </v-list-item>
+          </router-link>
+          <!-- Application Settings -->
+          <v-dialog max-width="500">
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-list-item prepend-icon="mdi-cog" title="Application Settings" value="Application Settings"
+                v-bind="activatorProps" @click="drawer = null"></v-list-item>
+            </template>
+            <!-- Application Settings Modal -->
+            <template v-slot:default="{ isActive }">
+              <v-card title="Application Settings" class="mb-3" v-bind="isActive">
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
+                        @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest words on page load`" hide-details
+                        inset></v-switch>
+
+                      <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
+                        @change="handleAutoSpeechOnChecking" :label="`Auto play the word when it begins to show`"
+                        hide-details inset></v-switch>
+
+                      <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
+                        v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
+                        :label="`Auto detect clipboard text`" hide-details inset></v-switch>
+
+
+                      <v-dialog max-width="500">
+                        <template v-slot:activator="{ props: activatorProps }">
+                          <div v-if="!clipboardGranted" v-bind="activatorProps" @click="readClipboard" class="mb-2">
+                            <v-text style="font-size: 12px;" class="text-danger" role="button">The app needs permission
+                              to
+                              access the clipboard in browser settings. <b>For more help, click here.</b></v-text>
+                          </div>
+                        </template>
+
+                        <template v-slot:default="{ isActive }">
+                          <v-card title="How to Enable Clipboard Access">
+                            <v-card-text>
+                              <h4><v-icon color="#DB4437" icon="mdi-google-chrome" /> Chrome</h4>
+                              <ul>
+                                <li>Open the Chrome browser.</li>
+                                <li>Go to the browser's settings.</li>
+                                <li>Find the "Site Settings" or "Settings" section.</li>
+                                <li>Navigate to "Permissions" and enable "Clipboard".</li>
+                              </ul>
+
+                              <h4><v-icon color="#FF9400" icon="mdi-firefox" /> Firefox</h4>
+                              <ul>
+                                <li>Open the Firefox browser.</li>
+                                <li>Go to the browser's Settings.</li>
+                                <li>Find the "Permissions" section and enable clipboard access.</li>
+                              </ul>
+
+                              <h4><v-icon color="#1E90FF" icon="mdi-apple-safari" /> Safari</h4>
+                              <ul>
+                                <li>Open your phone's Settings app.</li>
+                                <li>Navigate to Safari.</li>
+                                <li>Look for clipboard-related settings and enable them.</li>
+                              </ul>
+                              <h5>If using another browser:</h5>
+                              <ul>
+                                <li>Look for a similar "Permissions" or "Site Settings" option in the browser's settings
+                                  and enable clipboard access.</li>
+                              </ul>
+                            </v-card-text>
+
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+
+
+
+                      <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser
+                        does
+                        not support SpeechSynthesis</v-text>
+                      <div v-bind:class="{ 'disabled': !t2sSupported }">
+
+
+                        <h5 class="mt-0">Text To Speech Settings</h5>
+                        <v-row>
+                          <v-col cols="8">
+                            <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
+                          </v-col>
+                          <v-col cols="4">
+                            <v-btn color="primary" icon="mdi-play" size="55" @click="textToSpeech(sampleText)"></v-btn>
+                          </v-col>
+                        </v-row>
+                        <div class="text-caption">Rate</div>
+                        <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
+                          @mouseleave="soundSettingsChange" hint="Controls the speed of speech."
+                          persistent-hint></v-slider>
+                        <div class="text-caption mt-3">Pitch</div>
+
+                        <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
+                          @mouseleave="soundSettingsChange" hint="Adjusts the pitch of the voice."
+                          persistent-hint></v-slider>
+                        <div class="text-caption mt-3">Volume</div>
+
+                        <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
+                          @mouseleave="soundSettingsChange" hint="Sets the volume of the speech."
+                          persistent-hint></v-slider>
+
+                      </div>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+
+        </v-list>
+      </v-navigation-drawer>
+
+      <!-- App Bar - Need Authorize -->
+      <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
+        color="teal-darken-4" image="images/bg.webp" title="Dream Vocab Box">
+
+        <template v-slot:prepend>
+          <v-btn v-bind:disabled="isBoxesPage" @click="goBack" icon="mdi-arrow-left"></v-btn>
+        </template>
+        <template v-slot:image>
+          <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
+        </template>
+
+        
+
 
 
         <!-- Right Side Icons -->
         <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
           <v-icon>mdi-auto-fix</v-icon>
         </v-btn>
-        <router-link to="/Boxes" class="nav-link">
-          <v-btn icon>
-            <v-icon>mdi-inbox-multiple</v-icon>
-          </v-btn>
-        </router-link>
-        <router-link to="/AddVocabulary" class="nav-link">
-          <v-btn icon>
-            <v-icon>mdi-receipt-text-plus</v-icon>
-          </v-btn>
-        </router-link>
-        <!-- Application Settings -->
-        <v-dialog max-width="500">
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn icon v-bind="activatorProps">
-              <v-icon>mdi-cog</v-icon>
-            </v-btn>
-          </template>
-          <!-- Application Settings Modal -->
-          <template v-slot:default="{ isActive }">
-            <v-card title="Application Settings" class="mb-3" v-bind="isActive">
-              <v-card-text>
-                <v-row>
-                  <v-col cols="12">
-                    <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
-                      @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest words on page load`" hide-details
-                      inset></v-switch>
-
-                    <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
-                      @change="handleAutoSpeechOnChecking" :label="`Auto play the word when it begins to show`"
-                      hide-details inset></v-switch>
-
-                    <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
-                      v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
-                      :label="`Auto detect clipboard text`" hide-details inset></v-switch>
-
-
-                    <v-dialog max-width="500">
-                      <template v-slot:activator="{ props: activatorProps }">
-                        <div v-if="!clipboardGranted" v-bind="activatorProps" @click="readClipboard" class="mb-2">
-                          <v-text style="font-size: 12px;" class="text-danger" role="button">The app needs permission to access the clipboard in browser settings. <b>For more help, click here.</b></v-text>
-                        </div>
-                      </template>
-
-                      <template v-slot:default="{ isActive }">
-                        <v-card title="How to Enable Clipboard Access">
-                          <v-card-text>
-                            <h4><v-icon color="#DB4437" icon="mdi-google-chrome"/> Chrome</h4>
-                            <ul>
-                              <li>Open the Chrome browser.</li>
-                              <li>Go to the browser's settings.</li>
-                              <li>Find the "Site Settings" or "Settings" section.</li>
-                              <li>Navigate to "Permissions" and enable "Clipboard".</li>
-                            </ul>
-
-                            <h4><v-icon color="#FF9400" icon="mdi-firefox"/> Firefox</h4>
-                            <ul>
-                              <li>Open the Firefox browser.</li>
-                              <li>Go to the browser's Settings.</li>
-                              <li>Find the "Permissions" section and enable clipboard access.</li>
-                            </ul>
-
-                            <h4><v-icon color="#1E90FF" icon="mdi-apple-safari"/> Safari</h4>
-                            <ul>
-                              <li>Open your phone's Settings app.</li>
-                              <li>Navigate to Safari.</li>
-                              <li>Look for clipboard-related settings and enable them.</li>
-                            </ul>
-                            <h5>If using another browser:</h5>
-                            <ul>
-                              <li>Look for a similar "Permissions" or "Site Settings" option in the browser's settings
-                                and enable clipboard access.</li>
-                            </ul>
-                          </v-card-text>
-
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
 
 
 
-                    <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser does
-                      not support SpeechSynthesis</v-text>
-                    <div v-bind:class="{ 'disabled': !t2sSupported }">
-
-
-                      <h5 class="mt-0">Text To Speech Settings</h5>
-                      <v-row>
-                        <v-col cols="8">
-                          <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
-                        </v-col>
-                        <v-col cols="4">
-                          <v-btn color="primary" icon="mdi-play" size="55" @click="textToSpeech(sampleText)"></v-btn>
-                        </v-col>
-                      </v-row>
-                      <div class="text-caption">Rate</div>
-                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
-                        @mouseleave="soundSettingsChange" hint="Controls the speed of speech."
-                        persistent-hint></v-slider>
-                      <div class="text-caption mt-3">Pitch</div>
-
-                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
-                        @mouseleave="soundSettingsChange" hint="Adjusts the pitch of the voice."
-                        persistent-hint></v-slider>
-                      <div class="text-caption mt-3">Volume</div>
-
-                      <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
-                        @mouseleave="soundSettingsChange" hint="Sets the volume of the speech."
-                        persistent-hint></v-slider>
-
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn text="Close" @click="isActive.value = false"></v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
         <v-btn icon v-if="showWebAppButton" @click="handleInstallPWA">
           <v-icon>mdi-open-in-app</v-icon>
+        </v-btn>
+
+        <v-btn icon @click="handleInstallPWA" @click.stop="drawer = !drawer">
+          <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
       </v-app-bar>
 
       <!-- Router View -->
-      <v-main style="min-height: 100vh;">
+      <v-main style="min-height: 100vh;padding-left: 0;">
         <router-view />
       </v-main>
 
@@ -286,7 +327,8 @@
   </v-container>
 
   <!-- Word Suggestion -->
-  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize" v-touch:swipe="()=>{suggestion.Show = false; getSuggestionWord()}">
+  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize"
+    v-touch:swipe="() => { suggestion.Show = false; getSuggestionWord() }">
     <h7>Word Suggestion</h7>
     <h5 class="m-0">{{ suggestion.Word }}</h5>
     <div>{{ suggestion.Definition }}</div>
@@ -313,6 +355,7 @@ export default {
   },
   data() {
     return {
+      drawer: null,
       speechPitch: localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) * 100 : 100,
       speechRate: localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) * 100 : 100,
       speechVolume: localStorage.getItem('speechVolume') ? parseFloat(localStorage.getItem('speechVolume')) * 100 : 100,
