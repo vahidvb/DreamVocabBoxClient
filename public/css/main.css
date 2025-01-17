@@ -87,7 +87,7 @@ input[type=number] {
 
 }
 
-.loading-overlay {
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -99,14 +99,18 @@ input[type=number] {
     justify-content: center;
     z-index: 9999999;
 }
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #ccc;
-    border-top: 5px solid #2c676b;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.checking-overaly{
+    pointer-events: none;
+    background: linear-gradient(39deg, rgba(9, 166, 0, .8) 0%, rgba(0, 255, 4, 0.5) 50%, rgb(0 255 128 / 50%) 100%);
+    opacity: 0;
+    transition: .4s;
+    transform: translateX(-50%);
+    position: fixed;
+    left: 50%;
+    width: 448px;
+}
+.checking-overaly.not{
+    background: linear-gradient(132deg, rgba(180, 58, 58, 0.5) 0%, rgb(173 0 0 / 50%) 50%, rgba(255, 0, 0, 0.8) 100%);
 }
 
 @keyframes spin {

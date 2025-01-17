@@ -286,7 +286,7 @@
   </v-container>
 
   <!-- Word Suggestion -->
-  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize">
+  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize" v-touch:swipe="()=>{suggestion.Show = false; getSuggestionWord()}">
     <h7>Word Suggestion</h7>
     <h5 class="m-0">{{ suggestion.Word }}</h5>
     <div>{{ suggestion.Definition }}</div>
@@ -494,7 +494,7 @@ export default {
       }
       setTimeout(() => {
         this.suggestion.Show = true;
-      }, 300);
+      }, 400);
     },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);

@@ -1,5 +1,9 @@
 <template>
-    <v-container>
+    <div class="overlay checking-overaly" v-bind:class="{'not':!checkedTrue}" v-bind:style="{ opacity: checkedAnim ? 1 : 0 }">
+
+    </div>
+    <v-container class="h-100" v-touch:swipe.left="() => setVocabularyCheck(true)"
+        v-touch:swipe.right="() => setVocabularyCheck(false)">
         <v-row>
             <v-col cols="12" class="text-center">
                 <v-card elevation="16" class="pa-4">
@@ -59,6 +63,8 @@ export default {
         return {
             vocabulary: {},
             showMeaning: false,
+            checkedAnim: false,
+            checkedTrue: false,
         };
     },
 
@@ -77,6 +83,8 @@ export default {
             }
         },
         async setVocabularyCheck(learned) {
+            this.checkedAnim = true;
+            this.checkedTrue = learned
             const form = { VocabularyId: this.vocabulary.Id, Learned: learned };
             const response = await this.postRequest('Vocabularies', 'SetVocabularyCheck', form);
             if (response.Data == undefined && response.IsSuccess) {
@@ -89,6 +97,9 @@ export default {
                     this.textToSpeech(this.vocabulary.Word);
             }
             this.showMeaning = false;
+            setTimeout(() => {
+                this.checkedAnim = 0;
+            }, 300);
         }
     },
     async mounted() {

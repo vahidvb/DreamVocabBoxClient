@@ -6,6 +6,7 @@ import { createPinia } from 'pinia';
 import router from './router';
 import directives from './directives';
 import speechPlugin from './plugins/speech';
+import Vue3TouchEvents from "vue3-touch-events";
 
 
 // Vuetify
@@ -27,6 +28,7 @@ const pinia = createPinia();
 
 app.use(directives);
 app.use(vuetify);
+app.use(Vue3TouchEvents);
 app.use(router);
 app.use(notyfPlugin);
 app.use(axiosPlugin);

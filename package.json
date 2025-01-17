@@ -16,7 +16,8 @@
     "notyf": "^3.10.0",
     "pinia": "^2.3.0",
     "vue": "^3.2.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vue3-touch-events": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
