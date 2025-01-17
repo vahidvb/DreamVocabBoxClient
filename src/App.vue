@@ -150,11 +150,54 @@
                       v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
                       :label="`Auto detect clipboard text`" hide-details inset></v-switch>
 
-                    <div v-if="!clipboardGranted">
 
-                      <v-text style="font-size: 12px;" class="text-danger">The app needs permission to use "Clipboard"
-                        in browser settings.</v-text>
-                    </div>
+                    <v-dialog max-width="500">
+                      <template v-slot:activator="{ props: activatorProps }">
+                        <div v-if="!clipboardGranted" v-bind="activatorProps" @click="readClipboard" class="mb-2">
+                          <v-text style="font-size: 12px;" class="text-danger" role="button">The app needs permission to access the clipboard in browser settings. <b>For more help, click here.</b></v-text>
+                        </div>
+                      </template>
+
+                      <template v-slot:default="{ isActive }">
+                        <v-card title="How to Enable Clipboard Access">
+                          <v-card-text>
+                            <h4><v-icon color="#DB4437" icon="mdi-google-chrome"/> Chrome</h4>
+                            <ul>
+                              <li>Open the Chrome browser.</li>
+                              <li>Go to the browser's settings.</li>
+                              <li>Find the "Site Settings" or "Settings" section.</li>
+                              <li>Navigate to "Permissions" and enable "Clipboard".</li>
+                            </ul>
+
+                            <h4><v-icon color="#FF9400" icon="mdi-firefox"/> Firefox</h4>
+                            <ul>
+                              <li>Open the Firefox browser.</li>
+                              <li>Go to the browser's Settings.</li>
+                              <li>Find the "Permissions" section and enable clipboard access.</li>
+                            </ul>
+
+                            <h4><v-icon color="#1E90FF" icon="mdi-apple-safari"/> Safari</h4>
+                            <ul>
+                              <li>Open your phone's Settings app.</li>
+                              <li>Navigate to Safari.</li>
+                              <li>Look for clipboard-related settings and enable them.</li>
+                            </ul>
+                            <h5>If using another browser:</h5>
+                            <ul>
+                              <li>Look for a similar "Permissions" or "Site Settings" option in the browser's settings
+                                and enable clipboard access.</li>
+                            </ul>
+                          </v-card-text>
+
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+
+
 
                     <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser does
                       not support SpeechSynthesis</v-text>
@@ -213,11 +256,10 @@
 
   <!-- Text Selection or Clipboard Bar -->
   <v-container v-if="$route.meta.Authorize"
-    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2}"
-    class="selection-bar">
+    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2 }" class="selection-bar">
     <v-row>
       <v-col>
-        
+
         <v-spacer></v-spacer>
         <router-link @click="selection.showBarLevel = 0" class="navbar-brand"
           :to="{ path: `/AddVocabulary/${selection.text}` }">
@@ -233,7 +275,8 @@
     </v-row>
 
   </v-container>
-  <v-container class="selection-bar-toggler" v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel > 0 }" v-if="$route.meta.Authorize">
+  <v-container class="selection-bar-toggler"
+    v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel > 0 }" v-if="$route.meta.Authorize">
     <v-text class="h3" block>{{ selection.text }}</v-text>
     <v-icon @click="selection.showBarLevel = 2"
       v-if="selection.showBarLevel == 1 && $route.meta.Authorize">mdi-arrow-down-drop-circle</v-icon>
@@ -394,10 +437,9 @@ export default {
         this.selection.showBarLevel = 1;
         this.selection.text = text.trim();
         this.lastClipboardText = text.trim();
-      }).catch((error) => {
+      }).catch(() => {
         this.clipboardGranted = false;
         localStorage.setItem('autoDetectClipboardChange', 'false');
-        console.error('Failed to read clipboard:', error);
       });
     },
     handleAutoSpeechOnChecking() {
