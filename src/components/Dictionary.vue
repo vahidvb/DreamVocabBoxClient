@@ -92,8 +92,8 @@ export default {
                 if (this.debounceSearch)
                     this.debounceSearch.cancel();
 
-                this.debounceSearch = debounce(() => {
-                    this.findEnglishToEnglish(newVal);
+                this.debounceSearch = debounce(async () => {
+                    await this.findEnglishToEnglish(newVal);
                 }, 500);
 
                 this.debounceSearch();
