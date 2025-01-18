@@ -235,7 +235,9 @@ input[type=number] {
 }
 
 .dictionary-help .dic-help:before {
-    content: '🔴';
+    font: normal normal normal 14px/1 "Material Design Icons";
+    content: '󰻂';
+    color: #5f5f5f;
 }
 
 .just-disabled {

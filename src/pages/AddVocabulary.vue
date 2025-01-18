@@ -14,7 +14,7 @@
                 Add
             </v-btn>
             <div class="mb-1">
-                <v-text-field v-capitalize @keyup="handleWordChange" autofocus list="WordsInDictionary" label="Word"
+                <v-text-field v-capitalize v-stop-typing="handleWordChange" autofocus list="WordsInDictionary" label="Word"
                     v-model="wordForm.Word"></v-text-field>
                 <datalist id="WordsInDictionary">
                     <option v-for="(word, index) in wordsInDictionary" v-bind:value="word.Word" v-bind:key="index">
@@ -51,7 +51,6 @@ export default {
                 Description: ''
             },
             wordsInDictionary: [],
-            suggestWord: null,
         };
     },
     watch: {
@@ -75,10 +74,6 @@ export default {
             try {
                 const response = await this.postRequest('Dictionaries', 'SearchEnglishToEnglish', this.wordForm.Word, false);
                 this.wordsInDictionary = response.Data;
-                this.suggestWord = this.wordsInDictionary.findLast(x => x.Word.toLowerCase() == this.wordForm.Word.toLowerCase());
-                if (this.suggestWord != null) {
-                    this.suggestWord.Definition = JSON.parse(this.suggestWord.Definition);
-                }
             } catch (error) {
                 console.error(error);
             }

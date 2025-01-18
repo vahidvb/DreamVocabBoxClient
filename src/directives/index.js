@@ -1,7 +1,8 @@
 import capitalize from './capitalize';
+import stopTyping from './stop-typing';
 
 const directives = {
-    capitalize,
+    capitalize, stopTyping
 };
 
 export default {
