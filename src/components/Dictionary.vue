@@ -1,6 +1,6 @@
 <template>
 
-    <v-list-item lines="two" v-if="text" style="margin-top:-30px">
+    <v-list-item lines="two" v-if="text" style="margin-top:-20px">
         <template v-slot:prepend>
             <v-avatar size="64px">
                 <v-icon size="60">mdi-book-alphabet</v-icon>
@@ -17,7 +17,7 @@
             </v-list-item-title>
             <v-list-item-subtitle v-if="!debounceSearch && dictionary == null">Dosen't Exist In
                 Dictionary</v-list-item-subtitle>
-            <v-list-item-title v-if="!debounceSearch && dictionary != null">
+            <div v-if="!debounceSearch && dictionary != null">
 
                 <v-list-item-title>{{ dictionary.Word }}
                     <SpeechPlay :text="dictionary.Word" />
@@ -30,8 +30,8 @@
                     </v-text>
                     <div v-if="dictionary.DefinitionEn != null">
                         <div v-for="(meaning, index) in dictionary.DefinitionEn.ss" :key="index" class="dic-help">
-                            "{{ meaning.g ?? 'noun' }}" {{ (meaning.p == undefined ? '' : ' 🔊 ' + meaning.p) ?? ''
-                            }}
+                            "{{ meaning.g ?? 'noun' }}" 
+                            <div v-if="meaning.p != undefined"><span class="mdi mdi-account-voice" style="color: #5f5f5f;"></span> {{  meaning.p }}</div>
                             <div v-for="(part, idx) in (meaning.d ? meaning.d.split(';') : [])" :key="idx">
                                 - {{ part }}
                                 <SpeechPlay :text="part" />
@@ -56,7 +56,7 @@
                     </div>
                 </div>
 
-            </v-list-item-title>
+            </div>
 
         </v-list-item-content>
     </v-list-item>
@@ -102,7 +102,7 @@ export default {
     },
     methods: {
         async findEnglishToEnglish(input) {
-            if (input.trim() == "") 
+            if (input == null || input.trim() == "") 
                 return;
             
             const response = await this.postRequest("Dictionaries", "FindEnglish", input, false);

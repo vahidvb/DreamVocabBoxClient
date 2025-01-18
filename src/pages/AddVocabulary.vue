@@ -14,12 +14,8 @@
                 Add
             </v-btn>
             <div class="mb-1">
-                <v-text-field v-capitalize v-stop-typing="handleWordChange" autofocus list="WordsInDictionary" label="Word"
-                    v-model="wordForm.Word"></v-text-field>
-                <datalist id="WordsInDictionary">
-                    <option v-for="(word, index) in wordsInDictionary" v-bind:value="word.Word" v-bind:key="index">
-                    </option>
-                </datalist>
+                <v-combobox v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
+                    label="Word/Phrase" :items="wordsInDictionary"></v-combobox>
             </div>
             <div class="mb-1">
                 <Dictionary :text="wordForm.Word" />
@@ -45,7 +41,7 @@ export default {
     data() {
         return {
             wordForm: {
-                Word: this.$route.params.text ?? '',
+                Word: this.$route.params.text ?? null,
                 Meaning: '',
                 Example: '',
                 Description: ''
@@ -71,9 +67,13 @@ export default {
             }
         },
         async handleWordChange() {
+            if (this.wordForm.Word == null || this.wordForm.Word.trim() == '') {
+                this.wordsInDictionary = [];
+                return;
+            }
             try {
                 const response = await this.postRequest('Dictionaries', 'SearchEnglishToEnglish', this.wordForm.Word, false);
-                this.wordsInDictionary = response.Data;
+                this.wordsInDictionary = response.Data.map(x => x.Word);
             } catch (error) {
                 console.error(error);
             }
