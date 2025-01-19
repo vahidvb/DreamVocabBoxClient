@@ -72,8 +72,8 @@ export default {
                 return;
             }
             try {
-                const response = await this.postRequest('Dictionaries', 'SearchEnglishToEnglish', this.wordForm.Word, false);
-                this.wordsInDictionary = response.Data.map(x => x.Word);
+                const response = await this.postRequest('Dictionaries', 'GetSimilarWords', this.wordForm.Word, false);
+                this.wordsInDictionary = response.Data;
             } catch (error) {
                 console.error(error);
             }
