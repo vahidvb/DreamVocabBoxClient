@@ -12,6 +12,7 @@ export default {
 
         if (input) {
             input.addEventListener('input', debouncedCallback);
+            input.addEventListener('change', debouncedCallback);
             el._debouncedCallback = debouncedCallback;
         }
     },
@@ -20,6 +21,7 @@ export default {
 
         if (input && el._debouncedCallback) {
             input.removeEventListener('input', el._debouncedCallback);
+            input.removeEventListener('change', el._debouncedCallback);
             delete el._debouncedCallback;
         }
     },

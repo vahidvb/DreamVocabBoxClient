@@ -126,7 +126,7 @@ import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";
 
 export default {
-    name: 'VocabulariesComponent',
+    name: 'VocabulariesPage',
     components: { Dictionary, DetailCard },
     data() {
         return {

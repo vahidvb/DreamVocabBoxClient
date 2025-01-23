@@ -20,93 +20,93 @@
             <v-list-item-title>{{ userInfoStore.nickname }}</v-list-item-title>
             <v-list-item-subtitle>{{ userInfoStore.username }}</v-list-item-subtitle>
 
-
-<!-- Avatar/Name & Edit Profile Modal -->
-<v-dialog max-width="500">
-          <!-- Avatar/Name -->
-          <template v-slot:activator="{ props: activatorProps }">
-            <v-btn v-bind="activatorProps" @click="fillProfile();drawer=null" class="mt-1" prepend-icon="mdi-account-edit" variant="tonal" size="x-small">
-              Edit Profile
-            </v-btn> 
-          </template>
-          <!-- Edit Profile Modal -->
-          <template v-slot:default="{ isActive }">
-            <v-card title="Edit Profile">
-              <v-card-text>
-                <v-row>
-                  <v-col cols="3">
+            <!-- Avatar/Name & Edit Profile Modal -->
+            <v-dialog max-width="500">
+              <!-- Avatar/Name -->
+              <template v-slot:activator="{ props: activatorProps }">
+                <v-btn v-bind="activatorProps" @click="fillProfile(); drawer = null" class="mt-1"
+                  prepend-icon="mdi-account-edit" variant="tonal" size="x-small">
+                  Edit Profile
+                </v-btn>
+              </template>
+              <!-- Edit Profile Modal -->
+              <template v-slot:default="{ isActive }">
+                <v-card title="Edit Profile">
+                  <v-card-text>
                     <v-row>
-                      <v-col cols="12">
-                        <img :src="'images/avatars/avatar-' + profile.avatar + '.png'">
+                      <v-col cols="3">
+                        <v-row>
+                          <v-col cols="12">
+                            <img :src="'images/avatars/avatar-' + profile.avatar + '.png'">
+                          </v-col>
+                          <v-col cols="6">
+                            <v-icon color="primary" :disabled="profile.avatar == 1"
+                              @click="profile.avatar > 1 ? profile.avatar -= 1 : 1">mdi-chevron-left</v-icon>
+                          </v-col>
+                          <v-col cols="6" class="text-right">
+                            <v-icon color="primary" :disabled="profile.avatar == 26"
+                              @click="profile.avatar += 1">mdi-chevron-right</v-icon>
+                          </v-col>
+
+                        </v-row>
+
+
                       </v-col>
-                      <v-col cols="6">
-                        <v-icon color="primary" :disabled="profile.avatar == 1"
-                          @click="profile.avatar > 1 ? profile.avatar -= 1 : 1">mdi-chevron-left</v-icon>
-                      </v-col>
-                      <v-col cols="6" class="text-right">
-                        <v-icon color="primary" :disabled="profile.avatar == 26"
-                          @click="profile.avatar += 1">mdi-chevron-right</v-icon>
+                      <v-col cols="9">
+
+                        <v-select v-if="boxScenarios.length > 0" v-model="profile.boxscenario" :items="boxScenarios"
+                          item-title="Title" label="Box Scenarios" item-value="Id" persistent-hint
+                          :hint="boxScenarios[profile.boxscenario].Description" class="mb-3">
+                          <template v-slot:item="{ props, item }">
+                            <v-list-item v-bind="props" :key="item.Id">
+
+                            </v-list-item>
+                          </template>
+                        </v-select>
+
+                        <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login"
+                          autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
+                        <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?"
+                          autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
+                        <v-text-field v-model="profile.email" label="Email Address" autocomplete="off"
+                          hint="Email for password recovery (optional)" persistent-hint outlined type="email"
+                          class="mb-3"></v-text-field>
+                        <v-text-field v-model="profile.password" label="Change Password" autocomplete="new-password"
+                          hint="If you do not want to change the password, leave this field blank (optional)"
+                          persistent-hint outlined type="password" class="mb-3"></v-text-field>
                       </v-col>
 
                     </v-row>
 
 
-                  </v-col>
-                  <v-col cols="9">
+                  </v-card-text>
 
-                    <v-select v-if="boxScenarios.length > 0" v-model="profile.boxscenario" :items="boxScenarios"
-                      item-title="Title" label="Box Scenarios" item-value="Id" persistent-hint
-                      :hint="boxScenarios[profile.boxscenario].Description" class="mb-3">
-                      <template v-slot:item="{ props, item }">
-                        <v-list-item v-bind="props" :key="item.Id">
-
-                        </v-list-item>
+                  <v-card-actions>
+                    <!-- Logout Button -->
+                    <v-dialog max-width="300">
+                      <template v-slot:activator="{ props: activatorProps }">
+                        <v-btn class="mr-auto" v-bind="activatorProps" color="danger">Logout</v-btn>
                       </template>
-                    </v-select>
 
-                    <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login"
-                      autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
-                    <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?"
-                      autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
-                    <v-text-field v-model="profile.email" label="Email Address" autocomplete="off"
-                      hint="Email for password recovery (optional)" persistent-hint outlined type="email"
-                      class="mb-3"></v-text-field>
-                    <v-text-field v-model="profile.password" label="Change Password" autocomplete="new-password"
-                      hint="If you do not want to change the password, leave this field blank (optional)"
-                      persistent-hint outlined type="password" class="mb-3"></v-text-field>
-                  </v-col>
-
-                </v-row>
-
-
-              </v-card-text>
-
-              <v-card-actions>
-                <!-- Logout Button -->
-                <v-dialog max-width="300">
-                  <template v-slot:activator="{ props: activatorProps }">
-                    <v-btn class="mr-auto" v-bind="activatorProps" color="danger">Logout</v-btn>
-                  </template>
-
-                  <template v-slot:default="{ isActive }">
-                    <v-card title="Confirm Logout">
-                      <v-card-text>
-                        Are you sure you want to logout?
-                      </v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue-grey" text @click="isActive.value = false">Cancel</v-btn>
-                        <v-btn color="red" text @click="logout">Logout</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </template>
-                </v-dialog>
-                <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                <v-btn color="success" @click="updateProfile">Update Profile</v-btn>
-              </v-card-actions>
-            </v-card>
-          </template>
-        </v-dialog>
+                      <template v-slot:default="{ isActive }">
+                        <v-card title="Confirm Logout">
+                          <v-card-text>
+                            Are you sure you want to logout?
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue-grey" text @click="isActive.value = false">Cancel</v-btn>
+                            <v-btn color="red" text @click="logout">Logout</v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                    <v-btn color="success" @click="updateProfile">Update Profile</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
 
 
 
@@ -249,7 +249,18 @@
               </v-card>
             </template>
           </v-dialog>
+          <router-link to="/Friends" class="nav-link">
+            <v-badge v-if="this.userInfoStore.friendshipPending>0" :content="this.userInfoStore.friendshipPending" color="danger" class="w-100 pe-2">
+              <v-list-item prepend-icon="mdi-account-group" title="Friends" value="Friends" class="w-100">
+              
+            </v-list-item>
+          </v-badge>
 
+
+            <v-list-item v-if="this.userInfoStore.friendshipPending==0" prepend-icon="mdi-account-group" title="Friends" value="Friends">
+              
+            </v-list-item>
+          </router-link>
         </v-list>
       </v-navigation-drawer>
 
@@ -264,7 +275,7 @@
           <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
         </template>
 
-        
+
 
 
 
@@ -280,7 +291,10 @@
         </v-btn>
 
         <v-btn icon @click.stop="drawer = !drawer">
-          <v-icon>mdi-dots-vertical</v-icon>
+          <v-badge v-if="this.userInfoStore.friendshipPending>0" :content="this.userInfoStore.friendshipPending" color="danger">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-badge>
+          <v-icon v-if="this.userInfoStore.friendshipPending==0">mdi-dots-vertical</v-icon>
         </v-btn>
       </v-app-bar>
 
@@ -453,37 +467,47 @@ export default {
       localStorage.setItem('speechVolume', this.speechVolume / 100);
     },
     checkClipboard() {
-      if (localStorage.getItem('token'))
-        navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
-          if (result.state === "granted") {
-            if (localStorage.getItem('autoDetectClipboardChange') == null)
-              localStorage.setItem('autoDetectClipboardChange', 'true');
-            this.clipboardGranted = true;
-            if (this.autoDetectClipboardChange) {
+      try {
+        if (localStorage.getItem('token'))
+          navigator.permissions.query({ name: "clipboard-read" }).then((result) => {
+            if (result.state === "granted") {
+              if (localStorage.getItem('autoDetectClipboardChange') == null)
+                localStorage.setItem('autoDetectClipboardChange', 'true');
+              this.clipboardGranted = true;
+              if (this.autoDetectClipboardChange) {
+                this.readClipboard();
+              }
+            } else if (result.state === "prompt") {
               this.readClipboard();
+            } else {
+              this.clipboardGranted = false;
+              localStorage.setItem('autoDetectClipboardChange', 'false');
             }
-          } else if (result.state === "prompt") {
-            this.readClipboard();
-          } else {
-            this.clipboardGranted = false;
-            localStorage.setItem('autoDetectClipboardChange', 'false');
-          }
-        });
+          });
+      } catch (error) {
+        console.log(error);
+      }
+
     },
     readClipboard() {
-      navigator.clipboard.readText().then((text) => {
-        this.clipboardGranted = true;
-        localStorage.setItem('autoDetectClipboardChange', 'true');
-        if (text.trim().split(/\s+/).length > 2 || text.trim().length > 30 || !text.trim() || this.lastClipboardText === text.trim()) {
-          return;
-        }
-        this.selection.showBarLevel = 1;
-        this.selection.text = text.trim();
-        this.lastClipboardText = text.trim();
-      }).catch(() => {
-        this.clipboardGranted = false;
-        localStorage.setItem('autoDetectClipboardChange', 'false');
-      });
+      try {
+        navigator.clipboard.readText().then((text) => {
+          this.clipboardGranted = true;
+          localStorage.setItem('autoDetectClipboardChange', 'true');
+          if (text.trim().split(/\s+/).length > 2 || text.trim().length > 30 || !text.trim() || this.lastClipboardText === text.trim()) {
+            return;
+          }
+          this.selection.showBarLevel = 1;
+          this.selection.text = text.trim();
+          this.lastClipboardText = text.trim();
+        }).catch(() => {
+          this.clipboardGranted = false;
+          localStorage.setItem('autoDetectClipboardChange', 'false');
+        });
+      } catch (error) {
+        console.log(error);
+      }
+
     },
     handleAutoSpeechOnChecking() {
       localStorage.setItem('autoSpeechOnChecking', this.autoSpeechOnChecking);

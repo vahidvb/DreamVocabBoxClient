@@ -11,6 +11,7 @@ export const useUserInfoStore = defineStore('userInfo', {
     username: '',
     boxscenario: '',
     boxScenarios: [],
+    friendshipPending: 0,
   }),
   actions: {
     async reloadValues() {
@@ -21,21 +22,20 @@ export const useUserInfoStore = defineStore('userInfo', {
         this.email = response.Data.Email;
         this.username = response.Data.UserName;
         this.boxscenario = response.Data.BoxScenario;
+        this.boxScenarios = response.Data.Scenarios;
+        this.friendshipPending = response.Data.FriendshipPending;
       }
       else
         this.notyf.apiResult(response);
-      response = await postRequest('Users', 'GetScenarios', null, false);
-      if (response.IsSuccess) {
-        this.boxScenarios = response.Data;
-      }
     },
     emptyValues() {
-        this.nickname = '';
-        this.avatar = '';
-        this.email = '';
-        this.username = '';
-        this.boxscenario = '';
-        this.boxScenarios = [];
+      this.nickname = '';
+      this.avatar = '';
+      this.email = '';
+      this.username = '';
+      this.boxscenario = '';
+      this.boxScenarios = [];
+      this.friendshipPending = 0;
     }
   },
 });
