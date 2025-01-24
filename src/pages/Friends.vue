@@ -19,7 +19,7 @@
                     <v-list-item-title>There are no users yet.</v-list-item-title>
                     <v-list-item-subtitle>You can search users and send a friend request</v-list-item-subtitle>
                 </v-list-subheader>
-                <UserList :users="users" :search="search" :getFriendList="getFriendList" />
+                <UserList :users="users" :refresh-method="()=>{getFriendList();search()}" />
             </v-list>
         </v-card-body>
         <v-card-body>
@@ -31,7 +31,7 @@
                     <v-list-item-title>There are no friends yet.</v-list-item-title>
                     <v-list-item-subtitle>You can search users and send a friend request</v-list-item-subtitle>
                 </v-list-subheader>
-                <UserList :users="friends" :search="search" :getFriendList="getFriendList" />
+                <UserList :users="friends" :refresh-method="()=>{getFriendList();search()}" />
             </v-list>
         </v-card-body>
     </v-card>

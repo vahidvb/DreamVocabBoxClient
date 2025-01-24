@@ -1,9 +1,9 @@
 <template>
 
-    <v-list-item lines="two" v-if="text" style="margin-top:-20px">
+    <v-list-item lines="two" v-if="text">
         <template v-slot:prepend>
-            <v-avatar size="64px">
-                <v-icon size="60">mdi-book-alphabet</v-icon>
+            <v-avatar size="40px">
+                <v-icon size="40">mdi-book-alphabet</v-icon>
             </v-avatar>
         </template>
         <v-list-item-content>

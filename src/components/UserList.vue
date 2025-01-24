@@ -3,7 +3,7 @@
     <v-list-item :prepend-avatar="`images/avatars/avatar-${user.Avatar}.png`">
       <v-list-item-title>{{ user.NickName }}</v-list-item-title>
       <v-list-item-subtitle>{{ user.UserName }}</v-list-item-subtitle>
-      <v-list-item-action>
+      <v-list-item-action v-if="type != 'share'">
         <v-btn class="mt-1" prepend-icon="mdi-account-multiple-minus" color="warning" variant="tonal"
           @click="cancelFriendship(user.UserId)"
           v-if="user.FriendshipStatus == friendshipStatuses.Pending && user.IsSentByUser" size="x-small"
@@ -27,7 +27,14 @@
           v-if="user.FriendshipStatus == friendshipStatuses.Pending && !user.IsSentByUser">Reject</v-btn>
       </v-list-item-action>
       <template v-slot:append>
-        <v-dialog max-width="500">
+        <div v-if="type == 'share'">
+          <v-btn class="mt-1" prepend-icon="mdi-share" color="success" variant="tonal"
+            @click="shareVocabulary(user.UserId)" v-if="!user.AddedVocabulary" style="font-size: 12px;">
+            Share
+          </v-btn>
+          <v-text v-if="user.AddedVocabulary" class="description-text">Added this before</v-text>
+        </div>
+        <v-dialog max-width="500" v-if="type != 'share'">
           <template v-slot:activator="{ props: activatorProps }">
             <v-icon v-bind="activatorProps" @click="getUserProfileStatics(user.UserId)" class="mt-1"
               icon="mdi-information-slab-circle" variant="tonal">
@@ -91,6 +98,8 @@
           </template>
         </v-dialog>
       </template>
+
+
     </v-list-item>
     <v-list-item v-if="userIndex < users.length - 1">
       <v-divider inset style="margin: 0; max-width: 100%"></v-divider>
@@ -108,14 +117,22 @@ export default {
       type: Array,
       required: true,
     },
-    search: {
+    refreshMethod: {
       type: Function,
       required: false,
     },
-    getFriendList: {
-      type: Function,
+    type: {
+      type: String,
       required: false,
     },
+    shareBadge: {
+      type: Object,
+      required: false,
+    },
+    shareMessage: {
+      type: String,
+      required: false,
+    }
   },
   data() {
     return {
@@ -129,6 +146,15 @@ export default {
     };
   },
   methods: {
+    async shareVocabulary(UserId) {
+      const form = {
+        ReceiverUserId: UserId,
+        Content: this.shareMessage,
+        Attachments: this.shareBadge.Attachments,
+      };
+      const response = await this.postRequest("Messages", "AddMessage", form, true);
+      this.checkResponse(response);
+    },
     async requestFriendship(UserId) {
       const response = await this.postRequest("Friendships", "RequestFriendship", UserId, true);
       this.checkResponse(response);
@@ -156,10 +182,8 @@ export default {
     async checkResponse(response) {
       if (response.IsSuccess) {
         await this.userInfoStore.reloadValues();
-        if (this.getFriendList)
-          this.getFriendList();
-        if (this.search)
-          this.search();
+        if (this.refreshMethod)
+          this.refreshMethod();
       }
       this.notyf.apiResult(response);
     }

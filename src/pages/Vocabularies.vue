@@ -1,4 +1,6 @@
 <template>
+
+
     <v-table>
         <thead>
             <tr>
@@ -23,7 +25,7 @@
                         </template>
 
                         <template v-slot:default="{ isActive }">
-                            <v-card title="Complete information" class="p-4">
+                            <v-card title="Complete information">
                                 <v-card-text>
                                     <v-card elevation="16" class="pa-4 mb-2">
                                         <h1 class="text-center">{{ vocabulary.Word }}</h1>
@@ -36,7 +38,7 @@
                                         v-show="vocabulary.Description" class="mt-2" />
                                     <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
                                         style="margin-bottom: 60px;">
-                                        <Dictionary :text="vocabulary.Word" />
+                                        <Dictionary :text="vocabulary.Word" style="padding: 0;" />
                                     </v-card>
                                 </v-card-text>
 
@@ -52,6 +54,28 @@
 
 
                 <td class="text-right">
+                    <v-dialog max-width="500">
+                        <template v-slot:activator="{ props: activatorProps }">
+                            <v-btn v-bind="activatorProps" icon="mdi-share" size="x-small" color="success" class="me-3"
+                                @click="getFriendsListForShareWord(vocabulary.Word)"></v-btn>
+                        </template>
+
+                        <template v-slot:default="{ isActive }">
+                            <v-card :title="`Share ${vocabulary.Word}`">
+
+                                <v-text-field v-model="shareMessage" label="Message (Optional)"
+                                    hide-details></v-text-field>
+                                <UserList :users="friendList" type="share" :share-badge="returnBadge(vocabulary)"
+                                    :share-message="shareMessage"
+                                    :refresh-method="() => { getFriendsListForShareWord(vocabulary.Word) }" />
+
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </template>
+                    </v-dialog>
                     <v-dialog max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
                             <v-btn v-bind="activatorProps" icon="mdi-pencil" size="x-small" color="primary"></v-btn>
@@ -124,15 +148,18 @@
 <script>
 import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";
+import UserList from "@/components/UserList.vue";
 
 export default {
     name: 'VocabulariesPage',
-    components: { Dictionary, DetailCard },
+    components: { Dictionary, DetailCard, UserList },
     data() {
         return {
             wordsInDictionary: [],
             dictionary: null,
             vocabularies: [],
+            friendList: [],
+            shareMessage: '',
             page: {
                 "BoxNumber": this.$route.params.boxNumber,
                 "ListLength": 1000,
@@ -141,6 +168,15 @@ export default {
         };
     },
     methods: {
+        async getFriendsListForShareWord(word) {
+            try {
+                const response = await this.postRequest('Friendships', 'GetFriendsListForShareWord', word);
+                this.friendList = response.Data;
+                console.log(this.friendList);
+            } catch (error) {
+                console.error(error);
+            }
+        },
         async handleAddNewWord(wordForm) {
             try {
                 const response = await this.postRequest('Vocabularies', 'EditVocabulary', wordForm);
@@ -167,6 +203,14 @@ export default {
             if (response.IsSuccess)
                 await this.getVocabularies();
             this.dialog = false;
+        },
+        returnBadge(vocabulary) {
+            return {
+                Attachments: [{
+                    Type: 0,
+                    Value: vocabulary.Word,
+                }]
+            }
         }
     },
     async created() {

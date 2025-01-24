@@ -13,19 +13,19 @@
             <v-btn type="submit" class="btn btn-success w-100 mb-2" color="#5865f2" variant="flat">
                 Add
             </v-btn>
-            <div class="mb-1">
+            <div class="mb-2">
                 <v-combobox v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
-                    label="Word/Phrase" :items="wordsInDictionary"></v-combobox>
+                    label="Word/Phrase" :items="wordsInDictionary" hide-details></v-combobox>
             </div>
-            <div class="mb-1">
+            <div class="mb-2">
                 <Dictionary :text="wordForm.Word" />
-                <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning"></v-textarea>
+                <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning" hide-details></v-textarea>
             </div>
-            <div class="mb-1">
-                <v-textarea v-capitalize rows="2" label="Example" v-model="wordForm.Example"></v-textarea>
+            <div class="mb-2">
+                <v-textarea v-capitalize rows="2" label="Example" v-model="wordForm.Example" hide-details></v-textarea>
             </div>
-            <div class="mb-1">
-                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description"></v-textarea>
+            <div class="mb-2">
+                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description" hide-details></v-textarea>
             </div>
 
         </form>
