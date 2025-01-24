@@ -54,28 +54,8 @@
 
 
                 <td class="text-right">
-                    <v-dialog max-width="500">
-                        <template v-slot:activator="{ props: activatorProps }">
-                            <v-btn v-bind="activatorProps" icon="mdi-share" size="x-small" color="success" class="me-3"
-                                @click="getFriendsListForShareWord(vocabulary.Word)"></v-btn>
-                        </template>
-
-                        <template v-slot:default="{ isActive }">
-                            <v-card :title="`Share ${vocabulary.Word}`">
-
-                                <v-text-field v-model="shareMessage" label="Message (Optional)"
-                                    hide-details></v-text-field>
-                                <UserList :users="friendList" type="share" :share-badge="returnBadge(vocabulary)"
-                                    :share-message="shareMessage"
-                                    :refresh-method="() => { getFriendsListForShareWord(vocabulary.Word) }" />
-
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                                </v-card-actions>
-                            </v-card>
-                        </template>
-                    </v-dialog>
+                    <ShareButton :word="vocabulary.Word" color="success" btnclass="me-3"/>
+               
                     <v-dialog max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
                             <v-btn v-bind="activatorProps" icon="mdi-pencil" size="x-small" color="primary"></v-btn>
@@ -148,18 +128,16 @@
 <script>
 import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";
-import UserList from "@/components/UserList.vue";
+import ShareButton from "@/components/ShareButton.vue";
 
 export default {
     name: 'VocabulariesPage',
-    components: { Dictionary, DetailCard, UserList },
+    components: { Dictionary, DetailCard,ShareButton },
     data() {
         return {
             wordsInDictionary: [],
             dictionary: null,
             vocabularies: [],
-            friendList: [],
-            shareMessage: '',
             page: {
                 "BoxNumber": this.$route.params.boxNumber,
                 "ListLength": 1000,
@@ -168,15 +146,6 @@ export default {
         };
     },
     methods: {
-        async getFriendsListForShareWord(word) {
-            try {
-                const response = await this.postRequest('Friendships', 'GetFriendsListForShareWord', word);
-                this.friendList = response.Data;
-                console.log(this.friendList);
-            } catch (error) {
-                console.error(error);
-            }
-        },
         async handleAddNewWord(wordForm) {
             try {
                 const response = await this.postRequest('Vocabularies', 'EditVocabulary', wordForm);
@@ -203,14 +172,6 @@ export default {
             if (response.IsSuccess)
                 await this.getVocabularies();
             this.dialog = false;
-        },
-        returnBadge(vocabulary) {
-            return {
-                Attachments: [{
-                    Type: 0,
-                    Value: vocabulary.Word,
-                }]
-            }
         }
     },
     async created() {

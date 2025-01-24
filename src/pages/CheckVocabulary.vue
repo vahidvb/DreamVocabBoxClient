@@ -7,7 +7,8 @@
         <v-row>
             <v-col cols="12" class="text-center">
                 <v-card elevation="16" class="pa-4">
-                    <h1 class="text-center">{{ vocabulary.Word }}</h1>
+                    <h1 class="text-center">{{ vocabulary.Word }} <ShareButton :word="vocabulary.Word" color="default" btnclass="me-3"/></h1>
+                    
                     <v-btn color="success" @click="showMeaning = true" v-show="!showMeaning">
                         Show Meaning
                     </v-btn>
@@ -54,11 +55,12 @@
 <script>
 import DetailCard from "@/components/DetailCard";
 import Dictionary from "@/components/Dictionary";
+import ShareButton from "@/components/ShareButton.vue";
 import SpeechPlay from "@/components/SpeechPlay";
 
 export default {
     name: 'CheckVocabularyPage',
-    components: { DetailCard, Dictionary, SpeechPlay },
+    components: { DetailCard, Dictionary, SpeechPlay,ShareButton },
     data() {
         return {
             vocabulary: {},
