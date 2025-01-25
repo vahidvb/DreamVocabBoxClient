@@ -250,16 +250,18 @@
             </template>
           </v-dialog>
           <router-link to="/Friends" class="nav-link">
-            <v-badge v-if="this.userInfoStore.friendshipPending>0" :content="this.userInfoStore.friendshipPending" color="danger" class="w-100 pe-2">
+            <v-badge :model-value="this.userInfoStore.friendshipPending > 0" :content="this.userInfoStore.friendshipPending"
+              color="danger" class="w-100 pe-2">
               <v-list-item prepend-icon="mdi-account-group" title="Friends" value="Friends" class="w-100">
-              
-            </v-list-item>
-          </v-badge>
-
-
-            <v-list-item v-if="this.userInfoStore.friendshipPending==0" prepend-icon="mdi-account-group" title="Friends" value="Friends">
-              
-            </v-list-item>
+              </v-list-item>
+            </v-badge>
+          </router-link>
+          <router-link to="/Messages" class="nav-link">
+            <v-badge :model-value="this.userInfoStore.messagesUnread > 0" :content="this.userInfoStore.messagesUnread"
+              color="danger" class="w-100 pe-2">
+              <v-list-item prepend-icon="mdi-forum" title="Messages" value="Messages" class="w-100">
+              </v-list-item>
+            </v-badge>
           </router-link>
         </v-list>
       </v-navigation-drawer>
@@ -291,10 +293,11 @@
         </v-btn>
 
         <v-btn icon @click.stop="drawer = !drawer">
-          <v-badge v-if="this.userInfoStore.friendshipPending>0" :content="this.userInfoStore.friendshipPending" color="danger">
+          <v-badge v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread > 0" :content="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread"
+            color="danger">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-badge>
-          <v-icon v-if="this.userInfoStore.friendshipPending==0">mdi-dots-vertical</v-icon>
+          <v-icon v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread == 0">mdi-dots-vertical</v-icon>
         </v-btn>
       </v-app-bar>
 

@@ -12,6 +12,7 @@ export const useUserInfoStore = defineStore('userInfo', {
     boxscenario: '',
     boxScenarios: [],
     friendshipPending: 0,
+    messagesUnread: 0,
   }),
   actions: {
     async reloadValues() {
@@ -24,6 +25,7 @@ export const useUserInfoStore = defineStore('userInfo', {
         this.boxscenario = response.Data.BoxScenario;
         this.boxScenarios = response.Data.Scenarios;
         this.friendshipPending = response.Data.FriendshipPending;
+        this.messagesUnread = response.Data.MessagesUnread;
       }
       else
         this.notyf.apiResult(response);
@@ -36,6 +38,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       this.boxscenario = '';
       this.boxScenarios = [];
       this.friendshipPending = 0;
+      this.messagesUnread = 0;
     }
   },
 });

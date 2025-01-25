@@ -8,7 +8,7 @@
             <v-card :title="`Share ${word}`">
 
                 <v-text-field v-model="shareMessage" label="Message (Optional)" hide-details></v-text-field>
-                <UserList :users="friendList" type="share" :share-badge="returnBadge"
+                <UserList :users="friendList" type="share" :share-badge="returnBadge()"
                     :share-message="shareMessage"
                     :refresh-method="() => { getFriendsListForShareWord(word) }" />
 
