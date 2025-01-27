@@ -1,54 +1,116 @@
 <template>
+    <v-container>
+        <v-row>
+            <v-col v-for="(message, index) in messages" :key="index" cols="12">
+                <v-card class="pa-3 d-flex flex-column align-start">
+                    <div style="display:inline-flex">
 
-    <v-list-item-group v-for="(message, messagesIndex) in messages" :key="messagesIndex">
+                        <!-- Avatar section -->
+                         <div class="text-left me-2">
+                             <v-avatar class="mb-3">
+                                 <img :src="message.IsUserSent
+                                     ? `images/avatars/avatar-${userInfoStore.avatar}.png`
+                                     : `images/avatars/avatar-${friendProfile.Avatar}.png`" alt="Avatar" />
+                             </v-avatar>
+                    
+                         </div>
+    
+                        <!-- Message content -->
+                        <div class="text-left">
+                            <div class="font-weight-bold text-h6">
+                                {{ message.IsUserSent ? userInfoStore.nickname : friendProfile.UserName }}
+                            </div>
+                            <div class="text-body-2">
+                                {{ message.Content }}                     
+                            </div>
+    
+                            <!-- Attachments -->
+                            <div v-if="message.Attachments.length > 0">
+                                <v-text class="description-text font-weight-bold">Word Suggestions:<br></v-text>
+                                <v-container class="pa-0">
+                                    <v-row>
+                                        <v-col v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex"
+                                            cols="auto">
+                                            <router-link :to="getVocabularyLink(attach)"
+                                                class="text-decoration-none text-primary">
+                                                {{ attach.Word }}
+                                            </router-link>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </div>
+                        </div>
+                    </div>
 
-        <v-list-item :prepend-avatar="`images/avatars/avatar-${message.Avatar}.png`">
-            <v-list-item-title>{{ message.NickName }}</v-list-item-title>
-                <v-list-item-subtitle>{{ message.UserName }}</v-list-item-subtitle>
-                <v-list-item-action>
-                    <v-text class="description-text">{{ message.LastMessage }}</v-text>
-                </v-list-item-action>
-                <template v-slot:append>
-                    <v-badge :model-value="message.UnreadCount > 0" :content="message.UnreadCount" color="danger"
-                class="w-100 pe-2">
-            </v-badge>
-                </template>
-        </v-list-item>
-        <v-list-item v-if="messagesIndex < messages.length - 1">
-            <v-divider inset style="margin: 0; max-width: 100%"></v-divider>
-        </v-list-item>
-
-    </v-list-item-group>
+                    <!-- Read status -->
+                    <div class="text-right w-100">
+                        <v-text class="description-text me-2">
+                                    {{ message.RegisterDateHumanReadable }}
+                                </v-text>
+                        <v-icon v-if="!message.ReadAt" color="grey">mdi-check</v-icon>
+                        <v-icon v-else color="primary">mdi-check-all</v-icon>
+                        <!-- <v-text v-if="message.ReadAt" class="description-check text-grey-darken-1 ml-2">
+                            {{ message.ReadAt }}
+                        </v-text> -->
+                    </div>
+                </v-card>
 
 
-
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 <script>
+import { useUserInfoStore } from '../stores/userInfoStore';
 
 export default {
-    name: 'FriendsPage',
+    name: 'MessagesPage',
     components: {
     },
     data() {
         return {
             messages: [],
+            friendProfile: {},
+            userInfoStore: useUserInfoStore(),
 
         };
     },
     async mounted() {
+        await this.getFriendProfile();
         await this.getMessages();
     },
     methods: {
         async getMessages() {
             const form = {
+                "FriendUserId": this.$route.params.userId,
                 "ListLength": 1000,
                 "ListPosition": 0
             };
-            const response = await this.postRequest('Messages', 'GetMessagesList', form, true);
+            const response = await this.postRequest('Messages', 'GetMessages', form, true);
             if (response.IsSuccess)
                 this.messages = response.Data.Items;
             else
                 this.messages = [];
+            console.log(this.messages);
+        }, async getFriendProfile() {
+            const response = await this.postRequest('Users', 'GetUserPublic', this.$route.params.userId);
+            if (response.IsSuccess)
+                this.friendProfile = response.Data;
+            else
+                this.friendProfile = {};
+            console.log(response.Data);
+
+        },
+        getVocabularyLink(attach) {
+            const params = new URLSearchParams();
+            params.append('Word', attach.Word);
+            if (attach.Meaning) params.append('Meaning', attach.Meaning);
+            if (attach.Example) params.append('Example', attach.Example);
+            if (attach.Description) params.append('Description', attach.Description);
+
+            return attach.Meaning || attach.Description || attach.Example
+                ? `/AddVocabulary?${params.toString()}`
+                : `/AddVocabulary/${attach.Word}`;
         },
 
     }

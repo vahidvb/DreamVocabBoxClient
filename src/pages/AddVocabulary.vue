@@ -41,10 +41,10 @@ export default {
     data() {
         return {
             wordForm: {
-                Word: this.$route.params.text ?? null,
-                Meaning: '',
-                Example: '',
-                Description: ''
+                Word: this.$route.params.Word ?? this.$route.query.Word ?? null,
+                Meaning: this.$route.query.Meaning ?? '',
+                Example: this.$route.query.Example ?? '',
+                Description: this.$route.query.Description ?? '',
             },
             wordsInDictionary: [],
         };

@@ -256,7 +256,7 @@
               </v-list-item>
             </v-badge>
           </router-link>
-          <router-link to="/Messages" class="nav-link">
+          <router-link to="/MessagesList" class="nav-link">
             <v-badge :model-value="this.userInfoStore.messagesUnread > 0" :content="this.userInfoStore.messagesUnread"
               color="danger" class="w-100 pe-2">
               <v-list-item prepend-icon="mdi-forum" title="Messages" value="Messages" class="w-100">
