@@ -125,8 +125,8 @@ export default {
       type: String,
       required: false,
     },
-    shareBadge: {
-      type: Object,
+    shareAttachments: {
+      type: Array,
       required: false,
     },
     shareMessage: {
@@ -147,10 +147,11 @@ export default {
   },
   methods: {
     async shareVocabulary(UserId) {
+      console.log(this.shareAttachments);
       const form = {
         ReceiverUserId: UserId,
         Content: this.shareMessage,
-        Attachments: this.shareBadge.Attachments,
+        Attachments: this.shareAttachments,
       };
       const response = await this.postRequest("Messages", "AddMessage", form, true);
       this.checkResponse(response);
@@ -170,10 +171,12 @@ export default {
     async rejectFriendship(UserId) {
       const response = await this.postRequest("Friendships", "RejectFriendship", UserId, true);
       this.checkResponse(response);
+      this.userInfoStore.reloadValues();
     },
     async acceptFriendship(UserId) {
       const response = await this.postRequest("Friendships", "AcceptFriendship", UserId, true);
       this.checkResponse(response);
+      this.userInfoStore.reloadValues();
     },
     async getUserProfileStatics(UserId) {
       const response = await this.postRequest("Users", "GetUserProfileStatics", UserId);

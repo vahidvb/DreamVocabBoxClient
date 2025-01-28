@@ -27,10 +27,9 @@
                             <!-- Attachments -->
                             <div v-if="message.Attachments.length > 0">
                                 <v-text class="description-text font-weight-bold">Word Suggestions:<br></v-text>
-                                <v-container class="pa-0">
-                                    <v-row>
-                                        <v-col v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex"
-                                            cols="auto">
+                                <v-container class="pa-0 mt-2">
+                                    <v-row v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex" hide-details>
+                                        <v-col class="py-0">
                                             <router-link :to="getVocabularyLink(attach)"
                                                 class="text-decoration-none text-primary">
                                                 {{ attach.Word }}
@@ -78,6 +77,7 @@ export default {
     async mounted() {
         await this.getFriendProfile();
         await this.getMessages();
+        this.userInfoStore.reloadValues();
     },
     methods: {
         async getMessages() {
