@@ -1,19 +1,8 @@
 <template>
 
 
-    <v-table style="padding-top: 57px;">
-        <thead style="
-        position: fixed;
-        top: 64px;
-        background-color: rgba(79, 129, 152, 0.78);
-        z-index: 1004;
-        transform: translateX(-50%);
-        left: 50%;
-        width: 448px;
-        backdrop-filter: blur(4px);
-        border-bottom: 1px solid black;
-        color: white;
-    ">
+    <v-table>
+        <thead style="background-color: rgba(79, 129, 152, 0.78);color:white;">
             <tr>
                 <th class="text-left" style="width: 45px;">
                     <v-checkbox v-model="checkAllVocabularies" @click="checkedSomeVocabularies = false" color="indigo"
