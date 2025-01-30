@@ -7,7 +7,7 @@
         v-touch:swipe.right="() => setVocabularyCheck(false)">
         <v-row>
             <v-col cols="12" class="text-center">
-                <v-card elevation="16" class="pa-4">
+                <v-card class="pa-4">
                     <h1 class="text-center">{{ vocabulary.Word }}
                         <ShareButton :words="[vocabulary.Word]" color="default" btnclass="me-3" />
                     </h1>

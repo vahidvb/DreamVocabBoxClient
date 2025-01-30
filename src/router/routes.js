@@ -7,6 +7,7 @@ import VocabulariesPage from '../pages/Vocabularies.vue';
 import FriendsPage from '../pages/Friends.vue';
 import MessagesListPage from '../pages/MessagesList.vue';
 import MessagesPage from '../pages/Messages.vue';
+import ReviewVocabularyPage from '../pages/ReviewVocabulary.vue';
 
 const routes = [
     { path: '/', component: App, meta: { requiresAuth: true, Authorize: false } },
@@ -15,6 +16,8 @@ const routes = [
     { path: '/AddVocabulary', component: AddVocabularyPage, meta: { requiresAuth: true, Authorize: true } },
     { path: '/AddVocabulary/:Word', component: AddVocabularyPage, meta: { requiresAuth: true, Authorize: true }},
     { path: '/CheckVocabulary/:boxNumber', component: CheckVocabularyPage, meta: { requiresAuth: true, Authorize: true } },
+    { path: '/ReviewVocabulary/:boxNumber', component: ReviewVocabularyPage, meta: { requiresAuth: true, Authorize: true } },
+    { path: '/Vocabularies', component: VocabulariesPage, meta: { requiresAuth: true, Authorize: true }},
     { path: '/Vocabularies/:boxNumber', component: VocabulariesPage, meta: { requiresAuth: true, Authorize: true }},
     { path: '/Friends', component: FriendsPage, meta: { requiresAuth: true, Authorize: true } },
     { path: '/MessagesList', component: MessagesListPage, meta: { requiresAuth: true, Authorize: true } },

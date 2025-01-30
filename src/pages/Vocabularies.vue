@@ -1,7 +1,30 @@
 <template>
-
-
-    <v-table>
+    <v-container>
+        <v-row>
+            <v-col>
+                <v-text-field append-inner-icon="mdi-magnify" density="compact" label="Search text" variant="solo"
+                    hide-details v-model:model-value="page.SearchText" v-stop-typing:500="getVocabularies"
+                    @click:append-inner="getVocabularies" @click:clear="getVocabularies" clearable></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-select hide-details v-model:model-value="page.ListLength" :items="pageLengths"
+                    v-on:update:modelValue="() => { currentPage = 1; getVocabularies() }" label="List Length">
+                </v-select>
+            </v-col>
+            <v-col>
+                <v-select hide-details :items="boxes" v-model="selectedBox"
+                    v-on:update:modelValue="(selected) => { currentPage = 1; page.BoxNumber = selected; getVocabularies() }"
+                    label="Box Number"></v-select>
+            </v-col>
+        </v-row>
+    </v-container>
+    <div v-if="vocabularies.length == 0" class="mt-5">
+        <h3 class="text-center">Nothing found !!!</h3>
+        <h4 class="text-center">Please try adjusting your filters</h4>
+    </div>
+    <v-table v-if="vocabularies.length > 0">
         <thead style="background-color: rgba(79, 129, 152, 0.78);color:white;">
             <tr>
                 <th class="text-left" style="width: 45px;">
@@ -136,6 +159,8 @@
             </tr>
         </tbody>
     </v-table>
+    <v-pagination v-if="vocabularies.length > 0" :length="totalPage" v-model="currentPage"
+        v-on:update:model-value="getVocabularies"></v-pagination>
 </template>
 <script>
 import Dictionary from "@/components/Dictionary.vue";
@@ -147,14 +172,24 @@ export default {
     components: { Dictionary, DetailCard, ShareButton },
     data() {
         return {
+            boxes: [{ title: "Show all boxes", value: 0 }, { title: "Box 1", value: 1 }, { title: "Box 2", value: 2 },
+            { title: "Box 3", value: 3 }, { title: "Box 4", value: 4 },
+            { title: "Box 5", value: 5 }, { title: "Box 6", value: 6 },
+            { title: "Box 7", value: 7 }],
+            selectedBox: this.$route.params.boxNumber == undefined || this.$route.params.boxNumber == 0 ? { title: "Show all boxes", value: 0 } : { title: `Box ${this.$route.params.boxNumber}`, value: this.$route.params.boxNumber },
+            pageLengths: [10, 20, 50, 100, 200, 400, 500],
+            totalPage: 0,
+            currentPage: 1,
+            totalItem: 0,
             checkAllVocabularies: false,
             checkedSomeVocabularies: false,
             wordsInDictionary: [],
             dictionary: null,
             vocabularies: [],
             page: {
-                "BoxNumber": this.$route.params.boxNumber,
-                "ListLength": 1000,
+                "BoxNumber": this.$route.params.boxNumber ?? 0,
+                "SearchText": '',
+                "ListLength": 10,
                 "ListPosition": 0
             }
         };
@@ -189,15 +224,14 @@ export default {
             }
         },
         async getVocabularies() {
+            this.page.ListPosition = (this.currentPage - 1) * this.page.ListLength;
             const response = await this.postRequest('Vocabularies', 'GetVocabularies', this.page);
-            if (response.Data.TotalItem > 0) {
-                this.vocabularies = response.Data.Items;
-                this.vocabularies.forEach(x => {
-                    x.showMeaning = false;
-                });
-            }
-            else
-                this.$router.push('/Boxes');
+
+            this.totalPage = response.Data.TotalPage;
+            this.currentPage = response.Data.CurrentPage;
+            this.totalItem = response.Data.TotalItem;
+            this.vocabularies = response.Data.Items;
+
         }
         ,
         async handleRemoveWord(id) {

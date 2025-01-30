@@ -54,7 +54,9 @@
                                 New</router-link>
 
                             <router-link class="btn btn-soft" v-if="box.UnCheckedCount == 0 && box.CheckedCount > 0"
-                                :to="{ path: `/Vocabularies/${box.BoxNumber}` }">Show Words</router-link>
+                                :to="{ path: `/Vocabularies/${box.BoxNumber}` }">List</router-link>
+                                <router-link class="btn btn-soft" v-if="box.AllCount > 0" style="transform: rotate(2deg);"
+                                    :to="{ path: `/ReviewVocabulary/${box.BoxNumber}` }">Review</router-link>
                         </div>
                     </div>
                 </div>

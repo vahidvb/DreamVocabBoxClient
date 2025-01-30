@@ -125,6 +125,10 @@
         <v-divider></v-divider>
 
         <v-list density="compact" nav>
+          <router-link to="/Vocabularies" class="nav-link">
+            <v-list-item prepend-icon="mdi-receipt-text" title="My Words" value="My Words">
+            </v-list-item>
+          </router-link>
           <router-link to="/AddVocabulary" class="nav-link">
 
             <v-list-item prepend-icon="mdi-receipt-text-plus" title="Add New Word/Idiom" value="Add New Word/Idiom">
@@ -250,8 +254,8 @@
             </template>
           </v-dialog>
           <router-link to="/Friends" class="nav-link">
-            <v-badge :model-value="this.userInfoStore.friendshipPending > 0" :content="this.userInfoStore.friendshipPending"
-              color="danger" class="w-100 pe-2">
+            <v-badge :model-value="this.userInfoStore.friendshipPending > 0"
+              :content="this.userInfoStore.friendshipPending" color="danger" class="w-100 pe-2">
               <v-list-item prepend-icon="mdi-account-group" title="Friends" value="Friends" class="w-100">
               </v-list-item>
             </v-badge>
@@ -293,11 +297,12 @@
         </v-btn>
 
         <v-btn icon @click.stop="drawer = !drawer">
-          <v-badge v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread > 0" :content="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread"
-            color="danger">
+          <v-badge v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread > 0"
+            :content="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread" color="danger">
             <v-icon>mdi-dots-vertical</v-icon>
           </v-badge>
-          <v-icon v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread == 0">mdi-dots-vertical</v-icon>
+          <v-icon
+            v-if="this.userInfoStore.friendshipPending + this.userInfoStore.messagesUnread == 0">mdi-dots-vertical</v-icon>
         </v-btn>
       </v-app-bar>
 
