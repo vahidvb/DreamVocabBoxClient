@@ -147,7 +147,6 @@ export default {
   },
   methods: {
     async shareVocabulary(UserId) {
-      console.log(this.shareAttachments);
       const form = {
         ReceiverUserId: UserId,
         Content: this.shareMessage,

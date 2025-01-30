@@ -25,7 +25,8 @@
                 <v-textarea v-capitalize rows="2" label="Example" v-model="wordForm.Example" hide-details></v-textarea>
             </div>
             <div class="mb-2">
-                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description" hide-details></v-textarea>
+                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description"
+                    hide-details></v-textarea>
             </div>
 
         </form>
@@ -52,7 +53,7 @@ export default {
     watch: {
         // eslint-disable-next-line
         $route(to, from) {
-            this.wordForm.Word = to.params.text;
+            this.wordForm.Word = to.params.Word ?? to.query.Word;
         }
     },
     methods: {
@@ -61,7 +62,10 @@ export default {
                 const response = await this.postRequest('Vocabularies', 'AddVocabulary', this.wordForm);
                 this.notyf.apiResult(response);
                 if (response.IsSuccess)
-                    this.$router.push('/Boxes');
+                    if (this.$route.query.ref != null)
+                        this.$router.push(`${this.$route.query.ref}`);
+                    else
+                        this.$router.push('/Boxes');
             } catch (error) {
                 console.error(error);
             }

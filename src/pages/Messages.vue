@@ -6,35 +6,41 @@
                     <div style="display:inline-flex">
 
                         <!-- Avatar section -->
-                         <div class="text-left me-2">
-                             <v-avatar class="mb-3">
-                                 <img :src="message.IsUserSent
-                                     ? `images/avatars/avatar-${userInfoStore.avatar}.png`
-                                     : `images/avatars/avatar-${friendProfile.Avatar}.png`" alt="Avatar" />
-                             </v-avatar>
-                    
-                         </div>
-    
+                        <div class="text-left me-2">
+                            <v-avatar class="mb-3">
+                                <img :src="message.IsUserSent
+                                    ? `images/avatars/avatar-${userInfoStore.avatar}.png`
+                                    : `images/avatars/avatar-${friendProfile.Avatar}.png`" alt="Avatar" />
+                            </v-avatar>
+
+                        </div>
+
                         <!-- Message content -->
                         <div class="text-left">
                             <div class="font-weight-bold text-h6">
                                 {{ message.IsUserSent ? userInfoStore.nickname : friendProfile.UserName }}
                             </div>
                             <div class="text-body-2">
-                                {{ message.Content }}                     
+                                {{ message.Content }}
                             </div>
-    
+
                             <!-- Attachments -->
                             <div v-if="message.Attachments.length > 0">
                                 <v-text class="description-text font-weight-bold">Word Suggestions:<br></v-text>
                                 <v-container class="pa-0 mt-2">
-                                    <v-row v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex" hide-details>
-                                        <v-col class="py-0">
-                                            <router-link :to="getVocabularyLink(attach)"
-                                                class="text-decoration-none text-primary">
+                                    <v-row v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex"
+                                        hide-details>
+
+                                        <router-link :to="getVocabularyLink(attach)"
+                                            :style="attach.AllreadyAdded ? 'color:gray !important' : ''"
+                                            class="text-decoration-none text-primary">
+                                            <v-col class="py-1">
+                                                <v-icon
+                                                    :icon="attach.AllreadyAdded ? 'mdi-check-decagram' : 'mdi-book-plus'"></v-icon>
                                                 {{ attach.Word }}
-                                            </router-link>
-                                        </v-col>
+                                            </v-col>
+                                        </router-link>
+
                                     </v-row>
                                 </v-container>
                             </div>
@@ -44,8 +50,8 @@
                     <!-- Read status -->
                     <div class="text-right w-100">
                         <v-text class="description-text me-2">
-                                    {{ message.RegisterDateHumanReadable }}
-                                </v-text>
+                            {{ message.RegisterDateHumanReadable }}
+                        </v-text>
                         <v-icon v-if="!message.ReadAt" color="grey">mdi-check</v-icon>
                         <v-icon v-else color="primary">mdi-check-all</v-icon>
                         <!-- <v-text v-if="message.ReadAt" class="description-check text-grey-darken-1 ml-2">
@@ -107,10 +113,8 @@ export default {
             if (attach.Meaning) params.append('Meaning', attach.Meaning);
             if (attach.Example) params.append('Example', attach.Example);
             if (attach.Description) params.append('Description', attach.Description);
-
-            return attach.Meaning || attach.Description || attach.Example
-                ? `/AddVocabulary?${params.toString()}`
-                : `/AddVocabulary/${attach.Word}`;
+            params.append("ref", this.$route.fullPath);
+            return `/AddVocabulary?${params.toString()}`;
         },
 
     }
