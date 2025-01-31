@@ -25,7 +25,7 @@
                 </v-card>
             </v-col>
             <v-col cols="12" v-show="showMeaning">
-                <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" v-if="vocabulary.Example" />
+                <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" v-if="vocabulary.Meaning" />
                 <DetailCard :title="'Example'" :value="vocabulary.Example" v-if="vocabulary.Example" class="mt-2" />
                 <DetailCard :title="'Description'" :value="vocabulary.Description" v-if="vocabulary.Description"
                     class="mt-2" />
