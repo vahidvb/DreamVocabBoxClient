@@ -62,7 +62,9 @@
                             <v-card title="Complete information">
                                 <v-card-text>
                                     <v-card elevation="16" class="pa-4 mb-2">
-                                        <h1 class="text-center">{{ vocabulary.Word }}</h1>
+                                        <h1 class="text-center">{{ vocabulary.Word }}
+                                            <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
+                                        </h1>
                                     </v-card>
                                     <DetailCard :title="'Meaning'" :value="vocabulary.Meaning"
                                         v-show="vocabulary.Meaning" />
@@ -100,7 +102,9 @@
                                     <v-card-text>
                                         <form @submit.prevent="handleAddNewWord(vocabulary)" class="pb-3">
                                             <div class="mb-1">
-                                                <h1>{{ vocabulary.Word }}</h1>
+                                                <h1>{{ vocabulary.Word }}
+                                                    <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
+                                                </h1>
                                             </div>
                                             <div class="mb-1">
                                                 <Dictionary :text="vocabulary.Word" />
@@ -166,10 +170,10 @@
 import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";
 import ShareButton from "@/components/ShareButton.vue";
-
+import SpeechPlay from "@/components/SpeechPlay.vue";
 export default {
     name: 'VocabulariesPage',
-    components: { Dictionary, DetailCard, ShareButton },
+    components: { Dictionary, DetailCard, ShareButton,SpeechPlay },
     data() {
         return {
             boxes: [{ title: "Show all boxes", value: 0 }, { title: "Box 1", value: 1 }, { title: "Box 2", value: 2 },
