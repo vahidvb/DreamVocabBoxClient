@@ -10,10 +10,11 @@
             <v-col cols="4">
                 <v-divider></v-divider>
             </v-col>
-            <v-col cols="12">
+            <v-col cols="12" style="font-size: 14px;">
                 <v-text>
-                    {{ value }}
+                    <span v-html="formattedValue"></span>
                 </v-text>
+
             </v-col>
         </v-row>
     </v-card>
@@ -30,7 +31,12 @@ export default {
         value: {
             type: String,
             required: true,
-        },
+        }
+    },
+    computed: {
+        formattedValue() {
+            return this.value.replace(/\n/g, '<br>');
+        }
     }
 };
 </script>
