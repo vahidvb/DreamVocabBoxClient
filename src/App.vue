@@ -126,7 +126,7 @@
 
         <v-list density="compact" nav>
           <router-link to="/Vocabularies" class="nav-link">
-            <v-list-item prepend-icon="mdi-receipt-text" title="My Words" value="My Words">
+            <v-list-item prepend-icon="mdi-receipt-text" :title="'My Words ('+userInfoStore.allVocabularyCount+')'" :value="'My Words ('+userInfoStore.allVocabularyCount+')'">
             </v-list-item>
           </router-link>
           <router-link to="/AddVocabulary" class="nav-link">

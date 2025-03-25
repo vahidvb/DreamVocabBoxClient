@@ -13,6 +13,7 @@ export const useUserInfoStore = defineStore('userInfo', {
     boxScenarios: [],
     friendshipPending: 0,
     messagesUnread: 0,
+    allVocabularyCount: 0,
   }),
   actions: {
     async reloadValues() {
@@ -26,6 +27,7 @@ export const useUserInfoStore = defineStore('userInfo', {
         this.boxScenarios = response.Data.Scenarios;
         this.friendshipPending = response.Data.FriendshipPending;
         this.messagesUnread = response.Data.MessagesUnread;
+        this.allVocabularyCount = response.Data.AllVocabularyCount;
       }
       else
         this.notyf.apiResult(response);
@@ -39,6 +41,7 @@ export const useUserInfoStore = defineStore('userInfo', {
       this.boxScenarios = [];
       this.friendshipPending = 0;
       this.messagesUnread = 0;
+      this.allVocabularyCount = 0;
     }
   },
 });
