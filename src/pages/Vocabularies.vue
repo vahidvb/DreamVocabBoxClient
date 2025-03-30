@@ -173,7 +173,7 @@ import ShareButton from "@/components/ShareButton.vue";
 import SpeechPlay from "@/components/SpeechPlay.vue";
 export default {
     name: 'VocabulariesPage',
-    components: { Dictionary, DetailCard, ShareButton,SpeechPlay },
+    components: { Dictionary, DetailCard, ShareButton, SpeechPlay },
     data() {
         return {
             boxes: [{ title: "Show all boxes", value: 0 }, { title: "Box 1", value: 1 }, { title: "Box 2", value: 2 },
@@ -192,7 +192,7 @@ export default {
             vocabularies: [],
             page: {
                 "BoxNumber": this.$route.params.boxNumber ?? 0,
-                "SearchText": '',
+                "SearchText": this.$route.query.text ?? '',
                 "ListLength": 10,
                 "ListPosition": 0
             }
@@ -203,6 +203,7 @@ export default {
             return this.vocabularies.filter(v => v.checked);
         },
     },
+
     watch: {
         checkAllVocabularies(newVal) {
             if (!this.checkedSomeVocabularies)
@@ -216,6 +217,11 @@ export default {
                 this.checkAllVocabularies = true;
             else
                 this.checkAllVocabularies = false;
+        },
+        // eslint-disable-next-line
+        $route(to, from) {
+            this.page.SearchText= this.$route.query.text ?? '';
+            this.getVocabularies();
         }
     },
     methods: {

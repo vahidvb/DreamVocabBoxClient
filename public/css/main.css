@@ -275,6 +275,9 @@ input[type=number] {
     top: 5px;
     right: 5px;
 }
+.selection-bar-toggler .open-btn{
+    right: 45px;
+}
 .selection-bar {
     width: 448px !important;
     max-width: 100% !important;

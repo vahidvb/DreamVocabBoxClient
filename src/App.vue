@@ -126,7 +126,8 @@
 
         <v-list density="compact" nav>
           <router-link to="/Vocabularies" class="nav-link">
-            <v-list-item prepend-icon="mdi-receipt-text" :title="'My Words ('+userInfoStore.allVocabularyCount+')'" :value="'My Words ('+userInfoStore.allVocabularyCount+')'">
+            <v-list-item prepend-icon="mdi-receipt-text" :title="'My Words (' + userInfoStore.allVocabularyCount + ')'"
+              :value="'My Words (' + userInfoStore.allVocabularyCount + ')'">
             </v-list-item>
           </router-link>
           <router-link to="/AddVocabulary" class="nav-link">
@@ -324,14 +325,19 @@
       <v-col>
 
         <v-spacer></v-spacer>
-        <router-link @click="selection.showBarLevel = 0" class="navbar-brand"
+        <router-link v-show="!selection.isAdded" @click="selection.showBarLevel = 0" class="navbar-brand"
           :to="{ path: `/AddVocabulary/${selection.text}` }">
           <v-btn color="success" size="xs-small" class="p-1 mb-2" prepend-icon="mdi-book-alphabet">Add {{ selection.text
-            }}
+          }}
             To
             My Words</v-btn>
         </router-link>
-
+        <router-link v-show="selection.isAdded" @click="selection.showBarLevel = 0" class="navbar-brand"
+          :to="`/Vocabularies?text=${selection.text}`">
+          <v-btn color="success" size="xs-small" class="p-1 mb-2" prepend-icon="mdi-receipt-text">View {{ selection.text
+          }}
+            In My List</v-btn>
+        </router-link>
         <Dictionary :text="selection.text" v-if="selection.showBarLevel > 0"></Dictionary>
 
       </v-col>
@@ -341,10 +347,10 @@
   <v-container class="selection-bar-toggler"
     v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel > 0 }" v-if="$route.meta.Authorize">
     <v-text class="h3" block>{{ selection.text }}</v-text>
-    <v-icon @click="selection.showBarLevel = 2"
+    <v-icon @click="openToggler" class="open-btn"
       v-if="selection.showBarLevel == 1 && $route.meta.Authorize">mdi-arrow-down-drop-circle</v-icon>
     <v-icon @click="selection.showBarLevel = 0; selection.text = ''"
-      v-if="selection.showBarLevel == 2 && $route.meta.Authorize">mdi-close-circle</v-icon>
+      v-if="$route.meta.Authorize">mdi-close-circle</v-icon>
 
   </v-container>
 
@@ -377,6 +383,7 @@ export default {
   },
   data() {
     return {
+      togglerAutoClose: null,
       drawer: null,
       speechPitch: localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) * 100 : 100,
       speechRate: localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) * 100 : 100,
@@ -398,6 +405,7 @@ export default {
       boxScenarios: [],
       selection: {
         showBarLevel: 0,
+        isAdded: false,
         text: ''
       },
       userInfoStore: useUserInfoStore(),
@@ -469,6 +477,11 @@ export default {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
+    async openToggler() {
+      this.selection.showBarLevel = 2;
+      const response = await this.postRequest('Vocabularies', 'CheckVocabulary', this.selection.text, false);
+      this.selection.isAdded = response.IsSuccess && response.Data;
+    },
     soundSettingsChange() {
       localStorage.setItem('speechPitch', this.speechPitch / 100);
       localStorage.setItem('speechRate', this.speechRate / 100);
@@ -499,6 +512,8 @@ export default {
     },
     readClipboard() {
       try {
+        if (this.togglerAutoClose != null)
+          this.togglerAutoClose.cancel();
         navigator.clipboard.readText().then((text) => {
           this.clipboardGranted = true;
           localStorage.setItem('autoDetectClipboardChange', 'true');
@@ -506,6 +521,14 @@ export default {
             return;
           }
           this.selection.showBarLevel = 1;
+          this.togglerAutoClose = debounce(() => {
+            if (this.selection.showBarLevel === 1) {
+              this.selection.showBarLevel = 0;
+              this.selection.text = '';
+              this.togglerAutoClose.cancel();
+            }
+          }, 3000);
+          this.togglerAutoClose();
           this.selection.text = text.trim();
           this.lastClipboardText = text.trim();
         }).catch(() => {
@@ -548,6 +571,8 @@ export default {
         this.selection.text = '';
         return;
       }
+      if (this.togglerAutoClose != null)
+        this.togglerAutoClose.cancel();
       if (!userSelection) {
         if (this.selection.showBarLevel === 1) {
           this.selection.showBarLevel = 0;
@@ -555,6 +580,14 @@ export default {
         }
       } else if (this.selection.text !== userSelection) {
         this.selection.showBarLevel = 1;
+        this.togglerAutoClose = debounce(() => {
+          if (this.selection.showBarLevel === 1) {
+            this.selection.showBarLevel = 0;
+            this.selection.text = '';
+            this.togglerAutoClose.cancel();
+          }
+        }, 3000);
+        this.togglerAutoClose();
         this.selection.text = userSelection;
       }
     }, 500),
