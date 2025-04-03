@@ -74,7 +74,7 @@
                                         v-show="vocabulary.Description" class="mt-2" />
                                     <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
                                         style="margin-bottom: 60px;">
-                                        <Dictionary :text="vocabulary.Word" style="padding: 0;" />
+                                        <Dictionary :text="vocabulary.Word" style="padding: 0;" :isOpen="!vocabulary.Meaning && !vocabulary.Example && !vocabulary.Description ? true : false" />
                                     </v-card>
                                 </v-card-text>
 
@@ -106,8 +106,10 @@
                                                     <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
                                                 </h1>
                                             </div>
+                                            <div class="mb-4">
+                                                <Dictionary :text="vocabulary.Word" :isOpen="false" />
+                                            </div>
                                             <div class="mb-1">
-                                                <Dictionary :text="vocabulary.Word" />
                                                 <v-textarea rows="3" label="Meaning"
                                                     v-model="vocabulary.Meaning"></v-textarea>
                                             </div>
@@ -220,7 +222,7 @@ export default {
         },
         // eslint-disable-next-line
         $route(to, from) {
-            this.page.SearchText= this.$route.query.text ?? '';
+            this.page.SearchText = this.$route.query.text ?? '';
             this.getVocabularies();
         }
     },

@@ -1,65 +1,80 @@
 <template>
-
-    <v-list-item lines="two" v-if="text">
-        <template v-slot:prepend>
-            <v-avatar size="40px">
-                <v-icon size="40">mdi-book-alphabet</v-icon>
-            </v-avatar>
-        </template>
-        <v-list-item-content>
-
-            <v-list-item-title v-if="debounceSearch">
-                <v-progress-circular v-if="debounceSearch" color="grey-lighten-4" class="mb-2"
-                    indeterminate></v-progress-circular>
-            </v-list-item-title>
+    <div v-if="debounceSearch || dictionary == null">
+        <div v-if="text">
+            <v-progress-circular v-if="debounceSearch" color="grey-lighten-4" class="mb-2"
+                indeterminate></v-progress-circular>
+        </div>
+        <div v-if="text">
             <v-list-item-title v-if="!debounceSearch && dictionary == null">{{ text }}
                 <SpeechPlay :text="text" />
             </v-list-item-title>
-            <v-list-item-subtitle v-if="!debounceSearch && dictionary == null">Dosen't Exist In
-                Dictionary</v-list-item-subtitle>
-            <div v-if="!debounceSearch && dictionary != null">
+            <v-list-item-subtitle v-if="!debounceSearch && dictionary == null">Dosen't Exist In Dictionary</v-list-item-subtitle>
+        </div>
+    </div>
+    <v-expansion-panels v-model="panels" v-show="dictionary != null">
+        <v-expansion-panel>
+            <v-expansion-panel-title>
+                <v-icon size="30">mdi-book-alphabet</v-icon>
+                <v-text v-if="dictionary != null">{{ dictionary.Word }} in dictionary</v-text>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+                <v-list-item v-if="text">
+                    <v-list-item-content>
 
-                <v-list-item-title>{{ dictionary.Word }}
-                    <SpeechPlay :text="dictionary.Word" />
-                </v-list-item-title>
 
 
-                <div class="dictionary-help">
-                    <v-text v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}
-                        <SpeechPlay :text="dictionary.Forms" />
-                    </v-text>
-                    <div v-if="dictionary.DefinitionEn != null">
-                        <div v-for="(meaning, index) in dictionary.DefinitionEn.ss" :key="index" class="dic-help">
-                            "{{ meaning.g ?? 'noun' }}" 
-                            <div v-if="meaning.p != undefined"><span class="mdi mdi-account-voice" style="color: #5f5f5f;"></span> {{  meaning.p }}</div>
-                            <div v-for="(part, idx) in (meaning.d ? meaning.d.split(';') : [])" :key="idx">
-                                - {{ part }}
-                                <SpeechPlay :text="part" />
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="dictionary.DefinitionFa != null">
-                        <div v-for="(rootDefinition, rootIndex) in dictionary.DefinitionFa" :key="rootIndex">
-                            <div v-for="(meanings, index) in rootDefinition" :key="index">
-                                <div v-for="(examples, examplesIndex) in meanings" :key="examplesIndex">
-                                    <div v-for="(example, exampleIndex) in examples.es" :key="exampleIndex">
-                                        <span class="mdi mdi-script-text" style="color: #5f5f5f;"></span> {{ example.e }}
-                                        <SpeechPlay :text="example.e" />
+                        <div v-if="!debounceSearch && dictionary != null">
+
+                            <v-list-item-title>{{ dictionary.Word }}
+                                <SpeechPlay :text="dictionary.Word" />
+                            </v-list-item-title>
+
+
+                            <div class="dictionary-help">
+                                <v-text v-if="dictionary.Forms != null">✨ "forms" {{ dictionary.Forms }}
+                                    <SpeechPlay :text="dictionary.Forms" />
+                                </v-text>
+                                <div v-if="dictionary.DefinitionEn != null">
+                                    <div v-for="(meaning, index) in dictionary.DefinitionEn.ss" :key="index"
+                                        class="dic-help">
+                                        "{{ meaning.g ?? 'noun' }}"
+                                        <div v-if="meaning.p != undefined"><span class="mdi mdi-account-voice"
+                                                style="color: #5f5f5f;"></span> {{ meaning.p }}</div>
+                                        <div v-for="(part, idx) in (meaning.d ? meaning.d.split(';') : [])" :key="idx">
+                                            - {{ part }}
+                                            <SpeechPlay :text="part" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div style="font-family: tahoma;" v-show="meaning.s != null"
-                                    v-for="(meaning, index) in meanings" :key="index">
-                                    - {{ meaning.s }}
+                                <div v-if="dictionary.DefinitionFa != null">
+                                    <div v-for="(rootDefinition, rootIndex) in dictionary.DefinitionFa"
+                                        :key="rootIndex">
+                                        <div v-for="(meanings, index) in rootDefinition" :key="index">
+                                            <div v-for="(examples, examplesIndex) in meanings" :key="examplesIndex">
+                                                <div v-for="(example, exampleIndex) in examples.es" :key="exampleIndex">
+                                                    <span class="mdi mdi-script-text" style="color: #5f5f5f;"></span> {{
+                                                        example.e }}
+                                                    <SpeechPlay :text="example.e" />
+                                                </div>
+                                            </div>
+                                            <div style="font-family: tahoma;" v-show="meaning.s != null"
+                                                v-for="(meaning, index) in meanings" :key="index">
+                                                - {{ meaning.s }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
-                    </div>
-                </div>
 
-            </div>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-expansion-panel-text>
 
-        </v-list-item-content>
-    </v-list-item>
+        </v-expansion-panel>
+    </v-expansion-panels>
+
 
 
 </template>
@@ -78,12 +93,21 @@ export default {
             type: String,
             required: true,
         },
+        isOpen: {
+            type: Boolean,
+            default: true,
+            required: false,
+        },
     },
     data() {
         return {
+            panels: [0],
             dictionary: null,
             debounceSearch: null,
         };
+    },
+    mounted() {
+        this.panels = this.isOpen ? [0] : [];
     },
     watch: {
         text: {
@@ -102,9 +126,9 @@ export default {
     },
     methods: {
         async findEnglishToEnglish(input) {
-            if (input == null || input.trim() == "") 
+            if (input == null || input.trim() == "")
                 return;
-            
+
             const response = await this.postRequest("Dictionaries", "FindEnglish", input, false);
             if (response.IsSuccess) {
                 this.dictionary = response.Data;
