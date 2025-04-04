@@ -282,15 +282,11 @@
           <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
         </template>
 
-
-
-
-
-        <!-- Right Side Icons -->
+        <!-- Right Side Icons 
         <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
           <v-icon>mdi-auto-fix</v-icon>
         </v-btn>
-
+-->
 
 
         <v-btn icon v-if="showWebAppButton" @click="handleInstallPWA">
@@ -310,6 +306,41 @@
       <!-- Router View -->
       <v-main style="min-height: 100vh;padding-left: 0;">
         <router-view />
+        <v-fab style="
+                      transform: translate(calc(-50% - 15px), -37px);
+                      position: fixed;
+                      bottom: 0px;
+                      max-width: 100%;
+                      left: 50%;
+                      width: 448px;" key="absolute" :absolute="true" :app="false" :color="fab_open ? '' : 'primary'"
+          location="absolute" size="large" icon>
+          <v-icon>{{ fab_open ? 'mdi-close' : 'mdi-menu' }}</v-icon>
+          <v-speed-dial v-model="fab_open" location="bottom center" transition="scale-transition" activator="parent">
+            <router-link :to="'/AddVocabulary'" key="1">
+              <v-btn color="success" icon>
+                <v-icon size="24">mdi-receipt-text-plus</v-icon>
+              </v-btn>
+            </router-link>
+
+            <router-link :to="'/Vocabularies'" key="2">
+              <v-btn color="info" icon>
+                <v-icon size="24">mdi-receipt-text</v-icon>
+              </v-btn>
+            </router-link>
+
+            <router-link :to="'/Boxes'" key="3">
+              <v-btn color="warning" icon>
+                <v-icon size="24">mdi-inbox-multiple</v-icon>
+              </v-btn>
+            </router-link>
+
+            <v-btn key="4" color="error" icon @click="suggestion.Show = false; getSuggestionWord()">
+              <v-icon size="24">mdi-auto-fix</v-icon>
+            </v-btn>
+
+
+          </v-speed-dial>
+        </v-fab>
       </v-main>
 
     </v-layout>
@@ -351,7 +382,6 @@
       v-if="selection.showBarLevel == 1 && $route.meta.Authorize">mdi-arrow-down-drop-circle</v-icon>
     <v-icon @click="selection.showBarLevel = 0; selection.text = ''"
       v-if="$route.meta.Authorize">mdi-close-circle</v-icon>
-
   </v-container>
 
   <!-- Word Suggestion -->
@@ -366,6 +396,10 @@
     </router-link>
     <v-icon class="suggest-close" @click="suggestion.Show = false">mdi-close</v-icon>
   </div>
+
+
+
+
 </template>
 
 <script>
@@ -383,6 +417,7 @@ export default {
   },
   data() {
     return {
+      fab_open: false,
       togglerAutoClose: null,
       drawer: null,
       speechPitch: localStorage.getItem('speechPitch') ? parseFloat(localStorage.getItem('speechPitch')) * 100 : 100,
