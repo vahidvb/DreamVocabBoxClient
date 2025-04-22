@@ -65,7 +65,7 @@ export default {
                     if (this.$route.query.ref != null)
                         this.$router.push(`${this.$route.query.ref}`);
                     else
-                        this.$router.push('/Boxes');
+                        this.$router.push('/AddVocabulary');
             } catch (error) {
                 console.error(error);
             }
@@ -75,18 +75,16 @@ export default {
                 this.wordsInDictionary = [];
                 return;
             }
-            if (this.wordForm.Meaning == '' && this.wordForm.Example == '' && this.wordForm.Description == '') {
-                try {
-                    const parsed = JSON.parse(this.wordForm.Word);
-                    if (typeof parsed === 'object' && parsed !== null && parsed.Word != null) {
-                        this.wordForm.Word = parsed.Word;
-                        this.wordForm.Meaning = parsed.Meaning ?? '';
-                        this.wordForm.Example = parsed.Example ?? '';
-                        this.wordForm.Description = parsed.Description ?? '';
-                    }
-                    // eslint-disable-next-line
-                } catch { }
-            }
+            try {
+                const parsed = JSON.parse(this.wordForm.Word);
+                if (typeof parsed === 'object' && parsed !== null && parsed.Word != null && this.wordForm.Word != parsed.Word) {
+                    this.wordForm.Word = parsed.Word;
+                    this.wordForm.Meaning = parsed.Meaning ?? '';
+                    this.wordForm.Example = parsed.Example ?? '';
+                    this.wordForm.Description = parsed.Description ?? '';
+                }
+                // eslint-disable-next-line
+            } catch { }
 
             try {
                 const response = await this.postRequest('Dictionaries', 'GetSimilarWords', this.wordForm.Word, false);
