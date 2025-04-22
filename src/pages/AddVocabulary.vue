@@ -18,7 +18,7 @@
                     label="Word/Phrase" :items="wordsInDictionary" hide-details></v-combobox>
             </div>
             <div class="mb-2">
-                <Dictionary :text="wordForm.Word" />
+                <Dictionary :text="wordForm.Word" :isOpen="false" />
                 <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning" hide-details></v-textarea>
             </div>
             <div class="mb-2">
@@ -75,6 +75,19 @@ export default {
                 this.wordsInDictionary = [];
                 return;
             }
+            if (this.wordForm.Meaning == '' && this.wordForm.Example == '' && this.wordForm.Description == '') {
+                try {
+                    const parsed = JSON.parse(this.wordForm.Word);
+                    if (typeof parsed === 'object' && parsed !== null && parsed.Word != null) {
+                        this.wordForm.Word = parsed.Word;
+                        this.wordForm.Meaning = parsed.Meaning ?? '';
+                        this.wordForm.Example = parsed.Example ?? '';
+                        this.wordForm.Description = parsed.Description ?? '';
+                    }
+                    // eslint-disable-next-line
+                } catch { }
+            }
+
             try {
                 const response = await this.postRequest('Dictionaries', 'GetSimilarWords', this.wordForm.Word, false);
                 this.wordsInDictionary = response.Data;
