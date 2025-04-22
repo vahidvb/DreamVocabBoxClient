@@ -14,11 +14,11 @@
                 Add
             </v-btn>
             <div class="mb-2">
-                <v-combobox v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
+                <v-combobox ref="WordInput" v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
                     label="Word/Phrase" :items="wordsInDictionary" hide-details></v-combobox>
             </div>
             <div class="mb-2">
-                <Dictionary :text="wordForm.Word" :isOpen="false" />
+                <Dictionary :text="wordForm.Word" :isOpen="false" v-if="wordForm.Word!=null && wordForm.Word!=''" />
                 <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning" hide-details></v-textarea>
             </div>
             <div class="mb-2">
@@ -69,6 +69,9 @@ export default {
                         this.wordForm.Meaning = '';
                         this.wordForm.Example = '';
                         this.wordForm.Description = '';
+                        this.$refs.WordInput.focus();
+                        this.wordsInDictionary = [];
+
                     }
             } catch (error) {
                 console.error(error);
