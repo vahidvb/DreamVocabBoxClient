@@ -64,8 +64,12 @@ export default {
                 if (response.IsSuccess)
                     if (this.$route.query.ref != null)
                         this.$router.push(`${this.$route.query.ref}`);
-                    else
-                        this.$router.push('/AddVocabulary');
+                    else {
+                        this.wordForm.Word = '';
+                        this.wordForm.Meaning = '';
+                        this.wordForm.Example = '';
+                        this.wordForm.Description = '';
+                    }
             } catch (error) {
                 console.error(error);
             }
