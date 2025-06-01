@@ -110,7 +110,7 @@
                                                 <Dictionary :text="vocabulary.Word" :isOpen="false" />
                                             </div>
                                             <div class="mb-1">
-                                                <v-textarea rows="3" label="Meaning"
+                                                <v-textarea rows="3" label="Meaning" v-stop-typing:100="handleWordChange(vocabulary)"
                                                     v-model="vocabulary.Meaning"></v-textarea>
                                             </div>
                                             <div class="mb-1">
@@ -252,6 +252,18 @@ export default {
             if (response.IsSuccess)
                 await this.getVocabularies();
             this.dialog = false;
+        },
+        async handleWordChange(wordForm) {
+            try {
+                const parsed = JSON.parse(wordForm.Meaning);
+                if (typeof parsed === 'object' && parsed !== null && parsed.Word != null) {
+                    
+                    wordForm.Meaning = parsed.Meaning ?? '';
+                    wordForm.Example = parsed.Example ?? '';
+                    wordForm.Description = parsed.Description ?? '';
+                }
+                // eslint-disable-next-line
+            } catch { }
         }
     },
     async created() {
