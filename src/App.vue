@@ -464,7 +464,7 @@ export default {
     }
   },
   async mounted() {
-
+this.checkVersion();
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
 
@@ -510,6 +510,20 @@ export default {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
+    checkVersion() {
+fetch('/version.json', { cache: "no-store" })
+    .then(res => res.json())
+    .then(remote => {
+      const current = localStorage.getItem('app_version')
+      if (!current) {
+        localStorage.setItem('app_version', remote.version)
+      } else if (current !== remote.version) {
+          localStorage.setItem('app_version', remote.version)
+          window.location.reload()
+      }
+    })
+    .catch(err => console.error("Version check error:", err))
+    },
     async openToggler() {
       this.selection.showBarLevel = 2;
       const response = await this.postRequest('Vocabularies', 'CheckVocabulary', this.selection.text, false);

@@ -256,8 +256,7 @@ export default {
         async handleWordChange(wordForm) {
             try {
                 const parsed = JSON.parse(wordForm.Meaning);
-                if (typeof parsed === 'object' && parsed !== null && parsed.Word != null) {
-                    
+                if (typeof parsed === 'object' && parsed !== null && parsed.Word != null && parsed.Word === wordForm.Word) {
                     wordForm.Meaning = parsed.Meaning ?? '';
                     wordForm.Example = parsed.Example ?? '';
                     wordForm.Description = parsed.Description ?? '';
