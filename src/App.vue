@@ -26,7 +26,7 @@
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn v-bind="activatorProps" @click="fillProfile(); drawer = null" class="mt-1"
                   prepend-icon="mdi-account-edit" variant="tonal" size="x-small">
-                  Edit Profile
+                  My Account
                 </v-btn>
               </template>
               <!-- Edit Profile Modal -->
@@ -266,7 +266,7 @@
         color="teal-darken-4" image="images/bg.webp" title="Dream Vocab Box">
 
         <template v-slot:prepend>
-          <v-btn v-bind:disabled="isBoxesPage" @click="goBack" icon="mdi-arrow-left"></v-btn>
+          <v-btn v-bind:disabled="currentPage == 'boxes'" @click="goBack" icon="mdi-arrow-left"></v-btn>
         </template>
         <template v-slot:image>
           <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
@@ -296,7 +296,7 @@
       <!-- Router View -->
       <v-main style="min-height: 100vh;padding-left: 0;">
         <router-view />
-        <v-fab style="
+        <v-fab v-if="$route.meta.Authorize && !['reviewvocabulary', 'checkvocabulary'].includes(currentPage)" style="
                       transform: translate(calc(-50% - 15px), -37px);
                       position: fixed;
                       bottom: 0px;
@@ -428,7 +428,7 @@ export default {
         text: ''
       },
       userInfoStore: useUserInfoStore(),
-      isBoxesPage: false,
+      currentPage: 'boxes',
       profile: {
         nickname: '',
         avatar: 0,
@@ -444,7 +444,7 @@ export default {
     $route(to, from) {
       this.selection.showBarLevel = 0;
       this.selection.text = '';
-      this.isBoxesPage = to.path.toLocaleLowerCase() == "/boxes";
+      this.currentPage = to.path.split('/')[1]?.toLowerCase() || '';
     }
   },
   async mounted() {
@@ -641,7 +641,7 @@ export default {
       if (response.IsSuccess) {
         localStorage.setItem("token", response.Data.Token);
         this.userInfoStore.reloadValues();
-        if (this.isBoxesPage) {
+        if (this.currentPage == 'boxes') {
           const sharedStore = useSharedMethods();
           sharedStore.toggle_getVocabulariesBoxes();
         }
