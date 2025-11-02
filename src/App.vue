@@ -107,16 +107,6 @@
                 </v-card>
               </template>
             </v-dialog>
-
-
-
-
-
-
-
-
-
-
           </v-list-item-content>
         </v-list-item>
 
@@ -354,7 +344,6 @@
     v-bind:class="{ 'show': $route.meta.Authorize && selection.showBarLevel == 2 }" class="selection-bar">
     <v-row>
       <v-col>
-
         <v-spacer></v-spacer>
         <router-link v-show="!selection.isAdded" @click="selection.showBarLevel = 0" class="navbar-brand"
           :to="{ path: `/AddVocabulary/${selection.text}` }">
@@ -370,7 +359,6 @@
             In My List</v-btn>
         </router-link>
         <Dictionary :text="selection.text" v-if="selection.showBarLevel > 0"></Dictionary>
-
       </v-col>
     </v-row>
 
@@ -396,10 +384,6 @@
     </router-link>
     <v-icon class="suggest-close" @click="suggestion.Show = false">mdi-close</v-icon>
   </div>
-
-
-
-
 </template>
 
 <script>
@@ -464,7 +448,7 @@ export default {
     }
   },
   async mounted() {
-this.checkVersion();
+    this.checkVersion();
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
 
@@ -511,18 +495,18 @@ this.checkVersion();
   },
   methods: {
     checkVersion() {
-fetch('/version.json', { cache: "no-store" })
-    .then(res => res.json())
-    .then(remote => {
-      const current = localStorage.getItem('app_version')
-      if (!current) {
-        localStorage.setItem('app_version', remote.version)
-      } else if (current !== remote.version) {
-          localStorage.setItem('app_version', remote.version)
-          window.location.reload()
-      }
-    })
-    .catch(err => console.error("Version check error:", err))
+      fetch('/version.json', { cache: "no-store" })
+        .then(res => res.json())
+        .then(remote => {
+          const current = localStorage.getItem('app_version')
+          if (!current) {
+            localStorage.setItem('app_version', remote.version)
+          } else if (current !== remote.version) {
+            localStorage.setItem('app_version', remote.version)
+            window.location.reload()
+          }
+        })
+        .catch(err => console.error("Version check error:", err))
     },
     async openToggler() {
       this.selection.showBarLevel = 2;

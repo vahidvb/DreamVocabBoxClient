@@ -3,7 +3,7 @@
 
 * {
     /* font-family: 'Raleway', sans-serif; */
-    font-family: "Montserrat",tahoma;
+    font-family: "Montserrat", tahoma;
     font-optical-sizing: auto;
     font-style: normal;
 }
@@ -99,7 +99,8 @@ input[type=number] {
     justify-content: center;
     z-index: 9999999;
 }
-.checking-overaly{
+
+.checking-overaly {
     pointer-events: none;
     background: linear-gradient(39deg, rgba(9, 166, 0, .8) 0%, rgba(0, 255, 4, 0.5) 50%, rgb(0 255 128 / 50%) 100%);
     opacity: 0;
@@ -109,7 +110,8 @@ input[type=number] {
     left: 50%;
     width: 448px;
 }
-.checking-overaly.not{
+
+.checking-overaly.not {
     background: linear-gradient(132deg, rgba(180, 58, 58, 0.5) 0%, rgb(173 0 0 / 50%) 50%, rgba(255, 0, 0, 0.8) 100%);
 }
 
@@ -243,12 +245,14 @@ input[type=number] {
 .just-disabled {
     pointer-events: none;
 }
+
 .disabled {
     pointer-events: none;
 
-    opacity:.5;
-    filter:sepia(1)
+    opacity: .5;
+    filter: sepia(1)
 }
+
 .selection-bar-toggler {
     position: absolute !important;
     padding: 5px !important;
@@ -264,7 +268,8 @@ input[type=number] {
     transform: translate(-50%, calc(-100% - 50px));
     transition: .9s cubic-bezier(0.53, 1.54, 0.51, -0.73);
 }
-.selection-bar-toggler i{
+
+.selection-bar-toggler i {
     position: absolute !important;
     background: #2a5c82a1;
     color: white !important;
@@ -275,9 +280,11 @@ input[type=number] {
     top: 5px;
     right: 5px;
 }
-.selection-bar-toggler .open-btn{
+
+.selection-bar-toggler .open-btn {
     right: 45px;
 }
+
 .selection-bar {
     width: 448px !important;
     max-width: 100% !important;
@@ -352,7 +359,17 @@ input[type=number] {
     color: #6b6b6b;
     width: 350px;
 }
-.description-text{
+
+.description-text {
     font-size: 12px;
-    color:#6b6b6b;
+    color: #6b6b6b;
+}
+
+.voice-icon {
+    position: absolute !important;
+    backdrop-filter: blur(2px);
+    padding: 5px !important;
+    font-size: 21px !important;
+    transform: translate(-40px, -40px);
+    z-index: 9999;
 }
