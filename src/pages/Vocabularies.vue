@@ -74,7 +74,8 @@
                                         v-show="vocabulary.Description" class="mt-2" />
                                     <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
                                         style="margin-bottom: 60px;">
-                                        <Dictionary :text="vocabulary.Word" style="padding: 0;" :isOpen="!vocabulary.Meaning && !vocabulary.Example && !vocabulary.Description ? true : false" />
+                                        <Dictionary :text="vocabulary.Word" style="padding: 0;"
+                                            :isOpen="!vocabulary.Meaning && !vocabulary.Example && !vocabulary.Description ? true : false" />
                                     </v-card>
                                 </v-card-text>
 
@@ -98,7 +99,7 @@
                             </template>
 
                             <template v-slot:default="{ isActive }">
-                                <v-card title="Word full information">
+                                <v-card title="Edit">
                                     <v-card-text>
                                         <form @submit.prevent="handleAddNewWord(vocabulary)" class="pb-3">
                                             <div class="mb-1">
@@ -110,8 +111,12 @@
                                                 <Dictionary :text="vocabulary.Word" :isOpen="false" />
                                             </div>
                                             <div class="mb-1">
-                                                <v-textarea rows="3" label="Meaning" v-stop-typing:100="handleWordChange(vocabulary)"
-                                                    v-model="vocabulary.Meaning"></v-textarea>
+                                                <v-textarea rows="3" label="Meaning"
+                                                    v-stop-typing:100="handleWordChange(vocabulary)"
+                                                    v-model="vocabulary.Meaning">
+                                                </v-textarea>
+                                                <v-icon @click="pasteMethod(vocabulary)" color="info"
+                                                    style="cursor: pointer;position: absolute; top: 8px; right: 8px;">mdi-content-paste</v-icon>
                                             </div>
                                             <div class="mb-1">
                                                 <v-textarea rows="2" label="Example"
@@ -263,6 +268,18 @@ export default {
                 }
                 // eslint-disable-next-line
             } catch { }
+        },
+        async pasteMethod(wordForm) {
+            navigator.clipboard.readText().then(async (text) => {
+                if (!text || text.trim() === '') {
+                    this.notyf.warning("Clipboard is empty. Please copy some text and try again.");
+                    return;
+                }
+                wordForm.Meaning = text;
+                this.handleWordChange(wordForm);
+            }).catch(() => {
+                this.notyf.error("Failed to read clipboard contents. Please allow clipboard access or try again.");
+            });
         }
     },
     async created() {

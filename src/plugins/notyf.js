@@ -10,11 +10,7 @@ export default {
                 {
                     type: 'warning',
                     background: 'orange',
-                    icon: {
-                        className: '',
-                        tagName: 'i',
-                        text: 'warning'
-                    },
+                    icon: false,
                     dismissible: true
                 },
                 {
@@ -38,6 +34,7 @@ export default {
             warning(message, duration = 3000) {
                 notyf.open({
                     type: 'warning',
+                    icon: false,
                     message,
                     duration,
                     dismissible: true

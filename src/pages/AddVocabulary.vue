@@ -16,9 +16,11 @@
             <div class="mb-2">
                 <v-combobox ref="WordInput" v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
                     label="Word/Phrase" :items="wordsInDictionary" hide-details></v-combobox>
+                <v-icon @click="pasteMethod" color="info"
+                    style="cursor: pointer;position: absolute; top: 8px; right: 8px;">mdi-content-paste</v-icon>
             </div>
             <div class="mb-2">
-                <Dictionary :text="wordForm.Word" :isOpen="false" v-if="wordForm.Word!=null && wordForm.Word!=''" />
+                <Dictionary :text="wordForm.Word" :isOpen="false" v-if="wordForm.Word != null && wordForm.Word != ''" />
                 <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning" hide-details></v-textarea>
             </div>
             <div class="mb-2">
@@ -99,6 +101,18 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+        async pasteMethod() {
+            navigator.clipboard.readText().then(async (text) => {
+                if (!text || text.trim() === '') {
+                    this.notyf.warning("Clipboard is empty. Please copy some text and try again.");
+                    return;
+                }
+                this.wordForm.Word = text;
+                this.handleWordChange();
+            }).catch(() => {
+                this.notyf.error("Failed to read clipboard contents. Please allow clipboard access or try again.");
+            });
         }
     }
 };
