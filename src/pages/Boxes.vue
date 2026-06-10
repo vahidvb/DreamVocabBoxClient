@@ -1,73 +1,135 @@
 <template>
-
-
-    <div class="container-fluid mt-2">
-        <div class="row">
-            <div class="d-flex justify-content-center" :class="{ 'col-4': index < 6, 'col-10 mx-auto': index == 6 }"
-                v-for="(box, index) in boxes" :key="index">
-                <div class="box">
-                    <div class="row">
-                        <div :class="{ 'col-12': index < 6, 'col-5': index == 6, 'just-disabled': box.AllCount == 0 }">
-                            <v-dialog max-width="500">
-                                <template v-slot:activator="{ props: activatorProps }">
-                                    <img v-bind="activatorProps" :class="{ 'shake-item faster': box.UnCheckedCount }"
-                                        v-bind:src="'/images/boxes/' + box.BoxNumber + '.png'" alt="">
-                                </template>
-
-                                <template v-slot:default="{ isActive }">
-                                    <v-card title="Box information">
-                                        <v-card-text>
-                                            <div class="fw-bolder">Total Vocabularies: {{ box.AllCount }}</div>
-                                            <div class="fw-bolder">Locked Items: {{ box.CheckedCount }}</div>
-                                            <div class="fw-bolder">Waiting For Check: {{ box.UnCheckedCount }}</div>
-                                            <div class="fw-bolder">The closest time to the due date for checking: {{
-                                                box.SoonTime }}</div>
-                                        </v-card-text>
-
-                                        <v-card-actions>
-                                            <v-spacer></v-spacer>
-
-                                            <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </template>
-                            </v-dialog>
-
-                        </div>
-                        <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount > 0">
-                            <span>You have deeply memorized <b style="font-size: 2em;">{{ box.CheckedCount }}</b>
-                                words.</span>
-                        </div>
-                        <div class="col-7 box-7-text" v-if="index == 6 && box.CheckedCount == 0">
-                            <span>Oops! You haven't reached this box yet.</span>
-                        </div>
-                        <div class="col-12 align-self-center">
-                            <router-link class="btn shake-item" v-if="box.UnCheckedCount"
-                                :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }">Start Checking {{ box.UnCheckedCount
-                                }} {{
-                                    box.UnCheckedCount==1 ? "Word" : "Words" }}</router-link>
-
-                            <span class="btn btn-soft disabled" v-if="box.AllCount == 0 && index > 0">It's Empty</span>
-
-                            <router-link class="btn" v-if="box.AllCount == 0 && index == 0"
-                                :to="{ path: `/AddVocabulary` }">Add
-                                New</router-link>
-
-                            <router-link class="btn btn-soft" v-if="box.UnCheckedCount == 0 && box.CheckedCount > 0"
-                                :to="{ path: `/Vocabularies/${box.BoxNumber}` }">List</router-link>
-                                <router-link class="btn btn-soft" v-if="box.AllCount > 0" style="transform: rotate(2deg);"
-                                    :to="{ path: `/ReviewVocabulary/${box.BoxNumber}` }">Review</router-link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <v-row class="boxes ma-0">
+  <v-col
+    v-for="(box, index) in boxes"
+    :key="index"
+    cols="12"
+  >
+    <div
+      class="box-card"
+      :class="{
+        'box-card--empty': box.AllCount == 0,
+        'box-card--alert': box.UnCheckedCount > 0
+      }"
+    >
+      <!-- Top badge -->
+      <div class="box-top">
+        <div class="box-number">
+                     <img
+              v-bind="activatorProps"
+              :src="`/images/box.png`"
+              alt=""
+     
+            />
+          <span>Box {{ box.BoxNumber }}</span> 
         </div>
 
+        <div
+          class="box-status"
+          :class="{
+            'status-empty': box.AllCount == 0,
+            'status-review': box.UnCheckedCount > 0,
+            'status-checked': box.AllCount > 0 && box.UnCheckedCount == 0
+          }"
+        >
+        
+          <template v-if="box.AllCount == 0">Empty</template>
+          <template v-else-if="box.UnCheckedCount > 0">Needs Checking</template>
+          <template v-else>Checked</template>
+        </div>
+      </div>
 
 
+
+      <!-- Stats -->
+      <div class="box-stats">
+        <div class="stat-item">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{ box.AllCount }}</span>
+        </div>
+
+        <div class="stat-item checked">
+          <span class="stat-label">Checked</span>
+          <span class="stat-value">{{ box.CheckedCount }}</span>
+        </div>
+
+        <div class="stat-item highlight" v-if="box.UnCheckedCount > 0">
+          <span class="stat-label">Waiting</span>
+          <span class="stat-value">{{ box.UnCheckedCount }}</span>
+        </div>
+
+        <div class="stat-item" v-else>
+          <span class="stat-label">Waiting for check</span>
+          <span class="stat-value">0</span>
+        </div>
+      </div>
+
+      <!-- Soon Time -->
+      <div class="box-soon" v-if="box.AllCount > 0">
+        <div class="soon-label">Closest review</div>
+        <div class="soon-value">
+          {{ box.SoonTime || 'Not scheduled yet' }}
+        </div>
+      </div>
+
+      <!-- Special text for box 7 -->
+      <div class="box-special" v-if="index == 6">
+        <template v-if="box.CheckedCount > 0">
+          You have deeply memorized
+          <b>{{ box.CheckedCount }}</b>
+          words.
+        </template>
+        <template v-else>
+          Oops! You haven't reached this box yet.
+        </template>
+      </div>
+
+      <!-- Actions -->
+      <div class="box-actions">
+        <router-link
+          :class="{'disabled': box.UnCheckedCount==0,}"
+          class="box-btn box-btn-success"
+          :to="{ path: `/CheckVocabulary/${box.BoxNumber}` }"
+        >
+          Start Checking
+        </router-link>
+
+        <router-link
+          v-if="box.AllCount > 0"
+          class="box-btn box-btn-primary"
+          :to="{ path: `/ReviewVocabulary/${box.BoxNumber}` }"
+        >
+          Review
+        </router-link>
+
+        <router-link
+          class="box-btn box-btn-secondary"
+          :to="{ path: `/Vocabularies/${box.BoxNumber}` }"
+        >
+          View All Words
+        </router-link>
+
+        <router-link
+          v-if="box.AllCount == 0 && index == 0"
+          class="box-btn box-btn-success"
+          :to="{ path: `/AddVocabulary` }"
+        >
+          Add New
+        </router-link>
+
+        <span
+          v-if="box.AllCount == 0 && index > 0"
+          class="box-btn box-btn-disabled"
+        >
+          It's Empty
+        </span>
+      </div>
     </div>
+  </v-col>
+</v-row>
 
 </template>
+
 
 <script>
 import { useSharedMethods } from '../stores/sharedMethodsStore';
@@ -108,4 +170,7 @@ export default {
 };
 
 </script>
-<style></style>
+<style>
+
+
+</style>

@@ -3,7 +3,7 @@ import { useLoadingStore } from '../stores/loadingStore';
 
 const instance = axios.create({
   //baseURL: 'https://localhost:7011',
-  baseURL: 'https://www.api.dvbox.ir',
+  baseURL: 'https://www.dvbox.ir/api',
   //baseURL: 'http://192.168.1.100:5124',
   headers: {
     'Content-Type': 'application/json',

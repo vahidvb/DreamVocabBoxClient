@@ -71,12 +71,12 @@
     }
   ],
   "start_url": "/",
-  "background_color": "#88add1",
+  "background_color": "#cdcdcd",
   "display": "standalone",
   "orientation": "portrait-primary",
   "scope": "/",
   "dir": "ltr",
-  "theme_color": "#58ced6",
+  "theme_color": "#cdcdcd",
   "permissions": [
     "clipboardRead"
     ]

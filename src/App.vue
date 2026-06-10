@@ -269,7 +269,7 @@
           <v-btn v-bind:disabled="currentPage == 'boxes'" @click="goBack" icon="mdi-arrow-left"></v-btn>
         </template>
         <template v-slot:image>
-          <v-img gradient="to top right, rgba(19,84,122,.7), rgba(128,208,199,.7)"></v-img>
+          <v-img gradient="to top right, #2d16d56b, #f98f436b"></v-img>
         </template>
 
         <!-- Right Side Icons 
@@ -384,6 +384,79 @@
     </router-link>
     <v-icon class="suggest-close" @click="suggestion.Show = false">mdi-close</v-icon>
   </div>
+
+
+  <!-- Application update dialog -->
+  <v-dialog v-model="updateDialog" persistent max-width="420">
+    <v-card style="overflow:visible;" rounded="xl" class="pa-2">
+
+      <v-card-text class="text-center pt-6">
+
+        <!-- Success icon -->
+        <div class="d-flex align-center justify-center" style="gap:10px; transform:translateY(-100%); z-index:2;">
+          <v-avatar color="success" size="56">
+            <v-icon color="white" size="30">mdi-check</v-icon>
+          </v-avatar>
+        </div>
+
+        <!-- Update success title -->
+        <div class="text-h6 font-weight-bold mb-2" style="margin-top:-50px;">
+          Update completed successfully
+        </div>
+
+        <!-- Version only (if changelog is empty) -->
+        <div v-if="newChanges.length == 0" class="text-caption">
+          {{ newVersion }}
+        </div>
+
+        <!-- Changelog section -->
+        <div v-if="newChanges.length > 0">
+
+          <div class="text-caption text-medium-emphasis mb-3">
+            Latest changes in recent versions
+          </div>
+
+          <!-- Scrollable area -->
+          <div class="rounded-lg bg-grey-lighten-4 pa-3" style="max-height:220px; overflow-y:auto;">
+
+            <!-- Each version block -->
+            <div v-for="(version, vIndex) in newChanges" :key="vIndex" class="mb-4">
+              <!-- Version title -->
+              <div class="text-subtitle-2 font-weight-bold mb-2">
+                Version {{ version.Version }}
+              </div>
+
+              <!-- Changes -->
+              <div v-for="(change, cIndex) in version.Changes" :key="cIndex" class="d-flex align-start py-1"
+                style="gap:6px;">
+                <v-icon color="success" size="16" class="mt-1">
+                  mdi-check-circle
+                </v-icon>
+
+                <span class="text-body-2">
+                  {{ change }}
+                </span>
+              </div>
+
+              <v-divider v-if="vIndex !== newChanges.length - 1" class="mt-3" />
+            </div>
+
+          </div>
+
+        </div>
+
+      </v-card-text>
+
+      <!-- Dialog actions -->
+      <v-card-actions class="justify-center pb-4">
+        <v-btn color="success" variant="elevated" rounded="lg" min-width="120" @click="onOkClickUpdateDialog">
+          Got it
+        </v-btn>
+      </v-card-actions>
+
+    </v-card>
+  </v-dialog>
+
 </template>
 
 <script>
@@ -401,6 +474,7 @@ export default {
   },
   data() {
     return {
+      updateDialog: false,
       fab_open: false,
       togglerAutoClose: null,
       drawer: null,
@@ -448,7 +522,6 @@ export default {
     }
   },
   async mounted() {
-    this.checkVersion();
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
 
@@ -459,12 +532,45 @@ export default {
     this.checkClipboard();
 
 
-    // Start Install PWA
-    window.addEventListener("load", () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js');
-      }
-    });
+    // ----------------------------
+    // PWA installation logic
+    // ----------------------------
+    // Register the Service Worker and listen for updates
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/service-worker.js')
+        .then((reg) => {
+
+          // Detect when a new service worker is found
+          reg.onupdatefound = () => {
+
+            const newWorker = reg.installing;
+            if (!newWorker) return;
+
+            newWorker.onstatechange = () => {
+
+              // If a new service worker finished installing
+              // and another SW is already controlling the page
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                console.log("New service worker installed");
+              }
+
+            };
+
+          };
+
+        })
+        .catch(err => console.error("Service worker registration failed:", err));
+
+      // Listen for messages from the Service Worker (registered only once)
+      navigator.serviceWorker.addEventListener(
+        "message",
+        this.handleServiceWorkerMessage
+      );
+    }
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.showWebAppButton = true;
@@ -494,19 +600,38 @@ export default {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
   methods: {
-    checkVersion() {
-      fetch('/version.json', { cache: "no-store" })
-        .then(res => res.json())
-        .then(remote => {
-          const current = localStorage.getItem('app_version')
-          if (!current) {
-            localStorage.setItem('app_version', remote.version)
-          } else if (current !== remote.version) {
-            localStorage.setItem('app_version', remote.version)
-            window.location.reload()
-          }
-        })
-        .catch(err => console.error("Version check error:", err))
+    onOkClickUpdateDialog() {
+
+      window.location.reload()
+
+    },
+    handleServiceWorkerMessage(event) {
+
+      // Check if the service worker notifies that an update was applied
+      if (event?.data?.type === 'SW_UPDATED') {
+
+        // Store the new version sent by the service worker
+        this.newVersion = event.data.version;
+
+        // Fetch changelog information for the updated version
+        fetch('/changelog.json', { cache: "no-store" })
+          .then(res => res.json())
+          .then(changelog => {
+
+            const limit = 5;
+
+            this.newChanges = changelog
+              .slice(-limit)
+              .reverse();
+
+            this.updateDialog = true;
+
+          })
+          .catch(err => console.error("error:", err));
+
+
+      }
+
     },
     async openToggler() {
       this.selection.showBarLevel = 2;

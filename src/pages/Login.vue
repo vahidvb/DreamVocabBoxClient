@@ -2,7 +2,7 @@
     <v-container class="container">
         <v-row class="d-flex justify-center">
             <v-col cols="12" class="d-flex justify-center">
-                <v-img src="images/box.png" max-width="50%"></v-img>
+                <v-img src="images/icons/icon-512x512.png" max-width="50%"></v-img>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <h3 class="fw-bolder">Dream Vocab Box</h3>

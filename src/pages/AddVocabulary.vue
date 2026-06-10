@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row text-center">
             <div class="col-12">
-                <img class="w-50" src="images/box.png">
+                <img class="w-50 mt-3" src="images/icons/icon-512x512.png">
             </div>
             <div class="col-12 mt-2">
                 <h3 class="fw-bolder">Add New Word</h3>
