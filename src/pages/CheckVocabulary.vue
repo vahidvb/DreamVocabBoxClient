@@ -12,13 +12,15 @@
                         <ShareButton :words="[vocabulary.Word]" color="default" btnclass="me-3" />
                     </h1>
 
-                    <v-btn color="success" @click="showMeaning = true" v-show="!showMeaning">
+                    <v-btn color="success" rounded @click="showMeaning = true" v-show="!showMeaning">
                         Show Meaning
                     </v-btn>
-                    <v-btn color="success" @click="showMeaning = false" v-show="showMeaning">
+                    <v-btn color="success" rounded @click="showMeaning = false" v-show="showMeaning">
                         Hide Meaning
                     </v-btn>
                     <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
+
+
                     <span class="remain-badge"><span v-if="vocabulary.RemainCount > 1">{{ vocabulary.RemainCount }}
                             Words
                             Remain</span><span v-if="vocabulary.RemainCount <= 1">Last One</span></span>
@@ -29,6 +31,13 @@
                 <DetailCard :title="'Example'" :value="vocabulary.Example" v-if="vocabulary.Example" class="mt-2" />
                 <DetailCard :title="'Description'" :value="vocabulary.Description" v-if="vocabulary.Description"
                     class="mt-2" />
+                <v-card outlined class="pa-4 mt-2">
+                    <a class="btn btn-primary" rounded style="margin: auto;display: table;" target="_blank"
+                        :href="`https://www.playphrase.me/#/search?q=${vocabulary.Word}`">
+                        <img src="/images/pplogo.jpg" style="margin-right:8px;">
+                        PlayPhrase.me
+                    </a>
+                </v-card>
                 <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word" style="margin-bottom: 60px;">
                     <Dictionary :text="vocabulary.Word" />
                 </v-card>

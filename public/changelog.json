@@ -11,5 +11,11 @@
       "Visual changes in the app",
       "Visual changes in the boxes page"
     ]
+  },
+  {
+    "Version": "0.0.4",
+    "Changes": [
+      "Link words to PlayPhrase.me"
+    ]
   }
 ]

@@ -1,6 +1,5 @@
 <template>
-    <v-container class="h-100" v-touch:swipe.left="() => goTo(false)"
-        v-touch:swipe.right="() => goTo(true)">
+    <v-container class="h-100" v-touch:swipe.left="() => goTo(false)" v-touch:swipe.right="() => goTo(true)">
         <v-carousel progress="primary" hide-delimiters :show-arrows="false" height="100%" v-model="current">
             <v-carousel-item v-for="vocabulary in vocabularies" :key="vocabulary.Text">
                 <div class="d-flex justify-center align-center">
@@ -10,7 +9,7 @@
                                 <h1 class="text-center">{{ vocabulary.Word }}
                                     <ShareButton :words="[vocabulary.Word]" color="default" btnclass="me-3" />
                                 </h1>
-    
+
                                 <v-btn color="success" @click="showMeaning = true" v-show="!showMeaning">
                                     Show Meaning
                                 </v-btn>
@@ -18,23 +17,31 @@
                                     Hide Meaning
                                 </v-btn>
                                 <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
-    
+
+
                             </v-card>
                         </v-col>
                         <v-col cols="12" v-show="showMeaning">
                             <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" v-if="vocabulary.Example" />
                             <DetailCard :title="'Example'" :value="vocabulary.Example" v-if="vocabulary.Example"
                                 class="mt-2" />
-                            <DetailCard :title="'Description'" :value="vocabulary.Description" v-if="vocabulary.Description"
-                                class="mt-2" />
+                            <DetailCard :title="'Description'" :value="vocabulary.Description"
+                                v-if="vocabulary.Description" class="mt-2" />
+                            <v-card outlined class="pa-4 mt-2">
+                                <a class="btn btn-primary" rounded style="margin: auto;display: table;" target="_blank"
+                                    :href="`https://www.playphrase.me/#/search?q=${vocabulary.Word}`">
+                                    <img src="/images/pplogo.jpg" style="margin-right:8px;">
+                                    PlayPhrase.me
+                                </a>
+                            </v-card>
                             <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word" style="margin-bottom: 60px;">
                                 <Dictionary :text="vocabulary.Word" />
                             </v-card>
-    
+
                         </v-col>
                     </v-row>
                 </div>
-    
+
             </v-carousel-item>
         </v-carousel>
     </v-container>
