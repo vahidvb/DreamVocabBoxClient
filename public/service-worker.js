@@ -23,7 +23,7 @@ const CACHE_ASSETS = [
     "/images/icons/icon-512x512.png",
 ];
 
-const APP_VERSION = "0.0.3";
+const APP_VERSION = "0.0.4";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(

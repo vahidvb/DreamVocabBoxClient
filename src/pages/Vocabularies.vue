@@ -2,28 +2,47 @@
     <v-container>
         <v-row>
             <v-col>
-                <v-text-field append-inner-icon="mdi-magnify" density="compact" label="Search text" variant="solo"
-                    hide-details v-model:model-value="page.SearchText" v-stop-typing:500="getVocabularies"
-                    @click:append-inner="getVocabularies" @click:clear="getVocabularies" clearable></v-text-field>
+                <v-text-field 
+                    append-inner-icon="mdi-magnify" 
+                    density="compact" 
+                    :label="$t('pages.vocabularies.searchLabel')" 
+                    variant="solo"
+                    hide-details 
+                    v-model:model-value="page.SearchText" 
+                    v-stop-typing:500="getVocabularies"
+                    @click:append-inner="getVocabularies" 
+                    @click:clear="getVocabularies" 
+                    clearable>
+                </v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-select hide-details v-model:model-value="page.ListLength" :items="pageLengths"
-                    v-on:update:modelValue="() => { currentPage = 1; getVocabularies() }" label="List Length">
+                <v-select 
+                    hide-details 
+                    v-model:model-value="page.ListLength" 
+                    :items="pageLengths"
+                    v-on:update:modelValue="() => { currentPage = 1; getVocabularies() }" 
+                    :label="$t('pages.vocabularies.listLength')">
                 </v-select>
             </v-col>
             <v-col>
-                <v-select hide-details :items="boxes" v-model="selectedBox"
+                <v-select 
+                    hide-details 
+                    :items="boxes" 
+                    v-model="selectedBox"
                     v-on:update:modelValue="(selected) => { currentPage = 1; page.BoxNumber = selected; getVocabularies() }"
-                    label="Box Number"></v-select>
+                    :label="$t('pages.vocabularies.boxNumber')">
+                </v-select>
             </v-col>
         </v-row>
     </v-container>
+
     <div v-if="vocabularies.length == 0" class="mt-5">
-        <h3 class="text-center">Nothing found !!!</h3>
-        <h4 class="text-center">Please try adjusting your filters</h4>
+        <h3 class="text-center">{{ $t('pages.vocabularies.nothingFound') }}</h3>
+        <h4 class="text-center">{{ $t('pages.vocabularies.adjustFilters') }}</h4>
     </div>
+
     <v-table v-if="vocabularies.length > 0">
         <thead style="background-color: rgba(79, 129, 152, 0.78);color:white;">
             <tr>
@@ -32,10 +51,10 @@
                         v-bind:indeterminate="checkedSomeVocabularies" hide-details></v-checkbox>
                 </th>
                 <th class="text-left" style="width: calc(65% - 45px);">
-                    Word
+                    {{ $t('pages.vocabularies.tableWord') }}
                 </th>
                 <th class="text-right" style="width: 35%;min-width: 136px;" v-if="!vocabularies.some(x => x.checked)">
-                    Action
+                    {{ $t('pages.vocabularies.tableAction') }}
                 </th>
                 <th class="text-right" style="width: 35%;min-width: 136px;" v-if="vocabularies.some(x => x.checked)">
                     <ShareButton :words="vocabularies.filter(x => x.checked).map(x => x.Word)" color="default"
@@ -55,23 +74,24 @@
                     <v-dialog max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
                             <v-btn v-bind="activatorProps" size="x-small" class="mb-1" color="primary" variant="tonal"
-                                prepend-icon="mdi-eye">Show Details</v-btn>
+                                prepend-icon="mdi-eye">{{ $t('pages.vocabularies.showDetails') }}</v-btn>
                         </template>
 
                         <template v-slot:default="{ isActive }">
-                            <v-card title="Complete information">
+                            <v-card :title="$t('pages.vocabularies.completeInfo')">
                                 <v-card-text>
                                     <v-card elevation="16" class="pa-4 mb-2">
                                         <h1 class="text-center">{{ vocabulary.Word }}
                                             <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
                                         </h1>
                                     </v-card>
-                                    <DetailCard :title="'Meaning'" :value="vocabulary.Meaning"
+                                    <DetailCard :title="$t('pages.vocabularies.meaning')" :value="vocabulary.Meaning"
                                         v-show="vocabulary.Meaning" />
-                                    <DetailCard :title="'Example'" :value="vocabulary.Example"
+                                    <DetailCard :title="$t('pages.vocabularies.example')" :value="vocabulary.Example"
                                         v-show="vocabulary.Example" class="mt-2" />
-                                    <DetailCard :title="'Description'" :value="vocabulary.Description"
+                                    <DetailCard :title="$t('pages.vocabularies.description')" :value="vocabulary.Description"
                                         v-show="vocabulary.Description" class="mt-2" />
+                                    
                                     <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
                                         style="margin-bottom: 60px;">
                                         <Dictionary :text="vocabulary.Word" style="padding: 0;"
@@ -79,27 +99,25 @@
                                     </v-card>
                                 </v-card-text>
 
-
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                                    <v-btn :text="$t('pages.vocabularies.close')" @click="isActive.value = false"></v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
                     </v-dialog>
                 </td>
 
-
                 <td style="width: 35%;min-width: 136px;" class="text-right">
                     <div v-if="!vocabularies.some(x => x.checked)">
-                        <ShareButton :words="[vocabulary.Word]" color="success" btnclass="mr-1" />
+                        <ShareButton :words="[vocabulary.Word]" color="success" btnclass="mx-1" />
                         <v-dialog max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
                                 <v-btn v-bind="activatorProps" icon="mdi-pencil" size="x-small" color="primary"></v-btn>
                             </template>
 
                             <template v-slot:default="{ isActive }">
-                                <v-card title="Edit">
+                                <v-card :title="$t('pages.vocabularies.editTitle')">
                                     <v-card-text>
                                         <form @submit.prevent="handleAddNewWord(vocabulary)" class="pb-3">
                                             <div class="mb-1">
@@ -111,7 +129,7 @@
                                                 <Dictionary :text="vocabulary.Word" :isOpen="false" />
                                             </div>
                                             <div class="mb-1">
-                                                <v-textarea rows="3" label="Meaning"
+                                                <v-textarea rows="3" :label="$t('pages.vocabularies.meaning')"
                                                     v-stop-typing:100="handleWordChange(vocabulary)"
                                                     v-model="vocabulary.Meaning">
                                                 </v-textarea>
@@ -119,48 +137,44 @@
                                                     style="cursor: pointer;position: absolute; top: 8px; right: 8px;">mdi-content-paste</v-icon>
                                             </div>
                                             <div class="mb-1">
-                                                <v-textarea rows="2" label="Example"
+                                                <v-textarea rows="2" :label="$t('pages.vocabularies.example')"
                                                     v-model="vocabulary.Example"></v-textarea>
                                             </div>
                                             <div class="mb-1">
-                                                <v-textarea rows="2" label="Description"
+                                                <v-textarea rows="2" :label="$t('pages.vocabularies.description')"
                                                     v-model="vocabulary.Description"></v-textarea>
                                             </div>
                                             <v-btn type="submit" class="btn btn-success w-100" color="#5865f2"
                                                 @click="isActive.value = false" variant="flat">
-                                                Edit
+                                                {{ $t('pages.vocabularies.editBtn') }}
                                             </v-btn>
                                         </form>
-
                                     </v-card-text>
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                                        <v-btn :text="$t('pages.vocabularies.close')" @click="isActive.value = false"></v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </template>
                         </v-dialog>
+                        
                         <v-dialog v-model="vocabulary.dialog" max-width="400" persistent>
                             <template v-slot:activator="{ props: activatorProps }">
-
-                                <v-btn v-bind="activatorProps" class="ml-1 text-white" icon="mdi-delete" size="x-small"
+                                <v-btn v-bind="activatorProps" class="mx-1 text-white" icon="mdi-delete" size="x-small"
                                     color="danger"></v-btn>
-
                             </template>
 
-                            <v-card prepend-icon="mdi-delete" text="Are you sure you want to delete this vocabulary? 
-                                Please note that once deleted, it cannot be restored."
-                                :title="'Remove ' + vocabulary.Word">
+                            <v-card prepend-icon="mdi-delete" 
+                                :text="$t('pages.vocabularies.deleteConfirmText')"
+                                :title="$t('pages.vocabularies.deleteTitle', { word: vocabulary.Word })">
                                 <template v-slot:actions>
                                     <v-spacer></v-spacer>
-
                                     <v-btn @click="vocabulary.dialog = false" class="bg-success">
-                                        No
+                                        {{ $t('pages.vocabularies.no') }}
                                     </v-btn>
-
                                     <v-btn @click="handleRemoveWord(vocabulary.Id)" class="bg-danger">
-                                        Yes!
+                                        {{ $t('pages.vocabularies.yes') }}
                                     </v-btn>
                                 </template>
                             </v-card>
@@ -173,6 +187,7 @@
     <v-pagination v-if="vocabularies.length > 0" :length="totalPage" v-model="currentPage"
         v-on:update:model-value="getVocabularies"></v-pagination>
 </template>
+
 <script>
 import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";

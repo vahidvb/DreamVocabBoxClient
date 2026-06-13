@@ -7,7 +7,7 @@ import router from './router';
 import directives from './directives';
 import speechPlugin from './plugins/speech';
 import Vue3TouchEvents from "vue3-touch-events";
-
+import i18n from '@/i18n'
 
 // Vuetify
 import vuetify from './plugins/vuetify';
@@ -25,6 +25,10 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 const app = createApp(App);
 const pinia = createPinia();
 
+const lang = localStorage.getItem("lang") || "en-GB"
+
+document.documentElement.lang = lang
+document.documentElement.dir = lang === "fa-IR" || lang === "ar-SA" ? "rtl" : "ltr"
 
 app.use(directives);
 app.use(vuetify);
@@ -34,4 +38,6 @@ app.use(notyfPlugin);
 app.use(axiosPlugin);
 app.use(speechPlugin);
 app.use(pinia);
+app.use(i18n);
+
 app.mount('#app');

@@ -4,39 +4,56 @@
             <div class="col-12">
                 <img class="w-50 mt-3" src="images/icons/icon-512x512.png">
             </div>
+
             <div class="col-12 mt-2">
-                <h3 class="fw-bolder">Add New Word</h3>
+                <h3 class="fw-bolder">
+                    {{ $t('pages.addVocabulary.title') }}
+                </h3>
             </div>
         </div>
+
         <hr>
+
         <form @submit.prevent="handleAddNewWord" class="pb-3">
+
             <v-btn type="submit" class="btn btn-success w-100 mb-2" color="#5865f2" variant="flat">
-                Add
+                {{ $t('pages.addVocabulary.add') }}
             </v-btn>
-            <div class="mb-2">
+
+            <div class="mb-2" style="position: relative;">
                 <v-combobox ref="WordInput" v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
-                    label="Word/Phrase" :items="wordsInDictionary" hide-details></v-combobox>
+                    :label="$t('pages.addVocabulary.word')" :items="wordsInDictionary" hide-details />
+
                 <v-icon @click="pasteMethod" color="info"
-                    style="cursor: pointer;position: absolute; top: 8px; right: 8px;">mdi-content-paste</v-icon>
+                    class="paste-icon">
+                    mdi-content-paste
+                </v-icon>
             </div>
+
             <div class="mb-2">
                 <Dictionary :text="wordForm.Word" :isOpen="false" v-if="wordForm.Word != null && wordForm.Word != ''" />
-                <v-textarea v-capitalize rows="3" label="Meaning" v-model="wordForm.Meaning" hide-details></v-textarea>
+
+                <v-textarea v-capitalize rows="3" :label="$t('pages.addVocabulary.meaning')" v-model="wordForm.Meaning"
+                    hide-details />
             </div>
+
             <div class="mb-2">
-                <v-textarea v-capitalize rows="2" label="Example" v-model="wordForm.Example" hide-details></v-textarea>
+                <v-textarea v-capitalize rows="2" :label="$t('pages.addVocabulary.example')" v-model="wordForm.Example"
+                    hide-details />
             </div>
+
             <div class="mb-2">
-                <v-textarea v-capitalize rows="2" label="Description" v-model="wordForm.Description"
-                    hide-details></v-textarea>
+                <v-textarea v-capitalize rows="2" :label="$t('pages.addVocabulary.description')"
+                    v-model="wordForm.Description" hide-details />
             </div>
 
         </form>
     </div>
-
 </template>
+
 <script>
 import Dictionary from "@/components/Dictionary.vue";
+import { useLangStore } from '@/stores/langStore';
 
 export default {
     name: 'LoginPage',
@@ -51,6 +68,10 @@ export default {
             },
             wordsInDictionary: [],
         };
+    },
+    setup() {
+        const lang = useLangStore()
+        return { lang }
     },
     watch: {
         // eslint-disable-next-line

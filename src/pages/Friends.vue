@@ -3,9 +3,18 @@
         <v-card-title>
             <v-card class="mx-0 mt-2" color="surface-light">
                 <v-card-text>
-                    <v-text-field append-inner-icon="mdi-magnify" density="compact" clearable
-                        label="Search in users" variant="solo" hide-details v-stop-typing="search"
-                        @click:append-inner="search" @click:clear="search" v-model="searchText"></v-text-field>
+                    <v-text-field
+                        append-inner-icon="mdi-magnify"
+                        density="compact"
+                        clearable
+                        :label="$t('pages.friends.searchInUsers')"
+                        variant="solo"
+                        hide-details
+                        v-stop-typing="search"
+                        @click:append-inner="search"
+                        @click:clear="search"
+                        v-model="searchText"
+                    ></v-text-field>
                 </v-card-text>
             </v-card>
         </v-card-title>
@@ -13,32 +22,43 @@
         <v-card-body>
             <v-list class="mt-2">
                 <v-list-subheader>
-                    Search List
+                    {{ $t('pages.friends.searchList') }}
                 </v-list-subheader>
+
                 <v-list-subheader v-if="users.length == 0">
-                    <v-list-item-title>There are no users yet.</v-list-item-title>
-                    <v-list-item-subtitle>You can search users and send a friend request</v-list-item-subtitle>
+                    <v-list-item-title>
+                        {{ $t('pages.friends.noUsersYet') }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                        {{ $t('pages.friends.searchUsersAndSendRequest') }}
+                    </v-list-item-subtitle>
                 </v-list-subheader>
+
                 <UserList :users="users" :refresh-method="()=>{getFriendList();search()}" />
             </v-list>
         </v-card-body>
+
         <v-card-body>
             <v-list class="mt-2">
                 <v-list-subheader>
-                    Friend List
+                    {{ $t('pages.friends.friendList') }}
                 </v-list-subheader>
+
                 <v-list-subheader v-if="friends.length == 0">
-                    <v-list-item-title>There are no friends yet.</v-list-item-title>
-                    <v-list-item-subtitle>You can search users and send a friend request</v-list-item-subtitle>
+                    <v-list-item-title>
+                        {{ $t('pages.friends.noFriendsYet') }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                        {{ $t('pages.friends.searchUsersAndSendRequest') }}
+                    </v-list-item-subtitle>
                 </v-list-subheader>
+
                 <UserList :users="friends" :refresh-method="()=>{getFriendList();search()}" />
             </v-list>
         </v-card-body>
     </v-card>
-
-
-
 </template>
+
 <script>
 import UserList from '@/components/UserList.vue';
 

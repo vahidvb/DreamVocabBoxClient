@@ -16,7 +16,7 @@
                         </div>
 
                         <!-- Message content -->
-                        <div class="text-left">
+                        <div>
                             <div class="font-weight-bold text-h6">
                                 {{ message.IsUserSent ? userInfoStore.nickname : friendProfile.UserName }}
                             </div>
@@ -26,7 +26,10 @@
 
                             <!-- Attachments -->
                             <div v-if="message.Attachments.length > 0">
-                                <v-text class="description-text font-weight-bold">Word Suggestions:<br></v-text>
+                                <v-text class="description-text font-weight-bold">
+                                    {{ $t('pages.messages.wordSuggestions') }}:<br>
+
+                                    <br></v-text>
                                 <v-container class="pa-0 mt-2">
                                     <v-row v-for="(attach, attachIndex) in message.Attachments" :key="attachIndex"
                                         hide-details>
@@ -48,7 +51,7 @@
                     </div>
 
                     <!-- Read status -->
-                    <div class="text-right w-100">
+                    <div class="w-100" :class="{'text-start':lang.isRtl,'text-end':!lang.isRtl }">
                         <v-text class="description-text me-2">
                             {{ message.RegisterDateHumanReadable }}
                         </v-text>
@@ -67,6 +70,7 @@
 </template>
 <script>
 import { useUserInfoStore } from '../stores/userInfoStore';
+import { useLangStore } from '../stores/langStore';
 
 export default {
     name: 'MessagesPage',
@@ -79,6 +83,10 @@ export default {
             userInfoStore: useUserInfoStore(),
 
         };
+    },
+    setup() {
+        const lang = useLangStore()
+        return { lang }
     },
     async mounted() {
         await this.getFriendProfile();

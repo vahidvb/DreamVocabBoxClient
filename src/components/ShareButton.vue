@@ -4,19 +4,26 @@
             <v-btn v-bind="activatorProps" :icon="icon" size="x-small" :color="`${color}`" :class="`${btnclass}`"
                 @click="getFriendsListForShareWord(words)"></v-btn>
         </template>
+
         <template v-slot:default="{ isActive }">
-            <v-card :title="`Share ${words.length == 1 ? words[0] : words[0] + '...'}`">
-                <v-text-field v-model="shareMessage" label="Message (Optional)" hide-details></v-text-field>
+            <v-card :title="shareTitle">
+
+                <v-text-field v-model="shareMessage" :label="$t('components.shareButton.messageOptional')"
+                    hide-details></v-text-field>
+
                 <UserList :users="friendList" type="share" :share-attachments="returnAttachments()"
                     :share-message="shareMessage" :refresh-method="() => { getFriendsListForShareWord(words) }" />
+
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                    <v-btn :text="$t('public.close')" @click="isActive.value = false"></v-btn>
                 </v-card-actions>
+
             </v-card>
         </template>
     </v-dialog>
 </template>
+
 <script>
 import UserList from './UserList.vue';
 
@@ -49,6 +56,17 @@ export default {
             shareMessage: '',
             friendList: [],
         };
+    },
+    computed: {
+        shareTitle() {
+            const firstWord = this.words.length === 1
+                ? this.words[0]
+                : this.words[0] + '...'
+
+            return this.$t('components.shareButton.shareTitle', {
+                word: firstWord
+            })
+        }
     },
     methods: {
         async getFriendsListForShareWord(words) {

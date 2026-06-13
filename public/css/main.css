@@ -475,3 +475,17 @@ input[type=number] {
     transform: translate(-40px, -40px);
     z-index: 9999;
 }
+.paste-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+[dir="rtl"] .paste-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: unset;
+  left: 8px;
+}

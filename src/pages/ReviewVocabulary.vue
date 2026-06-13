@@ -6,67 +6,79 @@
                     <v-row height="100%">
                         <v-col cols="12" class="text-center">
                             <v-card class="pa-4">
-                                <h1 class="text-center">{{ vocabulary.Word }}
+                                <h1 class="text-center">
+                                    {{ vocabulary.Word }}
                                     <ShareButton :words="[vocabulary.Word]" color="default" btnclass="me-3" />
                                 </h1>
 
                                 <v-btn color="success" @click="showMeaning = true" v-show="!showMeaning">
-                                    Show Meaning
+                                    {{ $t('pages.reviewVocabulary.showMeaning') }}
                                 </v-btn>
+
                                 <v-btn color="success" @click="showMeaning = false" v-show="showMeaning">
-                                    Hide Meaning
+                                    {{ $t('pages.reviewVocabulary.hideMeaning') }}
                                 </v-btn>
+
                                 <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
-
-
                             </v-card>
                         </v-col>
+
                         <v-col cols="12" v-show="showMeaning">
-                            <DetailCard :title="'Meaning'" :value="vocabulary.Meaning" v-if="vocabulary.Example" />
-                            <DetailCard :title="'Example'" :value="vocabulary.Example" v-if="vocabulary.Example"
-                                class="mt-2" />
-                            <DetailCard :title="'Description'" :value="vocabulary.Description"
-                                v-if="vocabulary.Description" class="mt-2" />
+                            <DetailCard :title="$t('pages.reviewVocabulary.meaning')" :value="vocabulary.Meaning"
+                                v-if="vocabulary.Meaning" />
+                            <DetailCard :title="$t('pages.reviewVocabulary.example')" :value="vocabulary.Example"
+                                v-if="vocabulary.Example" class="mt-2" />
+                            <DetailCard :title="$t('pages.reviewVocabulary.description')"
+                                :value="vocabulary.Description" v-if="vocabulary.Description" class="mt-2" />
+
                             <v-card outlined class="pa-4 mt-2">
                                 <a class="btn btn-primary" rounded style="margin: auto;display: table;" target="_blank"
                                     :href="`https://www.playphrase.me/#/search?q=${vocabulary.Word}`">
                                     <img src="/images/pplogo.jpg" style="margin-right:8px;">
-                                    PlayPhrase.me
+                                    {{ $t('pages.reviewVocabulary.playPhrase') }}
                                 </a>
                             </v-card>
+
                             <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word" style="margin-bottom: 60px;">
                                 <Dictionary :text="vocabulary.Word" />
                             </v-card>
-
                         </v-col>
                     </v-row>
                 </div>
-
             </v-carousel-item>
         </v-carousel>
     </v-container>
-    <v-row class="fixed-bottom d-flex align-center justify-center" no-gutters
-        style="width: 448px;left: 50%;transform: translateX(-50%);">
+
+    <v-row class="fixed-bottom d-flex align-center justify-center" no-gutters>
         <v-col cols="6">
             <v-btn color="info" rounded="0" block @click="goTo(false)" style="height: 60px;font-size: x-small;">
-                <v-icon size="30" class="me-1">mdi-chevron-left</v-icon>
-                Prev
+                <v-icon size="30" :class="lang.isRtl ? 'ms-1' : 'me-1'">
+                    {{ lang.prevIcon }}
+                </v-icon>
+
+                {{ $t('pages.reviewVocabulary.prev') }}
             </v-btn>
         </v-col>
+
         <v-col cols="6">
             <v-btn color="success" rounded="0" block @click="goTo(true)" style="height: 60px;font-size: x-small;">
-                Next
-                <v-icon size="30" class="me-1">mdi-chevron-right</v-icon>
+                {{ $t('pages.reviewVocabulary.next') }}
+
+                <v-icon size="30" :class="lang.isRtl ? 'me-1' : 'ms-1'">
+                    {{ lang.nextIcon }}
+                </v-icon>
             </v-btn>
         </v-col>
 
     </v-row>
 </template>
+
 <script>
 import DetailCard from "@/components/DetailCard";
 import Dictionary from "@/components/Dictionary";
 import ShareButton from "@/components/ShareButton.vue";
 import SpeechPlay from "@/components/SpeechPlay";
+import { useLangStore } from '@/stores/langStore'
 
 export default {
     name: 'CheckVocabularyPage',
@@ -87,7 +99,10 @@ export default {
             }
         };
     },
-
+    setup() {
+        const lang = useLangStore()
+        return { lang }
+    },
     methods: {
         async getVocabularies() {
             const response = await this.postRequest('Vocabularies', 'GetVocabularies', this.page);

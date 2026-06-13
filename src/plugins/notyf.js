@@ -1,6 +1,7 @@
 /// Git : https://github.com/caroso1222/notyf
 
 import { Notyf } from 'notyf';
+import i18n from '@/i18n'
 
 export default {
     install(app) {
@@ -52,13 +53,23 @@ export default {
                 notyf.open(options);
             },
             apiResult(result, duration = 3000) {
+
+                const key = `apiResultStatusCodes.${result.StatusCode}`
+
+                let message = i18n.global.t(key)
+
+                if (message === key) {
+                    message = result.Message
+                }
+
                 notyf.open({
                     type: result.IsSuccess ? 'success' : 'error',
-                    message: result.Message,
+                    message: message,
                     duration: duration,
                     dismissible: true
                 });
-            },
+            }
+
         };
     },
 };

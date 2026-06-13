@@ -26,12 +26,12 @@
               <template v-slot:activator="{ props: activatorProps }">
                 <v-btn v-bind="activatorProps" @click="fillProfile(); drawer = null" class="mt-1"
                   prepend-icon="mdi-account-edit" variant="tonal" size="x-small">
-                  My Account
+                  {{ $t('pages.app.myAccount') }}
                 </v-btn>
               </template>
               <!-- Edit Profile Modal -->
               <template v-slot:default="{ isActive }">
-                <v-card title="Edit Profile">
+                <v-card :title="$t('pages.app.editProfile')">
                   <v-card-text>
                     <v-row>
                       <v-col cols="3">
@@ -41,12 +41,17 @@
                           </v-col>
                           <v-col cols="6">
                             <v-icon color="primary" :disabled="profile.avatar == 1"
-                              @click="profile.avatar > 1 ? profile.avatar -= 1 : 1">mdi-chevron-left</v-icon>
+                              @click="profile.avatar > 1 ? profile.avatar -= 1 : 1">
+                              {{ lang.prevIcon }}
+                            </v-icon>
                           </v-col>
-                          <v-col cols="6" class="text-right">
-                            <v-icon color="primary" :disabled="profile.avatar == 26"
-                              @click="profile.avatar += 1">mdi-chevron-right</v-icon>
+
+                          <v-col cols="6" :class="lang.isRtl ? 'text-left' : 'text-right'">
+                            <v-icon color="primary" :disabled="profile.avatar == 26" @click="profile.avatar += 1">
+                              {{ lang.nextIcon }}
+                            </v-icon>
                           </v-col>
+
 
                         </v-row>
 
@@ -55,25 +60,24 @@
                       <v-col cols="9">
 
                         <v-select v-if="boxScenarios.length > 0" v-model="profile.boxscenario" :items="boxScenarios"
-                          item-title="Title" label="Box Scenarios" item-value="Id" persistent-hint
-                          :hint="boxScenarios[profile.boxscenario].Description" class="mb-3">
-                          <template v-slot:item="{ props, item }">
-                            <v-list-item v-bind="props" :key="item.Id">
-
-                            </v-list-item>
-                          </template>
+                          item-title="Title" item-value="Id" :label="$t('pages.app.boxScenarios')"
+                          :hint="selectedScenario?.Description" persistent-hint class="mb-3">
                         </v-select>
 
-                        <v-text-field v-model="profile.username" label="UserName" hint="Your unique username for login"
-                          autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
-                        <v-text-field v-model="profile.nickname" label="Name" hint="What should we call you?"
-                          autocomplete="off" persistent-hint outlined class="mb-3"></v-text-field>
-                        <v-text-field v-model="profile.email" label="Email Address" autocomplete="off"
-                          hint="Email for password recovery (optional)" persistent-hint outlined type="email"
+
+                        <v-text-field v-model="profile.username" :label="$t('pages.app.username')"
+                          :hint="$t('pages.app.usernameHint')" autocomplete="off" persistent-hint outlined class="mb-3">
+                        </v-text-field>
+                        <v-text-field v-model="profile.nickname" :label="$t('pages.app.name')"
+                          :hint="$t('pages.app.nameHint')" autocomplete="off" persistent-hint outlined
                           class="mb-3"></v-text-field>
-                        <v-text-field v-model="profile.password" label="Change Password" autocomplete="new-password"
-                          hint="If you do not want to change the password, leave this field blank (optional)"
-                          persistent-hint outlined type="password" class="mb-3"></v-text-field>
+                        <v-text-field v-model="profile.email" :label="$t('pages.app.email')" autocomplete="off"
+                          :hint="$t('pages.app.emailHint')" persistent-hint outlined type="email" class="mb-3">
+                        </v-text-field>
+                        <v-text-field v-model="profile.password" :label="$t('pages.app.changePassword')"
+                          autocomplete="new-password" :hint="$t('pages.app.changePasswordHint')" persistent-hint
+                          outlined type="password" class="mb-3">
+                        </v-text-field>
                       </v-col>
 
                     </v-row>
@@ -85,24 +89,35 @@
                     <!-- Logout Button -->
                     <v-dialog max-width="300">
                       <template v-slot:activator="{ props: activatorProps }">
-                        <v-btn class="mr-auto" v-bind="activatorProps" color="danger">Logout</v-btn>
-                      </template>
+                        <v-btn class="mr-auto" v-bind="activatorProps" color="danger">
+                          {{ $t('pages.app.logout') }}
+                        </v-btn> </template>
 
                       <template v-slot:default="{ isActive }">
-                        <v-card title="Confirm Logout">
+                        <v-card :title="$t('pages.app.confirmLogout')">
                           <v-card-text>
-                            Are you sure you want to logout?
+                            {{ $t('pages.app.confirmLogoutText') }}
                           </v-card-text>
                           <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="blue-grey" text @click="isActive.value = false">Cancel</v-btn>
-                            <v-btn color="red" text @click="logout">Logout</v-btn>
+                            <v-btn color="blue-grey" text @click="isActive.value = false">
+                              {{ $t('pages.app.cancel') }}
+                            </v-btn>
+
+                            <v-btn color="red" text @click="logout">
+                              {{ $t('pages.app.logout') }}
+                            </v-btn>
                           </v-card-actions>
                         </v-card>
                       </template>
                     </v-dialog>
-                    <v-btn text="Close" @click="isActive.value = false"></v-btn>
-                    <v-btn color="success" @click="updateProfile">Update Profile</v-btn>
+                    <v-btn @click="isActive.value = false">
+                      {{ $t('public.close') }}
+                    </v-btn>
+
+                    <v-btn color="success" @click="updateProfile">
+                      {{ $t('pages.app.updateProfile') }}
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </template>
@@ -116,87 +131,84 @@
 
         <v-list density="compact" nav>
           <router-link to="/Vocabularies" class="nav-link">
-            <v-list-item prepend-icon="mdi-receipt-text" :title="'My Words (' + userInfoStore.allVocabularyCount + ')'"
-              :value="'My Words (' + userInfoStore.allVocabularyCount + ')'">
-            </v-list-item>
+            <v-list-item prepend-icon="mdi-receipt-text"
+              :title="$t('pages.app.myWords') + ' (' + userInfoStore.allVocabularyCount + ')'"></v-list-item>
           </router-link>
           <router-link to="/AddVocabulary" class="nav-link">
 
-            <v-list-item prepend-icon="mdi-receipt-text-plus" title="Add New Word/Idiom" value="Add New Word/Idiom">
-            </v-list-item>
+            <v-list-item prepend-icon="mdi-receipt-text-plus" :title="$t('pages.app.addNewWord')"></v-list-item>
           </router-link>
           <router-link to="/Boxes" class="nav-link">
-            <v-list-item prepend-icon="mdi-inbox-multiple" title="Boxes" value="Boxes">
-            </v-list-item>
+            <v-list-item prepend-icon="mdi-inbox-multiple" :title="$t('pages.app.boxes')"></v-list-item>
           </router-link>
           <!-- Application Settings -->
           <v-dialog max-width="500">
             <template v-slot:activator="{ props: activatorProps }">
-              <v-list-item prepend-icon="mdi-cog" title="Application Settings" value="Application Settings"
-                v-bind="activatorProps" @click="drawer = null"></v-list-item>
+              <v-list-item prepend-icon="mdi-cog" :title="$t('pages.app.applicationSettings')"
+                value="Application Settings" v-bind="activatorProps" @click="drawer = null"></v-list-item>
             </template>
             <!-- Application Settings Modal -->
             <template v-slot:default="{ isActive }">
-              <v-card title="Application Settings" class="mb-3" v-bind="isActive">
+              <v-card :title="$t('pages.app.applicationSettings')" class="mb-3" v-bind="isActive">
                 <v-card-text>
                   <v-row>
                     <v-col cols="12">
                       <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
-                        @change="handleAutoSuggestOnPageLoad" :label="`Auto suggest words on page load`" hide-details
-                        inset></v-switch>
+                        @change="handleAutoSuggestOnPageLoad" :label="$t('pages.app.autoSuggestOnPageLoad')"
+                        hide-details inset></v-switch>
 
                       <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
-                        @change="handleAutoSpeechOnChecking" :label="`Auto play the word when it begins to show`"
-                        hide-details inset></v-switch>
+                        @change="handleAutoSpeechOnChecking" :label="$t('pages.app.autoSpeechOnChecking')" hide-details
+                        inset></v-switch>
 
                       <v-switch v-bind:class="{ 'just-disabled': !clipboardGranted }" color="success"
                         v-model="autoDetectClipboardChange" @change="handleAutoDetectClipboardChange"
-                        :label="`Auto detect clipboard text`" hide-details inset></v-switch>
+                        :label="$t('pages.app.autoDetectClipboardChange')" hide-details inset></v-switch>
 
 
                       <v-dialog max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
                           <div v-if="!clipboardGranted" v-bind="activatorProps" @click="readClipboard" class="mb-2">
-                            <v-text style="font-size: 12px;" class="text-danger" role="button">The app needs permission
-                              to
-                              access the clipboard in browser settings. <b>For more help, click here.</b></v-text>
+                            <v-text style="font-size: 12px;" class="text-danger" role="button"> {{
+                              $t('pages.app.clipboardPermissionText') }}</v-text>
                           </div>
                         </template>
 
                         <template v-slot:default="{ isActive }">
-                          <v-card title="How to Enable Clipboard Access">
+                          <v-card :title="$t('pages.app.clipboardHelpTitle')">
                             <v-card-text>
                               <h4><v-icon color="#DB4437" icon="mdi-google-chrome" /> Chrome</h4>
                               <ul>
-                                <li>Open the Chrome browser.</li>
-                                <li>Go to the browser's settings.</li>
-                                <li>Find the "Site Settings" or "Settings" section.</li>
-                                <li>Navigate to "Permissions" and enable "Clipboard".</li>
+                                <li>{{ $t('pages.app.chromeStep1') }}</li>
+                                <li>{{ $t('pages.app.chromeStep2') }}</li>
+                                <li>{{ $t('pages.app.chromeStep3') }}</li>
+                                <li>{{ $t('pages.app.chromeStep4') }}</li>
                               </ul>
 
                               <h4><v-icon color="#FF9400" icon="mdi-firefox" /> Firefox</h4>
                               <ul>
-                                <li>Open the Firefox browser.</li>
-                                <li>Go to the browser's Settings.</li>
-                                <li>Find the "Permissions" section and enable clipboard access.</li>
+                                <li>{{ $t('pages.app.firefoxStep1') }}</li>
+                                <li>{{ $t('pages.app.firefoxStep2') }}</li>
+                                <li>{{ $t('pages.app.firefoxStep3') }}</li>
                               </ul>
 
                               <h4><v-icon color="#1E90FF" icon="mdi-apple-safari" /> Safari</h4>
                               <ul>
-                                <li>Open your phone's Settings app.</li>
-                                <li>Navigate to Safari.</li>
-                                <li>Look for clipboard-related settings and enable them.</li>
+                                <li>{{ $t('pages.app.safariStep1') }}</li>
+                                <li>{{ $t('pages.app.safariStep2') }}</li>
+                                <li>{{ $t('pages.app.safariStep3') }}</li>
                               </ul>
-                              <h5>If using another browser:</h5>
+                              <h5>{{ $t('pages.app.otherBrowserTitle') }}</h5>
                               <ul>
-                                <li>Look for a similar "Permissions" or "Site Settings" option in the browser's settings
-                                  and enable clipboard access.</li>
+                                <li>
+                                  {{ $t('pages.app.otherBrowserStep1') }}
+                                </li>
                               </ul>
                             </v-card-text>
 
                             <v-card-actions>
                               <v-spacer></v-spacer>
-                              <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                              <v-btn :text="$t('public.close')" @click="isActive.value = false"></v-btn>
                             </v-card-actions>
                           </v-card>
                         </template>
@@ -205,33 +217,34 @@
 
 
                       <v-text v-if="!t2sSupported" style="font-size: 12px;" class="text-danger m-0 p-0">Your browser
-                        does
-                        not support SpeechSynthesis</v-text>
+                        {{ $t('pages.app.speechNotSupported') }}
+                      </v-text>
                       <div v-bind:class="{ 'disabled': !t2sSupported }">
 
 
-                        <h5 class="mt-0">Text To Speech Settings</h5>
+                        <h5 class="mt-0">
+                          {{ $t('pages.app.ttsSettings') }}
+                        </h5>
                         <v-row>
                           <v-col cols="8">
-                            <v-text-field label="Text for test speech" v-model="sampleText"></v-text-field>
+                            <v-text-field :label="$t('pages.app.sampleText')" v-model="sampleText"></v-text-field>
                           </v-col>
                           <v-col cols="4">
                             <v-btn color="primary" icon="mdi-play" size="55" @click="textToSpeech(sampleText)"></v-btn>
                           </v-col>
                         </v-row>
-                        <div class="text-caption">Rate</div>
+                        <div class="text-caption"> {{ $t('pages.app.rate') }}</div>
                         <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechRate"
-                          @mouseleave="soundSettingsChange" hint="Controls the speed of speech."
-                          persistent-hint></v-slider>
-                        <div class="text-caption mt-3">Pitch</div>
+                          @mouseleave="soundSettingsChange" :hint="$t('pages.app.rateHint')" persistent-hint></v-slider>
+                        <div class="text-caption mt-3">{{ $t('pages.app.pitch') }}</div>
 
                         <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechPitch"
-                          @mouseleave="soundSettingsChange" hint="Adjusts the pitch of the voice."
+                          @mouseleave="soundSettingsChange" :hint="$t('pages.app.pitchHint')"
                           persistent-hint></v-slider>
-                        <div class="text-caption mt-3">Volume</div>
+                        <div class="text-caption mt-3">{{ $t('pages.app.volume') }}</div>
 
                         <v-slider show-ticks="always" step="10" tick-size="4" v-model="speechVolume"
-                          @mouseleave="soundSettingsChange" hint="Sets the volume of the speech."
+                          @mouseleave="soundSettingsChange" :hint="$t('pages.app.volumeHint')"
                           persistent-hint></v-slider>
 
                       </div>
@@ -239,7 +252,7 @@
                   </v-row>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn text="Close" @click="isActive.value = false"></v-btn>
+                  <v-btn :text="$t('public.close')" @click="isActive.value = false"></v-btn>
                 </v-card-actions>
               </v-card>
             </template>
@@ -247,26 +260,46 @@
           <router-link to="/Friends" class="nav-link">
             <v-badge :model-value="this.userInfoStore.friendshipPending > 0"
               :content="this.userInfoStore.friendshipPending" color="danger" class="w-100 pe-2">
-              <v-list-item prepend-icon="mdi-account-group" title="Friends" value="Friends" class="w-100">
-              </v-list-item>
+              <v-list-item prepend-icon="mdi-account-group" :title="$t('pages.app.friends')"></v-list-item>
             </v-badge>
           </router-link>
           <router-link to="/MessagesList" class="nav-link">
             <v-badge :model-value="this.userInfoStore.messagesUnread > 0" :content="this.userInfoStore.messagesUnread"
               color="danger" class="w-100 pe-2">
-              <v-list-item prepend-icon="mdi-forum" title="Messages" value="Messages" class="w-100">
-              </v-list-item>
+              <v-list-item prepend-icon="mdi-forum" :title="$t('pages.app.messages')"></v-list-item>
             </v-badge>
           </router-link>
+          <v-list-group value="language">
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" prepend-icon="mdi-translate"
+                :title="$t('app.language') + ' (' + currentLang.toUpperCase() + ')'" />
+            </template>
+
+            <v-list-item @click="changeLang('en-GB')" title="English 🇬🇧" />
+            <v-list-item @click="changeLang('fa-IR')" title="فارسی 🇮🇷" />
+            <v-list-item @click="changeLang('de-DE')" title="Deutsch 🇩🇪" />
+            <v-list-item @click="changeLang('fr-FR')" title="Français 🇫🇷" />
+            <v-list-item @click="changeLang('es-ES')" title="Español 🇪🇸" />
+            <v-list-item @click="changeLang('ru-RU')" title="Русский 🇷🇺" />
+            <v-list-item @click="changeLang('tr-TR')" title="Türkçe 🇹🇷" />
+            <v-list-item @click="changeLang('hi-IN')" title="हिन्दी 🇮🇳" />
+            <v-list-item @click="changeLang('zh-CN')" title="中文 🇨🇳" />
+            <v-list-item @click="changeLang('ar-SA')" title="العربية 🇸🇦" />
+
+
+
+          </v-list-group>
+
         </v-list>
       </v-navigation-drawer>
 
       <!-- App Bar - Need Authorize -->
       <v-app-bar v-if="$route.meta.Authorize" style="width: 448px;left: 50%;transform: translateX(-50%);"
-        color="teal-darken-4" image="images/bg.webp" title="Dream Vocab Box">
+        color="teal-darken-4" image="images/bg.webp" :title="$t('app.title')">
 
         <template v-slot:prepend>
-          <v-btn v-bind:disabled="currentPage == 'boxes'" @click="goBack" icon="mdi-arrow-left"></v-btn>
+          <v-btn :disabled="currentPage == 'boxes'" @click="goBack"
+            :icon="lang.isRtl ? 'mdi-arrow-right' : 'mdi-arrow-left'"></v-btn>
         </template>
         <template v-slot:image>
           <v-img gradient="to top right, #2d16d56b, #f98f436b"></v-img>
@@ -464,7 +497,7 @@ import debounce from 'lodash/debounce';
 import Loading from './components/Loading.vue';
 import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
-import { useSharedMethods } from './stores/sharedMethodsStore';
+import { useLangStore } from './stores/langStore.js';
 
 
 export default {
@@ -474,6 +507,7 @@ export default {
   },
   data() {
     return {
+      currentLang: this.$i18n.locale,
       updateDialog: false,
       fab_open: false,
       togglerAutoClose: null,
@@ -495,7 +529,6 @@ export default {
         Word: '',
         Definition: {}
       },
-      boxScenarios: [],
       selection: {
         showBarLevel: 0,
         isAdded: false,
@@ -513,6 +546,33 @@ export default {
       }
     };
   },
+  computed: {
+    boxScenarios() {
+      return [
+        {
+          Id: 0,
+          Title: this.$t('pages.app.scenario1Title'),
+          Description: this.$t('pages.app.scenario1Desc'),
+        },
+        {
+          Id: 1,
+          Title: this.$t('pages.app.scenario2Title'),
+          Description: this.$t('pages.app.scenario2Desc'),
+        },
+        {
+          Id: 2,
+          Title: this.$t('pages.app.scenario3Title'),
+          Description: this.$t('pages.app.scenario3Desc'),
+        },
+      ]
+    },
+
+    selectedScenario() {
+      return this.boxScenarios.find(
+        s => s.Id === this.profile.boxscenario
+      )
+    }
+  },
   watch: {
     // eslint-disable-next-line
     $route(to, from) {
@@ -522,6 +582,9 @@ export default {
     }
   },
   async mounted() {
+    if (localStorage.getItem('lang') == null)
+      localStorage.setItem('lang', 'en-GB');
+    
     if (localStorage.getItem('autoSuggestOnPageLoad') == null)
       localStorage.setItem('autoSuggestOnPageLoad', 'true');
 
@@ -599,7 +662,14 @@ export default {
   beforeUnmount() {
     document.removeEventListener("selectionchange", this.handleSelectionChange);
   },
+  setup() {
+    const lang = useLangStore()
+    return { lang }
+  },
   methods: {
+    changeLang(lang) {
+      this.lang.applyLanguage(lang, this.$i18n, this.$vuetify)
+    },
     onOkClickUpdateDialog() {
 
       window.location.reload()
@@ -767,8 +837,7 @@ export default {
         localStorage.setItem("token", response.Data.Token);
         this.userInfoStore.reloadValues();
         if (this.currentPage == 'boxes') {
-          const sharedStore = useSharedMethods();
-          sharedStore.toggle_getVocabulariesBoxes();
+          this.shared.toggle_getVocabulariesBoxes();
         }
       }
 
@@ -791,7 +860,6 @@ export default {
       this.profile.username = this.userInfoStore.username;
       this.profile.boxscenario = this.userInfoStore.boxscenario;
       this.profile.password = '';
-      this.boxScenarios = this.userInfoStore.boxScenarios;
     }
 
 
