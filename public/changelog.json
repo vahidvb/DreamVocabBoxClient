@@ -17,5 +17,12 @@
     "Changes": [
       "Link words to PlayPhrase.me"
     ]
+  },
+  {
+    "Version": "0.0.6",
+    "Changes": [
+      "Add multilingual support",
+      "Remove Dictionary component and Auto Suggest feature",
+    ]
   }
 ]
