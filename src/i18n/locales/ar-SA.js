@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "إعدادات التطبيق",
 
-      autoSuggestOnPageLoad: "اقتراح الكلمات تلقائياً عند تحميل الصفحة",
       autoSpeechOnChecking: "تشغيل نطق الكلمة تلقائياً عند ظهورها",
       autoDetectClipboardChange: "اكتشاف نص الحافظة تلقائياً",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "عرض جميع الصناديق",
       box: "علبة",
       empty: "فارغ",
       needsChecking: "يحتاج إلى مراجعة",

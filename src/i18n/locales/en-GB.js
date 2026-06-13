@@ -44,7 +44,6 @@ export default {
 
       applicationSettings: "Application Settings",
 
-      autoSuggestOnPageLoad: "Auto suggest words on page load",
       autoSpeechOnChecking: "Auto play the word when it begins to show",
       autoDetectClipboardChange: "Auto detect clipboard text",
 
@@ -174,6 +173,7 @@ export default {
       iDontRemember: "I Don't Remember"
     },
     boxes: {
+      all: "Show all boxes",
       box: "Box",
       empty: "Empty",
       needsChecking: "Needs Checking",

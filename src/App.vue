@@ -153,10 +153,6 @@
                 <v-card-text>
                   <v-row>
                     <v-col cols="12">
-                      <v-switch style="font-size: 11px;" color="success" v-model="autoSuggestOnPageLoad"
-                        @change="handleAutoSuggestOnPageLoad" :label="$t('pages.app.autoSuggestOnPageLoad')"
-                        hide-details inset></v-switch>
-
                       <v-switch style="font-size: 11px;" color="success" v-model="autoSpeechOnChecking"
                         @change="handleAutoSpeechOnChecking" :label="$t('pages.app.autoSpeechOnChecking')" hide-details
                         inset></v-switch>
@@ -305,13 +301,6 @@
           <v-img gradient="to top right, #2d16d56b, #f98f436b"></v-img>
         </template>
 
-        <!-- Right Side Icons 
-        <v-btn icon @click="suggestion.Show = false; getSuggestionWord()">
-          <v-icon>mdi-auto-fix</v-icon>
-        </v-btn>
--->
-
-
         <v-btn icon v-if="showWebAppButton" @click="handleInstallPWA">
           <v-icon>mdi-open-in-app</v-icon>
         </v-btn>
@@ -357,9 +346,7 @@
               </v-btn>
             </router-link>
 
-            <v-btn key="4" color="error" icon @click="suggestion.Show = false; getSuggestionWord()">
-              <v-icon size="24">mdi-auto-fix</v-icon>
-            </v-btn>
+
 
 
           </v-speed-dial>
@@ -391,7 +378,6 @@
           }}
             In My List</v-btn>
         </router-link>
-        <Dictionary :text="selection.text" v-if="selection.showBarLevel > 0"></Dictionary>
       </v-col>
     </v-row>
 
@@ -405,18 +391,6 @@
       v-if="$route.meta.Authorize">mdi-close-circle</v-icon>
   </v-container>
 
-  <!-- Word Suggestion -->
-  <div class="suggest-notify" v-bind:class="{ 'show-notify': suggestion.Show }" v-if="$route.meta.Authorize"
-    v-touch:swipe="() => { suggestion.Show = false; getSuggestionWord() }">
-    <h7>Word Suggestion</h7>
-    <h5 class="m-0">{{ suggestion.Word }}</h5>
-    <div>{{ suggestion.Definition }}</div>
-    <router-link :to="'/AddVocabulary/' + suggestion.Word" @click="suggestion.Show = false">
-      <button class="btn btn-sm btn-light mt-2"><span class="mdi mdi-receipt-text-plus"></span> Go To Add New
-        Word</button>
-    </router-link>
-    <v-icon class="suggest-close" @click="suggestion.Show = false">mdi-close</v-icon>
-  </div>
 
 
   <!-- Application update dialog -->
@@ -495,7 +469,6 @@
 <script>
 import debounce from 'lodash/debounce';
 import Loading from './components/Loading.vue';
-import Dictionary from './components/Dictionary.vue';
 import { useUserInfoStore } from './stores/userInfoStore';
 import { useLangStore } from './stores/langStore.js';
 
@@ -503,7 +476,7 @@ import { useLangStore } from './stores/langStore.js';
 export default {
   name: 'App',
   components: {
-    Loading, Dictionary,
+    Loading,
   },
   data() {
     return {
@@ -516,12 +489,11 @@ export default {
       speechRate: localStorage.getItem('speechRate') ? parseFloat(localStorage.getItem('speechRate')) * 100 : 100,
       speechVolume: localStorage.getItem('speechVolume') ? parseFloat(localStorage.getItem('speechVolume')) * 100 : 100,
       sampleText: 'Dream Vocab Box',
-      autoSuggestOnPageLoad: localStorage.getItem('autoSuggestOnPageLoad') == 'true',
       autoDetectClipboardChange: localStorage.getItem('autoDetectClipboardChange') == 'true',
       autoSpeechOnChecking: localStorage.getItem('autoSpeechOnChecking') == 'true',
       clipboardGranted: false,
       lastClipboardText: '',
-      autoSuggested: false,
+
       showWebAppButton: false,
       deferredPrompt: null,
       suggestion: {
@@ -585,9 +557,6 @@ export default {
     if (localStorage.getItem('lang') == null)
       localStorage.setItem('lang', 'en-GB');
     
-    if (localStorage.getItem('autoSuggestOnPageLoad') == null)
-      localStorage.setItem('autoSuggestOnPageLoad', 'true');
-
     if (localStorage.getItem('autoSpeechOnChecking') == null)
       localStorage.setItem('autoSpeechOnChecking', 'false');
 
@@ -650,11 +619,6 @@ export default {
     // End Install PWA
 
     document.addEventListener("selectionchange", this.handleSelectionChange);
-    if (localStorage.getItem('token') && !this.autoSuggested && this.autoSuggestOnPageLoad) {
-      this.autoSuggested = true;
-      await this.getSuggestionWord();
-    }
-
     if (localStorage.getItem('token') != null) {
       await this.fillProfile();
     }
@@ -772,9 +736,6 @@ export default {
     handleAutoDetectClipboardChange() {
       localStorage.setItem('autoDetectClipboardChange', this.autoDetectClipboardChange);
     },
-    handleAutoSuggestOnPageLoad() {
-      localStorage.setItem('autoSuggestOnPageLoad', this.autoSuggestOnPageLoad);
-    },
     handleInstallPWA() {
       if (this.deferredPrompt) {
         this.deferredPrompt.prompt();
@@ -817,19 +778,6 @@ export default {
         this.selection.text = userSelection;
       }
     }, 500),
-    async getSuggestionWord() {
-      const response = await this.postRequest('Dictionaries', 'SuggestWord', null, false);
-      if (response.IsSuccess) {
-        this.suggestion = response.Data;
-        this.suggestion.Definition = JSON.parse(this.suggestion.Definition);
-        const randomIndex = Math.floor(Math.random() * this.suggestion.Definition.ss.length);
-        const randomDefinition = this.suggestion.Definition.ss[randomIndex].d;
-        this.suggestion.Definition = randomDefinition;
-      }
-      setTimeout(() => {
-        this.suggestion.Show = true;
-      }, 400);
-    },
     async updateProfile() {
       const response = await this.postRequest('Users', 'UpdateProfile', this.profile);
       this.notyf.apiResult(response);

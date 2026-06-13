@@ -21,9 +21,6 @@
             </v-btn>
 
             <div class="mb-2" style="position: relative;">
-                <v-combobox ref="WordInput" v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
-                    :label="$t('pages.addVocabulary.word')" :items="wordsInDictionary" hide-details />
-
                 <v-icon @click="pasteMethod" color="info"
                     class="paste-icon">
                     mdi-content-paste
@@ -31,8 +28,6 @@
             </div>
 
             <div class="mb-2">
-                <Dictionary :text="wordForm.Word" :isOpen="false" v-if="wordForm.Word != null && wordForm.Word != ''" />
-
                 <v-textarea v-capitalize rows="3" :label="$t('pages.addVocabulary.meaning')" v-model="wordForm.Meaning"
                     hide-details />
             </div>
@@ -52,12 +47,10 @@
 </template>
 
 <script>
-import Dictionary from "@/components/Dictionary.vue";
 import { useLangStore } from '@/stores/langStore';
 
 export default {
     name: 'LoginPage',
-    components: { Dictionary },
     data() {
         return {
             wordForm: {
@@ -66,7 +59,7 @@ export default {
                 Example: this.$route.query.Example ?? '',
                 Description: this.$route.query.Description ?? '',
             },
-            wordsInDictionary: [],
+         
         };
     },
     setup() {
@@ -93,7 +86,6 @@ export default {
                         this.wordForm.Example = '';
                         this.wordForm.Description = '';
                         this.$refs.WordInput.focus();
-                        this.wordsInDictionary = [];
 
                     }
             } catch (error) {
@@ -102,7 +94,6 @@ export default {
         },
         async handleWordChange() {
             if (this.wordForm.Word == null || this.wordForm.Word.trim() == '') {
-                this.wordsInDictionary = [];
                 return;
             }
             try {
@@ -115,13 +106,6 @@ export default {
                 }
                 // eslint-disable-next-line
             } catch { }
-
-            try {
-                const response = await this.postRequest('Dictionaries', 'GetSimilarWords', this.wordForm.Word, false);
-                this.wordsInDictionary = response.Data;
-            } catch (error) {
-                console.error(error);
-            }
         },
         async pasteMethod() {
             navigator.clipboard.readText().then(async (text) => {

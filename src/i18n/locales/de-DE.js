@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "App-Einstellungen",
 
-      autoSuggestOnPageLoad: "Wörter beim Laden der Seite automatisch vorschlagen",
       autoSpeechOnChecking: "Wort automatisch abspielen, wenn es angezeigt wird",
       autoDetectClipboardChange: "Zwischenablage-Text automatisch erkennen",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "Alle Boxen anzeigen",
       box: "Box",
       empty: "Leer",
       needsChecking: "Muss überprüft werden",

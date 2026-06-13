@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "Configuración de la aplicación",
 
-      autoSuggestOnPageLoad: "Sugerir palabras automáticamente al cargar la página",
       autoSpeechOnChecking: "Reproducir la palabra automáticamente al mostrarse",
       autoDetectClipboardChange: "Detectar texto del portapapeles automáticamente",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "Mostrar todas las cajas",
       box: "Caja",
       empty: "Vacía",
       needsChecking: "Necesita revisión",

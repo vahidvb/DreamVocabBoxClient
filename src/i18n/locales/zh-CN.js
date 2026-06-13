@@ -43,7 +43,6 @@ export default {
 
       applicationSettings: "应用设置",
 
-      autoSuggestOnPageLoad: "页面加载时自动推荐单词",
       autoSpeechOnChecking: "检查时自动播放发音",
       autoDetectClipboardChange: "自动检测剪贴板变化",
 
@@ -180,6 +179,7 @@ export default {
     },
 
     boxes: {
+      all: "显示所有盒子",
       box: "盒子",
       empty: "空",
       needsChecking: "需要复习",

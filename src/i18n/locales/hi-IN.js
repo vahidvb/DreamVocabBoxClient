@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "एप्लिकेशन सेटिंग्स",
 
-      autoSuggestOnPageLoad: "पेज लोड होने पर शब्दों का स्वतः सुझाव दें",
       autoSpeechOnChecking: "दिखना शुरू होने पर शब्द को स्वतः बोलें",
       autoDetectClipboardChange: "क्लिपबोर्ड टेक्स्ट का स्वतः पता लगाएं",
 
@@ -175,6 +174,7 @@ export default {
       iDontRemember: "मुझे याद नहीं है"
     },
     boxes: {
+      all: "सभी बॉक्स दिखाएं",
       box: "बॉक्स",
       empty: "खाली",
       needsChecking: "चेक करने की आवश्यकता है",

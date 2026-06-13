@@ -92,7 +92,6 @@
           v-if="vocabulary.Word"
           style="margin-bottom: 60px;"
         >
-          <Dictionary :text="vocabulary.Word" />
         </v-card>
       </v-col>
     </v-row>
@@ -133,13 +132,12 @@
 
 <script>
 import DetailCard from "@/components/DetailCard";
-import Dictionary from "@/components/Dictionary";
 import ShareButton from "@/components/ShareButton.vue";
 import SpeechPlay from "@/components/SpeechPlay";
 
 export default {
     name: 'CheckVocabularyPage',
-    components: { DetailCard, Dictionary, SpeechPlay, ShareButton },
+    components: { DetailCard, SpeechPlay, ShareButton },
     data() {
         return {
             vocabulary: {},

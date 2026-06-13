@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "Uygulama Ayarları",
 
-      autoSuggestOnPageLoad: "Sayfa yüklendiğinde kelimeleri otomatik öner",
       autoSpeechOnChecking: "Kelime gösterilmeye başlandığında otomatik seslendir",
       autoDetectClipboardChange: "Pano metnini otomatik algıla",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "Tüm kutuları göster",
       box: "Kutu",
       empty: "Boş",
       needsChecking: "Kontrol Edilmeli",

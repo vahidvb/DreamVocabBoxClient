@@ -2,35 +2,22 @@
     <v-container>
         <v-row>
             <v-col>
-                <v-text-field 
-                    append-inner-icon="mdi-magnify" 
-                    density="compact" 
-                    :label="$t('pages.vocabularies.searchLabel')" 
-                    variant="solo"
-                    hide-details 
-                    v-model:model-value="page.SearchText" 
-                    v-stop-typing:500="getVocabularies"
-                    @click:append-inner="getVocabularies" 
-                    @click:clear="getVocabularies" 
-                    clearable>
+                <v-text-field append-inner-icon="mdi-magnify" density="compact"
+                    :label="$t('pages.vocabularies.searchLabel')" variant="solo" hide-details
+                    v-model:model-value="page.SearchText" v-stop-typing:500="getVocabularies"
+                    @click:append-inner="getVocabularies" @click:clear="getVocabularies" clearable>
                 </v-text-field>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-select 
-                    hide-details 
-                    v-model:model-value="page.ListLength" 
-                    :items="pageLengths"
-                    v-on:update:modelValue="() => { currentPage = 1; getVocabularies() }" 
+                <v-select hide-details v-model:model-value="page.ListLength" :items="pageLengths"
+                    v-on:update:modelValue="() => { currentPage = 1; getVocabularies() }"
                     :label="$t('pages.vocabularies.listLength')">
                 </v-select>
             </v-col>
             <v-col>
-                <v-select 
-                    hide-details 
-                    :items="boxes" 
-                    v-model="selectedBox"
+                <v-select hide-details :items="boxes" v-model="selectedBox"
                     v-on:update:modelValue="(selected) => { currentPage = 1; page.BoxNumber = selected; getVocabularies() }"
                     :label="$t('pages.vocabularies.boxNumber')">
                 </v-select>
@@ -89,19 +76,16 @@
                                         v-show="vocabulary.Meaning" />
                                     <DetailCard :title="$t('pages.vocabularies.example')" :value="vocabulary.Example"
                                         v-show="vocabulary.Example" class="mt-2" />
-                                    <DetailCard :title="$t('pages.vocabularies.description')" :value="vocabulary.Description"
-                                        v-show="vocabulary.Description" class="mt-2" />
-                                    
-                                    <v-card outlined class="pa-4 mt-2" v-if="vocabulary.Word"
-                                        style="margin-bottom: 60px;">
-                                        <Dictionary :text="vocabulary.Word" style="padding: 0;"
-                                            :isOpen="!vocabulary.Meaning && !vocabulary.Example && !vocabulary.Description ? true : false" />
-                                    </v-card>
+                                    <DetailCard :title="$t('pages.vocabularies.description')"
+                                        :value="vocabulary.Description" v-show="vocabulary.Description" class="mt-2" />
+
+
                                 </v-card-text>
 
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn :text="$t('pages.vocabularies.close')" @click="isActive.value = false"></v-btn>
+                                    <v-btn :text="$t('pages.vocabularies.close')"
+                                        @click="isActive.value = false"></v-btn>
                                 </v-card-actions>
                             </v-card>
                         </template>
@@ -125,16 +109,14 @@
                                                     <SpeechPlay :text="vocabulary.Word" style="font-size: 25px;" />
                                                 </h1>
                                             </div>
-                                            <div class="mb-4">
-                                                <Dictionary :text="vocabulary.Word" :isOpen="false" />
-                                            </div>
+
                                             <div class="mb-1">
                                                 <v-textarea rows="3" :label="$t('pages.vocabularies.meaning')"
                                                     v-stop-typing:100="handleWordChange(vocabulary)"
                                                     v-model="vocabulary.Meaning">
                                                 </v-textarea>
                                                 <v-icon @click="pasteMethod(vocabulary)" color="info"
-                                                    style="cursor: pointer;position: absolute; top: 8px; right: 8px;">mdi-content-paste</v-icon>
+                                                    class="paste-icon">mdi-content-paste</v-icon>
                                             </div>
                                             <div class="mb-1">
                                                 <v-textarea rows="2" :label="$t('pages.vocabularies.example')"
@@ -153,20 +135,20 @@
 
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn :text="$t('pages.vocabularies.close')" @click="isActive.value = false"></v-btn>
+                                        <v-btn :text="$t('pages.vocabularies.close')"
+                                            @click="isActive.value = false"></v-btn>
                                     </v-card-actions>
                                 </v-card>
                             </template>
                         </v-dialog>
-                        
+
                         <v-dialog v-model="vocabulary.dialog" max-width="400" persistent>
                             <template v-slot:activator="{ props: activatorProps }">
                                 <v-btn v-bind="activatorProps" class="mx-1 text-white" icon="mdi-delete" size="x-small"
                                     color="danger"></v-btn>
                             </template>
 
-                            <v-card prepend-icon="mdi-delete" 
-                                :text="$t('pages.vocabularies.deleteConfirmText')"
+                            <v-card prepend-icon="mdi-delete" :text="$t('pages.vocabularies.deleteConfirmText')"
                                 :title="$t('pages.vocabularies.deleteTitle', { word: vocabulary.Word })">
                                 <template v-slot:actions>
                                     <v-spacer></v-spacer>
@@ -189,27 +171,21 @@
 </template>
 
 <script>
-import Dictionary from "@/components/Dictionary.vue";
 import DetailCard from "@/components/DetailCard.vue";
 import ShareButton from "@/components/ShareButton.vue";
 import SpeechPlay from "@/components/SpeechPlay.vue";
 export default {
     name: 'VocabulariesPage',
-    components: { Dictionary, DetailCard, ShareButton, SpeechPlay },
+    components: { DetailCard, ShareButton, SpeechPlay },
     data() {
         return {
-            boxes: [{ title: "Show all boxes", value: 0 }, { title: "Box 1", value: 1 }, { title: "Box 2", value: 2 },
-            { title: "Box 3", value: 3 }, { title: "Box 4", value: 4 },
-            { title: "Box 5", value: 5 }, { title: "Box 6", value: 6 },
-            { title: "Box 7", value: 7 }],
-            selectedBox: this.$route.params.boxNumber == undefined || this.$route.params.boxNumber == 0 ? { title: "Show all boxes", value: 0 } : { title: `Box ${this.$route.params.boxNumber}`, value: this.$route.params.boxNumber },
+            selectedBox: null,
             pageLengths: [10, 20, 50, 100, 200, 400, 500],
             totalPage: 0,
             currentPage: 1,
             totalItem: 0,
             checkAllVocabularies: false,
             checkedSomeVocabularies: false,
-            wordsInDictionary: [],
             dictionary: null,
             vocabularies: [],
             page: {
@@ -224,6 +200,15 @@ export default {
         checkedVocabulariesItems() {
             return this.vocabularies.filter(v => v.checked);
         },
+        boxes() {
+            return [
+                { title: this.$t('pages.boxes.all'), value: 0 },
+                ...Array.from({ length: 7 }, (_, i) => ({
+                    title: `${this.$t('pages.boxes.box')} ${i + 1}`,
+                    value: i + 1
+                }))
+            ]
+        }
     },
 
     watch: {
@@ -300,5 +285,10 @@ export default {
     async created() {
         await this.getVocabularies();
     },
+    async mounted() {
+        const boxNumber = Number(this.$route.params.boxNumber ?? 0);
+        this.selectedBox = this.boxes.find(x => x.value === boxNumber);
+    }
+
 }
 </script>

@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "Paramètres de l'application",
 
-      autoSuggestOnPageLoad: "Suggérer automatiquement des mots au chargement de la page",
       autoSpeechOnChecking: "Lire automatiquement le mot lorsqu'il commence à s'afficher",
       autoDetectClipboardChange: "Détecter automatiquement le texte du presse-papiers",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "Afficher toutes les boîtes",
       box: "Boîte",
       empty: "Vide",
       needsChecking: "À vérifier",

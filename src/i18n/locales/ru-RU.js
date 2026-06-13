@@ -45,7 +45,6 @@ export default {
 
       applicationSettings: "Настройки приложения",
 
-      autoSuggestOnPageLoad: "Автоматически предлагать слова при загрузке страницы",
       autoSpeechOnChecking: "Автоматически озвучивать слово при показе",
       autoDetectClipboardChange: "Автоматически определять текст из буфера обмена",
 
@@ -182,6 +181,7 @@ export default {
     },
 
     boxes: {
+      all: "Показать все коробки",
       box: "Коробка",
       empty: "Пусто",
       needsChecking: "Требует проверки",

@@ -43,7 +43,6 @@ export default {
 
             applicationSettings: "تنظیمات برنامه",
 
-            autoSuggestOnPageLoad: "پیشنهاد خودکار کلمات هنگام بارگذاری صفحه",
             autoSpeechOnChecking: "پخش خودکار تلفظ هنگام نمایش کلمه",
             autoDetectClipboardChange: "تشخیص خودکار تغییرات کلیپ‌بورد",
 
@@ -173,6 +172,7 @@ export default {
             iDontRemember: "بلد نیستم"
         },
         boxes: {
+            all: "نمایش همه جعبه‌ها",
             box: "جعبه",
             empty: "خالی",
             needsChecking: "نیاز به بررسی",
