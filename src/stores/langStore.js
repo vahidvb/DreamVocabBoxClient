@@ -6,16 +6,16 @@ export const useLangStore = defineStore('lang', {
   state: () => ({
     locale: localStorage.getItem('lang') || 'en-GB',
     languages: [
-      { code: 'fa-IR', title: 'فارسی 🇮🇷' },
-      { code: 'en-GB', title: 'English 🇬🇧' },
-      { code: 'ar-SA', title: 'العربية 🇸🇦' },
-      { code: 'tr-TR', title: 'Türkçe 🇹🇷' },
-      { code: 'ru-RU', title: 'Русский 🇷🇺' },
-      { code: 'hi-IN', title: 'हिन्दी 🇮🇳' },
-      { code: 'zh-CN', title: '中文 🇨🇳' },
-      { code: 'fr-FR', title: 'Français 🇫🇷' },
-      { code: 'de-DE', title: 'Deutsch 🇩🇪' },
-      { code: 'es-ES', title: 'Español 🇪🇸' }
+      { code: 'fa-IR', title: 'فارسی' },
+      { code: 'en-GB', title: 'English' },
+      { code: 'ar-SA', title: 'العربية' },
+      { code: 'tr-TR', title: 'Türkçe' },
+      { code: 'ru-RU', title: 'Русский' },
+      { code: 'hi-IN', title: 'हिन्दी' },
+      { code: 'zh-CN', title: '中文' },
+      { code: 'fr-FR', title: 'Français' },
+      { code: 'de-DE', title: 'Deutsch' },
+      { code: 'es-ES', title: 'Español' }
     ]
   }),
 
@@ -33,7 +33,7 @@ export const useLangStore = defineStore('lang', {
         : 'mdi-chevron-right',
 
     currentLangTitle: (state) =>
-      state.languages.find(lang => lang.code === state.locale)?.title || 'English 🇬🇧'
+      state.languages.find(lang => lang.code === state.locale)?.title || 'English'
   },
 
   actions: {

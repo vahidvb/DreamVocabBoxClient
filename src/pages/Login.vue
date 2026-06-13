@@ -1,5 +1,5 @@
 <template>
-    
+
     <v-container class="container">
         <v-row class="d-flex justify-center">
             <v-col cols="12" class="d-flex justify-center">
@@ -9,28 +9,28 @@
                 <h3 class="fw-bolder">{{ $t('app.title') }}</h3>
             </v-col>
         </v-row>
-<v-row class="d-flex justify-center mb-2">
-        <v-menu>
-            <template #activator="{ props }">
-                <v-btn variant="text" v-bind="props">
-                    🌐 {{ lang.currentLangTitle }}
-                </v-btn>
-            </template>
+        <v-row class="d-flex justify-center mb-2">
+            <v-menu>
+                <template #activator="{ props }">
+                    <v-btn variant="text" v-bind="props">
+                        🌐 {{ lang.currentLangTitle }}
+                    </v-btn>
+                </template>
 
-            <v-list>
-                <v-list-item @click="changeLang('en-GB')" title="English 🇬🇧" />
-                <v-list-item @click="changeLang('fa-IR')" title="فارسی 🇮🇷" />
-                <v-list-item @click="changeLang('ar-SA')" title="العربية 🇸🇦" />
-                <v-list-item @click="changeLang('tr-TR')" title="Türkçe 🇹🇷" />
-                <v-list-item @click="changeLang('ru-RU')" title="Русский 🇷🇺" />
-                <v-list-item @click="changeLang('hi-IN')" title="हिन्दी 🇮🇳" />
-                <v-list-item @click="changeLang('zh-CN')" title="中文 🇨🇳" />
-                <v-list-item @click="changeLang('fr-FR')" title="Français 🇫🇷" />
-                <v-list-item @click="changeLang('de-DE')" title="Deutsch 🇩🇪" />
-                <v-list-item @click="changeLang('es-ES')" title="Español 🇪🇸" />
-            </v-list>
-        </v-menu>
-    </v-row>
+                <v-list>
+                    <v-list-item @click="changeLang('en-GB')" title="English" />
+                    <v-list-item @click="changeLang('fa-IR')" title="فارسی" />
+                    <v-list-item @click="changeLang('ar-SA')" title="العربية" />
+                    <v-list-item @click="changeLang('tr-TR')" title="Türkçe" />
+                    <v-list-item @click="changeLang('ru-RU')" title="Русский" />
+                    <v-list-item @click="changeLang('hi-IN')" title="हिन्दी" />
+                    <v-list-item @click="changeLang('zh-CN')" title="中文" />
+                    <v-list-item @click="changeLang('fr-FR')" title="Français" />
+                    <v-list-item @click="changeLang('de-DE')" title="Deutsch" />
+                    <v-list-item @click="changeLang('es-ES')" title="Español" />
+                </v-list>
+            </v-menu>
+        </v-row>
 
 
         <v-divider></v-divider>
@@ -144,8 +144,8 @@ export default {
     },
     methods: {
         changeLang(lang) {
-  this.lang.applyLanguage(lang, this.$i18n, this.$vuetify)
-},
+            this.lang.applyLanguage(lang, this.$i18n, this.$vuetify)
+        },
 
         async handleLogin() {
             const response = await this.postRequest('Users', 'Login', this.loginForm);

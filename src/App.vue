@@ -271,16 +271,16 @@
                 :title="$t('app.language') + ' (' + currentLang.toUpperCase() + ')'" />
             </template>
 
-            <v-list-item @click="changeLang('en-GB')" title="English 🇬🇧" />
-            <v-list-item @click="changeLang('fa-IR')" title="فارسی 🇮🇷" />
-            <v-list-item @click="changeLang('de-DE')" title="Deutsch 🇩🇪" />
-            <v-list-item @click="changeLang('fr-FR')" title="Français 🇫🇷" />
-            <v-list-item @click="changeLang('es-ES')" title="Español 🇪🇸" />
-            <v-list-item @click="changeLang('ru-RU')" title="Русский 🇷🇺" />
-            <v-list-item @click="changeLang('tr-TR')" title="Türkçe 🇹🇷" />
-            <v-list-item @click="changeLang('hi-IN')" title="हिन्दी 🇮🇳" />
-            <v-list-item @click="changeLang('zh-CN')" title="中文 🇨🇳" />
-            <v-list-item @click="changeLang('ar-SA')" title="العربية 🇸🇦" />
+            <v-list-item @click="changeLang('en-GB')" title="English" />
+            <v-list-item @click="changeLang('fa-IR')" title="فارسی" />
+            <v-list-item @click="changeLang('de-DE')" title="Deutsch" />
+            <v-list-item @click="changeLang('fr-FR')" title="Français" />
+            <v-list-item @click="changeLang('es-ES')" title="Español" />
+            <v-list-item @click="changeLang('ru-RU')" title="Русский" />
+            <v-list-item @click="changeLang('tr-TR')" title="Türkçe" />
+            <v-list-item @click="changeLang('hi-IN')" title="हिन्दी" />
+            <v-list-item @click="changeLang('zh-CN')" title="中文" />
+            <v-list-item @click="changeLang('ar-SA')" title="العربية" />
 
 
 
@@ -556,7 +556,7 @@ export default {
   async mounted() {
     if (localStorage.getItem('lang') == null)
       localStorage.setItem('lang', 'en-GB');
-    
+
     if (localStorage.getItem('autoSpeechOnChecking') == null)
       localStorage.setItem('autoSpeechOnChecking', 'false');
 
