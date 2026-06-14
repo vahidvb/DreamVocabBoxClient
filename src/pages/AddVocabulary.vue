@@ -21,8 +21,9 @@
             </v-btn>
 
             <div class="mb-2" style="position: relative;">
-                <v-icon @click="pasteMethod" color="info"
-                    class="paste-icon">
+                <v-text-field ref="WordInput" v-model="wordForm.Word" v-capitalize v-stop-typing:100="handleWordChange"
+                    :label="$t('pages.addVocabulary.word')" hide-details />
+                <v-icon @click="pasteMethod" color="info" class="paste-icon">
                     mdi-content-paste
                 </v-icon>
             </div>
@@ -59,7 +60,7 @@ export default {
                 Example: this.$route.query.Example ?? '',
                 Description: this.$route.query.Description ?? '',
             },
-         
+
         };
     },
     setup() {

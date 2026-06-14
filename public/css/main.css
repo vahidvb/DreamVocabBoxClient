@@ -476,16 +476,17 @@ input[type=number] {
     z-index: 9999;
 }
 .paste-icon {
-  cursor: pointer;
-  position: absolute;
-  top: 8px;
+  cursor: pointer!important;
+  position: absolute!important;
+  top: 15px;
   right: 8px;
+    Z-index:1
 }
 
 [dir="rtl"] .paste-icon {
-  cursor: pointer;
-  position: absolute;
-  top: 8px;
+  cursor: pointer!important;
+  position: absolute!important;
+  top: 15px!important;
   right: unset;
-  left: 8px;
+  left: 8px!important;
 }
